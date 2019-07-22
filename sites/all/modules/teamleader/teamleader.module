@@ -1,0 +1,86 @@
+<?php
+
+use GuzzleHttp\HandlerStack;
+use League\OAuth2\Client\Token\AccessToken;
+use Nascom\OAuth2\Client\Provider\Teamleader;
+use Nascom\TeamleaderApiClient\Http\ApiClient\ApiClient;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Nascom\TeamleaderApiClient\Http\Guzzle\Middleware\AuthenticationMiddleware;
+
+/**
+ * Implements hook_menu().
+ */
+function teamleader_menu() {
+  $items = array();
+
+  $items['admin/config/services/teamleader'] = array(
+    'title' => 'Teamleader configuration',
+    'description' => 'Configure the teamleader module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('teamleader_admin_form'),
+    'access arguments' => array('administer teamleader'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'teamleader.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function teamleader_permission() {
+  return array(
+    'administer teamleader' => array(
+      'title' => t('Administer Teamleader integration'),
+      'description' => t('Administer Teamleader integration settings.'),
+    ),
+  );
+}
+
+/**
+ * Fetches a teamleader API client.
+ */
+function teamleader_client() {
+  $accessToken = variable_get('teamleader_access_token');
+
+  if ($accessToken) {
+    try {
+      // Initialise params
+      $client_id = variable_get('teamleader_client_id');
+      $client_secret = variable_get('teamleader_client_secret');
+      $accessToken = variable_get('teamleader_access_token');
+
+      // Create provider
+      $provider = new Teamleader([
+        'clientId' => $client_id,
+        'clientSecret' => $client_secret
+      ]);
+
+      // Create middleware
+      $teamleaderMiddleware = new AuthenticationMiddleware(
+        $provider,
+        new AccessToken($accessToken),
+        'teamleader_update_token'
+      );
+
+      // Create stack
+      $stack = HandlerStack::create();
+      $stack->push($teamleaderMiddleware);
+
+      // Create client
+      $guzzle_client = new \GuzzleHttp\Client(['handler' => $stack, 'headers' => ['Content-Type' => 'application/json;charset=utf-8']]);
+      return new ApiClient(new GuzzleAdapter($guzzle_client));
+
+    } catch (Exception $e) {
+      return NULL;
+    }
+  }
+}
+
+/**
+ * Callback function to save a new access token
+ */
+function teamleader_update_token(AccessToken $token) {
+  variable_set('teamleader_access_token', $token->jsonSerialize());
+}

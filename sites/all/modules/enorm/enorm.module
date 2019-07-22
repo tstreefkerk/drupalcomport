@@ -1,0 +1,118 @@
+<?php
+
+/**
+* Implements hook_menu().
+*/
+
+function enorm_help($path, $arg) {
+    switch ($path) {
+        case "admin/help#enorm":
+            return t("This is the custom module for the EnoRm. communications dashboard. It provides integration with Teamleader and a bunch of other communication channels. Disabling it will break the dashboard beyond belief and you'll need the CLI to fix it. So don't disable it.");
+            break;
+    }
+}
+
+/*
+ * Implements hook_block_info
+ */
+function enorm_block_info() {
+    $blocks['enorm'] = array(
+        'info' => t('Enorm Block'),
+        'cache' => DRUPAL_CACHE_PER_ROLE,
+    );
+    return $blocks;
+}
+
+
+/**
+ * Implements hook_block_view().
+ */
+function enorm_block_view($delta = '')
+{
+    switch ($delta) {
+        case 'enorm':
+            $block['subject'] = t('Enorm Name');
+            if (user_access('access content')) {
+                $block['content'] = enorm_get_teamleader_data_full_name();
+                }
+                break;
+    }
+    return $block;
+}
+
+
+/*
+ * Implements custom function that gets invoked in block view
+ */
+function enorm_get_teamleader_data_full_name() {
+    $code = variable_get('teamleader_access_token');
+    $accessToken = $code['access_token'];
+
+    /**
+     * Get the user identity information using the access token.
+     */
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.teamleader.eu/users.me');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+    $response = curl_exec($ch);
+    $data = json_decode($response, true);
+
+    /* Function returns an array which contains user info. Get first and last name.*/
+    return t('Hi there, ')  . $data['data']['first_name'] . ' ' . $data['data']['last_name'] . ', ' . strtolower($data['data']['function']) . '!';
+}
+
+/*
+ * Implements custom function that gets invoked in block view
+ */
+function enorm_get_teamleader_data_user_id() {
+    $code = variable_get('teamleader_access_token');
+    $accessToken = $code['access_token'];
+
+    /**
+     * Get the user identity information using the access token.
+     */
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.teamleader.eu/users.me');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+    $response = curl_exec($ch);
+    $data = json_decode($response, true);
+
+    return $data['data']['id'];
+
+    /* Function returns employee id.*/
+
+}
+
+/*
+ * Implements custom function that gets invoked in block view
+ */
+function enorm_get_teamleader_data_current_projects() {
+    $code = variable_get('teamleader_access_token');
+    $accessToken = $code['access_token'];
+    $employee_id = enorm_get_teamleader_data_user_id();
+    $filters = array('');
+
+
+    /**
+     * Get the user identity information using the access token.
+     */
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.teamleader.eu/projects.list');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "lol");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+
+    $response = curl_exec($ch);
+    $data = json_decode($response, true);
+
+    dpm($data);
+
+
+
+//    dpm($data);
+    /* Function returns an array which contains user info. Get first and last name.*/
+
+}
+

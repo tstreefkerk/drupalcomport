@@ -1,0 +1,87 @@
+diff --git a/composer_manager.drush.inc b/composer_manager.drush.inc
+index 4c0ae75..70530f5 100644
+--- a/composer_manager.drush.inc
++++ b/composer_manager.drush.inc
+@@ -39,7 +39,7 @@ function composer_manager_drush_command() {
+  *   Which command to execute on Composer Manager's composer.json file.
+  */
+ function drush_composer_manager($command = 'install') {
+-  $uri = composer_manager_file_dir();
++  $uri = composer_manager_file_dir(TRUE);
+   if (!$dir = drupal_realpath($uri)) {
+     return drush_set_error(dt('Error resolving path: @uri', array('@uri' => $uri)));
+   }
+diff --git a/composer_manager.install b/composer_manager.install
+index f6bd44f..cc39333 100644
+--- a/composer_manager.install
++++ b/composer_manager.install
+@@ -42,7 +42,17 @@ function composer_manager_requirements($phase) {
+ 
+   $t = get_t();
+ 
+-  $file_dir = composer_manager_file_dir();
++  if (variable_get('composer_manager_autobuild_file', 1)) {
++    $file_dir = composer_manager_file_dir();
++  }
++  else {
++    $scheme = file_default_scheme();
++    if (!in_array($scheme, array('public', 'private'))) {
++      $scheme = 'public';
++    }
++    $file_dir = variable_get('composer_manager_file_dir', $scheme . '://composer');
++  }
++
+   $vendor_dir = composer_manager_vendor_dir();
+ 
+   $requirements = array(
+diff --git a/composer_manager.module b/composer_manager.module
+index a842a22..85417d4 100644
+--- a/composer_manager.module
++++ b/composer_manager.module
+@@ -198,7 +198,7 @@ function composer_manager_write_file() {
+     $data = composer_manager_fetch_data();
+     $json = composer_manager_build_json($data);
+     if ($json) {
+-      $dir_uri = composer_manager_file_dir();
++      $dir_uri = composer_manager_file_dir(TRUE);
+       composer_manager_put_file($dir_uri, $json);
+     }
+     $success = TRUE;
+@@ -255,6 +255,9 @@ function composer_manager_beta5_compatibility() {
+ /**
+  * Return the URI to the composer.lock file.
+  *
++ * @param bool $ensure_write_permission
++ *   Indicates whether the write permission should be ensured for the directory.
++ *
+  * @return string|bool
+  *   The URI to the composer.lock file, usually in public://. Returns FALSE if
+  *   the lock file cannot be read.
+@@ -285,7 +288,7 @@ function composer_manager_lock_file() {
+  *
+  * @throws \RuntimeException
+  */
+-function composer_manager_file_dir() {
++function composer_manager_file_dir($ensure_write_permission = FALSE) {
+   module_load_include('inc', 'composer_manager', 'composer_manager.writer');
+   $scheme = file_default_scheme();
+   // Composer can only be run on a locally mounted file system. If the scheme is
+@@ -295,12 +298,13 @@ function composer_manager_file_dir() {
+   }
+ 
+   $dir_uri = variable_get('composer_manager_file_dir', $scheme . '://composer');
+-  if (!composer_manager_prepare_directory($dir_uri)) {
+-    throw new \RuntimeException(t('Error creating directory: @dir', array('@dir' => $dir_uri)));
+-  }
+-  if (!$realpath = drupal_realpath($dir_uri)) {
+-    throw new \RuntimeException(t('Error resolving directory: @dir', array('@dir' => $dir_uri)));
++  if ($ensure_write_permission) {
++    composer_manager_prepare_directory($dir_uri);
++    if (!$realpath = drupal_realpath($dir_uri)) {
++      throw new \RuntimeException(t('Error resolving directory: @dir', array('@dir' => $dir_uri)));
++    }
+   }
++
+   return $realpath;
+ }
+ 

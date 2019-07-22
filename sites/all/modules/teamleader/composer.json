@@ -1,0 +1,17 @@
+{
+  "name": "drupal/teamleader",
+  "type": "drupal-module",
+  "description": "Teamleader integration",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "http://drupal.org/project/teamleader",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/teamleader",
+    "source": "http://cgit.drupalcode.org/teamleader"
+  },
+  "require": {
+    "nascom/teamleader-api-client": "v2.x-dev",
+    "php-http/guzzle6-adapter": "dev-master"
+  }
+}

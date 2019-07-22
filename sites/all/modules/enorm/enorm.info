@@ -1,0 +1,3 @@
+name = EnoRm.
+description = Containing all custom built hooks, required. DO NOT TURN OFF
+core = 7.x

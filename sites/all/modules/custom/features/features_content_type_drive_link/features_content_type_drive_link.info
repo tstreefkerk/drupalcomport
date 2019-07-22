@@ -1,0 +1,7 @@
+name = Content Type: Drive Link
+core = 7.x
+package = Content Type
+dependencies[] = features
+dependencies[] = features_view_my_file
+features[features_api][] = api:2
+features[node][] = drive_link

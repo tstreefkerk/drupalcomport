@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the Content Type: Drive Link feature.
+ */
+
+include_once 'features_content_type_drive_link.features.inc';

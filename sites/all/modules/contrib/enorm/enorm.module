@@ -12,34 +12,10 @@ function enorm_help($path, $arg) {
     }
 }
 
+
 /*
- * Implements hook_block_info
+ * Teamleader Functions
  */
-function enorm_block_info() {
-    $blocks['enorm'] = array(
-        'info' => t('Enorm Block'),
-        'cache' => DRUPAL_CACHE_PER_ROLE,
-    );
-    return $blocks;
-}
-
-
-/**
- * Implements hook_block_view().
- */
-function enorm_block_view($delta = '')
-{
-    switch ($delta) {
-        case 'enorm':
-            $block['subject'] = t('Enorm Name');
-            if (user_access('access content')) {
-                $block['content'] = enorm_get_teamleader_data_full_name();
-                }
-                break;
-    }
-    return $block;
-}
-
 
 /*
  * Implements custom function that gets invoked in block view
@@ -109,10 +85,63 @@ function enorm_get_teamleader_data_current_projects() {
 
     dpm($data);
 
-
-
-//    dpm($data);
-    /* Function returns an array which contains user info. Get first and last name.*/
-
 }
+
+ /*
+  * Make admin role unavailable
+  */
+
+function enorm_form_user_register_form_alter (&$form, &$form_state, $form_id){
+    $form['account']['roles'][3]['#access'] = FALSE;
+}
+
+/*
+ * Custom and global functions
+ */
+
+/*
+ * Custom function that gets invoked when a user tries to view a node (Drive Link type) and checks whether they're allowed to access node
+ */
+
+/**
+ * Implements hook_node_access().
+ */
+function enorm_node_access($node, $op, $account)
+{
+    $profile2 = profile2_load_by_user($account->uid);
+    $profile_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
+    $node_group_id = $node->field_drive_link_customer['und'][0]['target_id'];
+    if ($op == "view") {
+        $role_keys = array_keys($account->roles);
+        $access_value = $node->field_drive_link_visibility['und'];
+        $access_value_clean = array();
+        foreach($access_value as $key => $value) {
+            array_push($access_value_clean, $value['value']);
+        }
+        $result = array_intersect($role_keys, $access_value_clean);
+        if(!empty($result) && $profile_group_id === $node_group_id) {
+            return NODE_ACCESS_ALLOW;
+        }
+
+        else{
+            return NODE_ACCESS_DENY;
+        }
+    }
+    else {
+        return NODE_ACCESS_IGNORE;
+    }
+}
+
+function enorm_views_pre_render(&$view) {
+    if ($view->name == 'views_customer_my_files') {
+        foreach($view->result as $key=>$result){
+            $node = node_load($result->nid);
+            if (!node_access('view',$node)){
+                unset($view->result[$key]);
+            }
+        }
+    }
+}
+
+
 

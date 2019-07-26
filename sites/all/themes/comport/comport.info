@@ -1,0 +1,5 @@
+name = Comport
+description = The custom comport theme. Based on Bootstrap.
+core = 7.x
+version = 1.0
+base theme = bootstrap

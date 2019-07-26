@@ -1,10 +1,11 @@
 <?php
 
 /**
-* Implements hook_menu().
-*/
+ * Implements hook_menu().
+ */
 
-function enorm_help($path, $arg) {
+function enorm_help($path, $arg)
+{
     switch ($path) {
         case "admin/help#enorm":
             return t("This is the custom module for the EnoRm. communications dashboard. It provides integration with Teamleader and a bunch of other communication channels. Disabling it will break the dashboard beyond belief and you'll need the CLI to fix it. So don't disable it.");
@@ -20,7 +21,8 @@ function enorm_help($path, $arg) {
 /*
  * Implements custom function that gets invoked in block view
  */
-function enorm_get_teamleader_data_full_name() {
+function enorm_get_teamleader_data_full_name()
+{
     $code = variable_get('teamleader_access_token');
     $accessToken = $code['access_token'];
 
@@ -35,13 +37,14 @@ function enorm_get_teamleader_data_full_name() {
     $data = json_decode($response, true);
 
     /* Function returns an array which contains user info. Get first and last name.*/
-    return t('Hi there, ')  . $data['data']['first_name'] . ' ' . $data['data']['last_name'] . ', ' . strtolower($data['data']['function']) . '!';
+    return t('Hi there, ') . $data['data']['first_name'] . ' ' . $data['data']['last_name'] . ', ' . strtolower($data['data']['function']) . '!';
 }
 
 /*
  * Implements custom function that gets invoked in block view
  */
-function enorm_get_teamleader_data_user_id() {
+function enorm_get_teamleader_data_user_id()
+{
     $code = variable_get('teamleader_access_token');
     $accessToken = $code['access_token'];
 
@@ -64,7 +67,8 @@ function enorm_get_teamleader_data_user_id() {
 /*
  * Implements custom function that gets invoked in block view
  */
-function enorm_get_teamleader_data_current_projects() {
+function enorm_get_teamleader_data_current_projects()
+{
     $code = variable_get('teamleader_access_token');
     $accessToken = $code['access_token'];
     $employee_id = enorm_get_teamleader_data_user_id();
@@ -87,12 +91,25 @@ function enorm_get_teamleader_data_current_projects() {
 
 }
 
- /*
-  * Make admin role unavailable
-  */
+/*
+ * Make admin role unavailable
+ */
 
-function enorm_form_user_register_form_alter (&$form, &$form_state, $form_id){
+function enorm_form_user_register_form_alter(&$form, &$form_state, $form_id)
+{
+    dpm($form);
     $form['account']['roles'][3]['#access'] = FALSE;
+    $form['account']['roles'][4]['#access'] = FALSE;
+    $current_path = current_path();
+    if ($current_path === 'admin/people/p2rp-create/customer') {
+        $form['account']['roles'][3]['#access'] = FALSE;
+        $form['account']['roles'][4]['#access'] = TRUE;
+        $form['account']['roles'][5]['#access'] = FALSE;
+        $form['account']['roles'][6]['#access'] = FALSE;
+        $form['account']['roles'][7]['#access'] = FALSE;
+        $form['account']['roles'][8]['#access'] = FALSE;
+        $form['account']['roles'][9]['#access'] = FALSE;
+    }
 }
 
 /*
@@ -108,40 +125,53 @@ function enorm_form_user_register_form_alter (&$form, &$form_state, $form_id){
  */
 function enorm_node_access($node, $op, $account)
 {
-    $profile2 = profile2_load_by_user($account->uid);
-    $profile_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
-    $node_group_id = $node->field_drive_link_customer['und'][0]['target_id'];
-    if ($op == "view") {
-        $role_keys = array_keys($account->roles);
-        $access_value = $node->field_drive_link_visibility['und'];
-        $access_value_clean = array();
-        foreach($access_value as $key => $value) {
-            array_push($access_value_clean, $value['value']);
+    $role_keys = array_keys($account->roles);
+    if (in_array('4', $role_keys)) {
+        $profile2 = profile2_load_by_user($account->uid);
+        $profile_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
+        if (!is_string($node)) {
+            $node_group_id = $node->field_drive_link_customer['und'][0]['target_id'];
+        };
+        if ($op == "view") {
+            $access_value = $node->field_drive_link_visibility['und'];
+            $access_value_clean = array();
+            foreach ($access_value as $key => $value) {
+                array_push($access_value_clean, $value['value']);
+            }
+            $result = array_intersect($role_keys, $access_value_clean);
+            if (!empty($result) && $profile_group_id === $node_group_id) {
+                return NODE_ACCESS_ALLOW;
+            } else {
+                return NODE_ACCESS_DENY;
+            }
+        } else {
+            return NODE_ACCESS_IGNORE;
         }
-        $result = array_intersect($role_keys, $access_value_clean);
-        if(!empty($result) && $profile_group_id === $node_group_id) {
-            return NODE_ACCESS_ALLOW;
-        }
-
-        else{
-            return NODE_ACCESS_DENY;
-        }
-    }
-    else {
+    } else {
         return NODE_ACCESS_IGNORE;
     }
 }
 
-function enorm_views_pre_render(&$view) {
+function enorm_views_pre_render(&$view)
+{
+    if ($view->name == 'view_my_projects') {
+        global $user;
+        $profile2 = profile2_load_by_user($user->uid);
+        $customer_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
+        foreach ($view->result as $key => $result) {
+            if($result->field_field_group_project_customer[0]['raw']['target_id'] != $customer_group_id) {
+                unset($view->result[$key]);
+            }
+        }
+    }
     if ($view->name == 'views_customer_my_files') {
-        foreach($view->result as $key=>$result){
+        foreach ($view->result as $key => $result) {
             $node = node_load($result->nid);
-            if (!node_access('view',$node)){
+            if (!node_access('view', $node)) {
                 unset($view->result[$key]);
             }
         }
     }
 }
-
 
 

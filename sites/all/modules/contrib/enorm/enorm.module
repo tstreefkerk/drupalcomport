@@ -97,7 +97,6 @@ function enorm_get_teamleader_data_current_projects()
 
 function enorm_form_user_register_form_alter(&$form, &$form_state, $form_id)
 {
-    dpm($form);
     $form['account']['roles'][3]['#access'] = FALSE;
     $form['account']['roles'][4]['#access'] = FALSE;
     $current_path = current_path();
@@ -116,39 +115,58 @@ function enorm_form_user_register_form_alter(&$form, &$form_state, $form_id)
  * Custom and global functions
  */
 
-/*
- * Custom function that gets invoked when a user tries to view a node (Drive Link type) and checks whether they're allowed to access node
- */
-
 /**
  * Implements hook_node_access().
  */
 function enorm_node_access($node, $op, $account)
 {
-    $role_keys = array_keys($account->roles);
-    if (in_array('4', $role_keys)) {
-        $profile2 = profile2_load_by_user($account->uid);
-        $profile_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
-        if (!is_string($node)) {
-            $node_group_id = $node->field_drive_link_customer['und'][0]['target_id'];
-        };
-        if ($op == "view") {
-            $access_value = $node->field_drive_link_visibility['und'];
-            $access_value_clean = array();
-            foreach ($access_value as $key => $value) {
-                array_push($access_value_clean, $value['value']);
-            }
-            $result = array_intersect($role_keys, $access_value_clean);
-            if (!empty($result) && $profile_group_id === $node_group_id) {
-                return NODE_ACCESS_ALLOW;
+    if (!is_string($node)) {
+        if ($node->type === 'content_type_project') {
+            $role_keys = array_keys($account->roles);
+            if (in_array('4', $role_keys)) {
+                $profile2 = profile2_load_by_user($account->uid);
+                $profile_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
+                if ($op == "view") {
+                    $access_value = $node->field_project_customer['und'][0]['target_id'];
+                    if ($profile_group_id === $access_value) {
+                        return NODE_ACCESS_ALLOW;
+                    } else {
+                        return NODE_ACCESS_DENY;
+                    }
+                } else {
+                    return NODE_ACCESS_IGNORE;
+                }
             } else {
-                return NODE_ACCESS_DENY;
+                return NODE_ACCESS_IGNORE;
             }
-        } else {
-            return NODE_ACCESS_IGNORE;
         }
-    } else {
-        return NODE_ACCESS_IGNORE;
+        elseif($node->type === 'drive_link') {
+            $role_keys = array_keys($account->roles);
+            if (in_array('4', $role_keys)) {
+                $profile2 = profile2_load_by_user($account->uid);
+                $profile_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
+                if (!is_string($node)) {
+                    $node_group_id = $node->field_drive_link_customer['und'][0]['target_id'];
+                };
+                if ($op == "view") {
+                    $access_value = $node->field_drive_link_visibility['und'];
+                    $access_value_clean = array();
+                    foreach ($access_value as $key => $value) {
+                        array_push($access_value_clean, $value['value']);
+                    }
+                    $result = array_intersect($role_keys, $access_value_clean);
+                    if (!empty($result) && $profile_group_id === $node_group_id) {
+                        return NODE_ACCESS_ALLOW;
+                    } else {
+                        return NODE_ACCESS_DENY;
+                    }
+                } else {
+                    return NODE_ACCESS_IGNORE;
+                }
+            } else {
+                return NODE_ACCESS_IGNORE;
+            }
+        }
     }
 }
 
@@ -159,12 +177,12 @@ function enorm_views_pre_render(&$view)
         $profile2 = profile2_load_by_user($user->uid);
         $customer_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
         foreach ($view->result as $key => $result) {
-            if($result->field_field_group_project_customer[0]['raw']['target_id'] != $customer_group_id) {
+            if ($result->field_field_group_project_customer[0]['raw']['target_id'] != $customer_group_id) {
                 unset($view->result[$key]);
             }
         }
     }
-    if ($view->name == 'views_customer_my_files') {
+    if ($view->name == 'views_customer_my_files' || $view->name == 'view_all_projects_nodes') {
         foreach ($view->result as $key => $result) {
             $node = node_load($result->nid);
             if (!node_access('view', $node)) {

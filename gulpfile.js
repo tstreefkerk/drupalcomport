@@ -10,14 +10,14 @@ function style() {
     // (If you want to use scss files, simply look for *.scss files instead)
     return (
         gulp
-            .src("sites/all/themes/comport/sass/style.scss")
+            .src("sites/all/themes/enorm/sass/style.scss")
 
             // Use sass with the files found, and log any errors
             .pipe(sass())
             .on("error", sass.logError)
 
             // What is the destination for the compiled file?
-            .pipe(gulp.dest("sites/all/themes/comport/css"))
+            .pipe(gulp.dest("sites/all/themes/enorm/css"))
     );
 }
 
@@ -29,7 +29,7 @@ exports.style = style;
 function watch(){
     // gulp.watch takes in the location of the files to watch for changes
     // and the name of the function we want to run on change
-    gulp.watch('sites/all/themes/comport/sass/style.scss', style)
+    gulp.watch('sites/all/themes/enorm/sass/style.scss', style)
 }
 
 // Don't forget to expose the task!

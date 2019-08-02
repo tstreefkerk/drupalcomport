@@ -1,0 +1,134 @@
+// Menu bar styling
+
+.main-container {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.page-header {
+  color: $primaryColorRed;
+}
+
+#navbar {
+  display: none;
+}
+
+.region-sidebar-first {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100%;
+  min-width: 15vw;
+  background-color: $primaryColorDarkGrey;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+#block-menu-menu-menu-vertical {
+  background-color: $primaryColorDarkGrey;
+  width: 100%;
+}
+
+#block-system-powered-by {
+  display: none;
+}
+
+.nav a {
+  color: $primaryColorWhite;
+
+  &:hover {
+    color: $primaryColorRed;
+    background-color: $primaryColorLightGrey !important;
+  }
+
+  &:active {
+    background-color: $primaryColorLightGrey;
+    color: $primaryColorRed;
+  }
+}
+
+//search form
+
+@media screen and (max-height: 909px) {
+
+  #block-search-form {
+    width: 100vw - 15vw;
+    height: 8vh;
+    position: relative;
+    top: 0;
+    left: 15vw;
+    background-color: $primaryColorDarkGrey;
+  }
+
+  .content-search {
+    background-color: $primaryColorBlack;
+    min-height: 20px;
+    border-radius: 0;
+  }
+
+  .content-search > div {
+    height: 4vh;
+  }
+
+  .content-search .input-group {
+    background-color: #3F3F3F;
+    border-radius: 0;
+    border: 0;
+    width: 50%;
+    margin-left: 5vw;
+    margin-top: 1.3vh;
+  }
+
+  .content-search input {
+    background-color: #3F3F3F;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .content-search .input-group-btn {
+    margin-top: 2.5vh;
+  }
+}
+
+@media screen and (min-height: 909px) {
+
+  #block-search-form {
+    width: 100vw - 15vw;
+    height: 5vh;
+    position: relative;
+    top: 0;
+    left: 15vw;
+    background-color: $primaryColorDarkGrey;
+  }
+
+  .content-search {
+    background-color: $primaryColorBlack;
+    min-height: 20px;
+    border-radius: 0;
+  }
+
+  .content-search > div {
+    height: 4vh;
+  }
+
+  .content-search .input-group {
+    background-color: $primaryColorLightGrey;
+    border-radius: 0;
+    border: 0;
+    width: 50%;
+    margin-left: 5vw;
+    margin-top: 0.5vh;
+  }
+
+  .content-search input {
+    background-color: #3F3F3F;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .content-search .input-group-btn {
+    margin-top: 2.5vh;
+  }
+}

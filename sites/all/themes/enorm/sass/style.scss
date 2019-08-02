@@ -5,46 +5,8 @@ body {
   background-color: $primaryColorWhite;
 }
 
-// Menu bar styling
-.page-header, .block-title {
-  color: $primaryColorRed;
-}
-
-#navbar {
-  min-width: 100%;
-  display: inline-block;
-  border: none;
-  margin-top: 0;
-  margin-left:0;
-  background-color: $primaryColorDarkGrey;
-  border-radius: 0;
-}
-
-.navbar-btn > img {
-  width: 32px;
-  height: auto;
-}
-
-.navbar-default .navbar-nav > .active > a {
-  background-color: $primaryColorWhite;
-  color: $primaryColorRed;
-}
-
-.navbar-default .navbar-nav > li > a {
-  color: $primaryColorWhite;
-}
-
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-  color: $primaryColorDarkGrey;
-  background-color: $primaryColorWhite;
-}
-
-#block-system-powered-by {
+.hidden {
   display: none;
-}
-
-.navbar-brand {
-  color: $primaryColorWhite !important;
 }
 
 // Front page styling
@@ -53,26 +15,51 @@ body {
   margin-top: 10px;
 }
 
-.front .region-content section:nth-child(1) {
-  max-width: 33%;
-  min-width: 33%;
-  background-color: black;
+@mixin frontpage-block {
+  min-height: 70vh;
+  max-width: 30%;
+  min-width: 30%;
   display: inline-block;
+  float: left;
+  margin: $gutterMargin;
+  padding: $gutterPadding;
+  background-image: url('../assets/img/card-background.png');
+  background-size: cover;
+  text-align: center;
+}
 
+.front .region-content section:nth-child(1) {
+  @include frontpage-block;
 }
 
 .front .region-content section:nth-child(2) {
-  min-width: 33%;
-  max-width: 33%;
-  background-color: red;
-  display: inline-block;
-  margin: 0 auto;
+  @include frontpage-block;
 }
 
 .front .region-content section:nth-child(3) {
-  max-width: 33%;
-  background-color: green;
-  display: inline-block;
-  float: left;
+  @include frontpage-block;
 }
 
+#block-views-recently-read-block {
+  padding: 0;
+}
+
+.block-title, .view-recently-read h2, .view-recently-read span, .view-recently-read .view-header {
+  color: $primaryColorWhite;
+}
+
+.view-recently-read {
+  width: 100%;
+  background-color: rgba(113,113,113,0.5);
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin-top: 50%;
+
+  .view-header {
+    font-size: $font-size-big;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

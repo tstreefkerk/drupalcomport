@@ -1,0 +1,89 @@
+--- lightbox2-orig/lightbox2_handler_field_lightbox2.inc	2013-09-07 09:09:13.413893134 -0400
++++ lightbox2/lightbox2_handler_field_lightbox2.inc	2013-09-07 09:21:34.001912967 -0400
+@@ -30,14 +30,46 @@
+ 
+     $fields = array('trigger_field' => t('<None>'));
+     foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
++      // Borrowed from colorbox module.
++      $options[t('Fields')]["[$field]"] = $handler->ui_name();
+       // We only use fields up to this one.  Obviously we can't use this handler
+       // as the trigger handler.
+       if ($field == $this->options['id']) {
+         break;
+       }
+-
+       $fields[$field] = $handler->definition['title'];
+     }
++   // Borrowed from colorbox module.
++   $count = 0; // This lets us prepare the key as we want it printed.
++    foreach ($this->view->display_handler->get_handlers('argument') as $arg => $handler) {
++      $options[t('Arguments')]['%' . ++$count] = t('@argument title', array('@argument' => $handler->ui_name()));
++      $options[t('Arguments')]['!' . $count] = t('@argument input', array('@argument' => $handler->ui_name()));
++    }
++
++
++    $this->document_self_tokens($options[t('Fields')]);
++    
++    // Borrowed from colorbox module.
++    // Default text.
++    $patterns = t('<p>You must add some additional fields to this display before using this field. These fields may be marked as <em>Exclude from display</em> if you prefer. Note that due to rendering order, you cannot use fields that come after this field; if you need a field not listed here, rearrange your fields.</p>');
++    // We have some options, so make a list.
++    if (!empty($options)) {
++      $patterns = t('<p>The following tokens are available for this field. Note that due to rendering order, you cannot use fields that come after this field; if you need a field not listed here, rearrange your fields.
++If you would like to have the characters %5B and %5D please use the html entity codes \'%5B\' or  \'%5D\' or they will get replaced with empty space.</p>');
++      foreach (array_keys($options) as $type) {
++        if (!empty($options[$type])) {
++          $items = array();
++          foreach ($options[$type] as $key => $value) {
++            $items[] = $key . ' == ' . $value;
++          }
++          $patterns .= theme('item_list',
++            array(
++              'items' => $items,
++              'type' => $type
++            ));
++        }
++      }
++    }
+ 
+     $form['trigger_field'] = array(
+       '#type' => 'select',
+@@ -95,7 +127,14 @@
+       '#default_value' => $this->options['width'],
+       '#weight' => -6,
+     );
+-
++   
++   $form['patterns'] = array(
++      '#type' => 'fieldset',
++      '#title' => t('Replacement patterns'),
++      '#collapsible' => TRUE,
++      '#collapsed' => TRUE,
++      '#value' => $patterns,
++    );
+ 
+ 
+     // Remove the checkboxs and other irrelevant controls.
+@@ -137,13 +176,19 @@
+       $caption = strtr($caption, $tokens);
+ 
+       $i++;
+-
+       // The outside div is there to hide all of the divs because if the specific lightbox
+       // div is hidden it won't show up as a lightbox.  We also specify a group
+       // in the rel attribute in order to link the whole View together for paging.
++
++      // HACK: get source from popup.
++
++      $y = preg_match('/< *img[^>]*src *= *["\']?([^"\']*)/i', $popup, $matches);
++      
++      $imgsrc = $matches[1];
++
+       $group_name = !empty($this->options['custom_group']) ? $this->options['custom_group'] : ($this->options['rel_group'] ? 'lightbox-popup-' . $this->view->name . '-' . implode('/', $this->view->args) : '');
+-      return "<a href='$link #lightbox-popup-{$i}'  rel='lightmodal[{$group_name}|width:" . ($this->options['width'] ? $this->options['width'] : '600px') . ';height:' . ($this->options['height'] ? $this->options['height'] : '600px') . "][" . $caption . "]'>" . $tokens["[{$this->options['trigger_field']}]"] . "</a>
+-                <div style='display: none;'><div id='lightbox-popup-{$i}' class='lightbox-popup'>$popup</div></div>";
++      return "<a href='$imgsrc'  rel='lightbox[{$group_name}|width:" . ($this->options['width'] ? $this->options['width'] : '600px') . ';height:' . ($this->options['height'] ? $this->options['height'] : '600px') . "][" . $caption . "]'>" . $tokens["[{$this->options['trigger_field']}]"] . "</a>";
++                //<div style='display: none;'><div id='lightbox-popup-{$i}' class='lightbox-popup'>$popup</div></div>";
+     }
+     else {
+       return;

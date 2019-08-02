@@ -3,6 +3,12 @@ description = 'Enorm subtheme based on Bootstrap.'
 core = 7.x
 base theme = bootstrap
 
+;;;;;;;;;;;;;;;;;;;;;
+;; Regions
+;;;;;;;;;;;;;;;;;;;;;
+settings[toggle_main_menu] = 0
+settings[toggle_secondary_menu] = 0
+
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Regions
@@ -25,3 +31,10 @@ regions[page_bottom]    = 'Page bottom'
 ;;;;;;;;;;;;;;;;;;;;;
 
 stylesheets[all][] = css/style.css
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Javascript
+;;;;;;;;;;;;;;;;;;;;;
+
+scripts[] = js/index.js

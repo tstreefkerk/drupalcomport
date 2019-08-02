@@ -1,57 +1,155 @@
-body {
-  background-color: #FFFFFF; }
+.main-container {
+  margin-left: 0;
+  padding-left: 0; }
 
-.page-header, .block-title {
+.page-header {
   color: #CC0C00; }
 
 #navbar {
-  min-width: 100%;
-  display: inline-block;
-  border: none;
-  margin-top: 0;
-  margin-left: 0;
+  display: none; }
+
+.region-sidebar-first {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100%;
+  min-width: 15vw;
   background-color: #2A2A2A;
-  border-radius: 0; }
+  border: 0;
+  border-radius: 0;
+  padding: 0; }
 
-.navbar-btn > img {
-  width: 32px;
-  height: auto; }
-
-.navbar-default .navbar-nav > .active > a {
-  background-color: #FFFFFF;
-  color: #CC0C00; }
-
-.navbar-default .navbar-nav > li > a {
-  color: #FFFFFF; }
-
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-  color: #2A2A2A;
-  background-color: #FFFFFF; }
+#block-menu-menu-menu-vertical {
+  background-color: #2A2A2A;
+  width: 100%; }
 
 #block-system-powered-by {
   display: none; }
 
-.navbar-brand {
-  color: #FFFFFF !important; }
+.nav a {
+  color: #FFFFFF; }
+  .nav a:hover {
+    color: #CC0C00;
+    background-color: #3F3F3F !important; }
+  .nav a:active {
+    background-color: #3F3F3F;
+    color: #CC0C00; }
+
+@media screen and (max-height: 909px) {
+  #block-search-form {
+    width: 85vw;
+    height: 8vh;
+    position: relative;
+    top: 0;
+    left: 15vw;
+    background-color: #2A2A2A; }
+  .content-search {
+    background-color: #2A2A2A;
+    min-height: 20px;
+    border-radius: 0; }
+  .content-search > div {
+    height: 4vh; }
+  .content-search .input-group {
+    background-color: #3F3F3F;
+    border-radius: 0;
+    border: 0;
+    width: 50%;
+    margin-left: 5vw;
+    margin-top: 1.3vh; }
+  .content-search input {
+    background-color: #3F3F3F;
+    border: 0;
+    border-radius: 0; }
+  .content-search .input-group-btn {
+    margin-top: 2.5vh; } }
+
+@media screen and (min-height: 909px) {
+  #block-search-form {
+    width: 85vw;
+    height: 5vh;
+    position: relative;
+    top: 0;
+    left: 15vw;
+    background-color: #2A2A2A; }
+  .content-search {
+    background-color: #2A2A2A;
+    min-height: 20px;
+    border-radius: 0; }
+  .content-search > div {
+    height: 4vh; }
+  .content-search .input-group {
+    background-color: #3F3F3F;
+    border-radius: 0;
+    border: 0;
+    width: 50%;
+    margin-left: 5vw;
+    margin-top: 0.5vh; }
+  .content-search input {
+    background-color: #3F3F3F;
+    border: 0;
+    border-radius: 0; }
+  .content-search .input-group-btn {
+    margin-top: 2.5vh; } }
+
+body {
+  background-color: #FFFFFF; }
+
+.hidden {
+  display: none; }
 
 .block .views-row {
   margin-top: 10px; }
 
 .front .region-content section:nth-child(1) {
-  max-width: 33%;
-  min-width: 33%;
-  background-color: black;
-  display: inline-block; }
+  min-height: 70vh;
+  max-width: 30%;
+  min-width: 30%;
+  display: inline-block;
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  background-image: url("../assets/img/card-background.png");
+  background-size: cover;
+  text-align: center; }
 
 .front .region-content section:nth-child(2) {
-  min-width: 33%;
-  max-width: 33%;
-  background-color: red;
+  min-height: 70vh;
+  max-width: 30%;
+  min-width: 30%;
   display: inline-block;
-  margin: 0 auto; }
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  background-image: url("../assets/img/card-background.png");
+  background-size: cover;
+  text-align: center; }
 
 .front .region-content section:nth-child(3) {
-  max-width: 33%;
-  background-color: green;
+  min-height: 70vh;
+  max-width: 30%;
+  min-width: 30%;
   display: inline-block;
-  float: left; }
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  background-image: url("../assets/img/card-background.png");
+  background-size: cover;
+  text-align: center; }
+
+#block-views-recently-read-block {
+  padding: 0; }
+
+.block-title, .view-recently-read h2, .view-recently-read span, .view-recently-read .view-header {
+  color: #FFFFFF; }
+
+.view-recently-read {
+  width: 100%;
+  background-color: rgba(113, 113, 113, 0.5);
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin-top: 50%; }
+  .view-recently-read .view-header {
+    font-size: 30px; }
+    .view-recently-read .view-header:hover {
+      cursor: pointer; }

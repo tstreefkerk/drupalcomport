@@ -13,6 +13,32 @@ function enorm_help($path, $arg)
     }
 }
 
+function enorm_block_info()
+{
+    $blocks['enorm'] = array(
+        'info' => t('Enorm Teamleader'),
+        'cache' => DRUPAL_CACHE_PER_ROLE,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function enorm_block_view($delta = '')
+{
+    $block = array();
+    switch ($delta) {
+        case 'enorm':
+            $block['subject'] = t('Enorm Teamleader');
+            $block['content'] = array(
+                '#markup' => enorm_get_teamleader_data_current_projects(),
+            );
+            break;
+    }
+    return $block;
+}
+
 
 /*
  * Teamleader Functions
@@ -64,35 +90,120 @@ function enorm_get_teamleader_data_user_id()
 
 }
 
+function enorm_search_teamleader_company_id()
+{
+    $operation = "companies.list";
+    $postfields = "{
+          \"filter\": {
+            \"term\": \"BK\"
+          },
+          \"page\": {
+            \"size\": 20,
+            \"number\": 1
+          },
+          \"sort\": [
+            {
+              \"field\": \"name\"
+            }
+          ]
+        }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    dpm($result);
+
+}
+
 /*
  * Implements custom function that gets invoked in block view
  */
 function enorm_get_teamleader_data_current_projects()
 {
+    $operation = "projects.list";
+    $postfields = "{
+      \"page\": {
+        \"size\": 100,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"due_on\",
+          \"order\": \"asc\"
+        }
+      ]
+    }";
+    $data = enorm_teamleader_call($operation, $postfields);
+
+    $results = count($data['data']) - 1;
+    $projectlist = array();
+
+    $i = 0;
+    while ($i <= $results) {
+        array_push($projectlist, $data['data'][$i]['title']);
+        $i++;
+    }
+
+    $var = implode("<br>", $projectlist);
+    $var = '<p>' . $var . '</p>';
+    return $var;
+}
+
+function enorm_teamleader_call($operation, $postfields)
+{
+    // Get token from Drupal variable
     $code = variable_get('teamleader_access_token');
     $accessToken = $code['access_token'];
-    $employee_id = enorm_get_teamleader_data_user_id();
-    $filters = array('');
 
-
-    /**
-     * Get the user identity information using the access token.
-     */
+    // Initialize curl handle
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://api.teamleader.eu/projects.list');
+
+    // Set params for curl
+    // @TODO URL is debug server, change when migrating to production
+    curl_setopt($ch, CURLOPT_URL, 'https://private-anon-2b86fb5b17-teamleadercrm.apiary-proxy.com/' . $operation);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "lol");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    // Postfields is a JSON object. Check API docs for syntax.
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
+    // Authorization and content type header
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $accessToken, 'Content-Type: application/json'));
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
     $response = curl_exec($ch);
+    curl_close($ch);
+
     $data = json_decode($response, true);
 
-    dpm($data);
+    return $data;
+}
+
+/**
+ * Implements hook_node_view_alter().
+ */
+function enorm_node_view_alter(&$build)
+{
+//    $code = variable_get('teamleader_access_token');
+//    $accessToken = $code['access_token'];
+//    $ch = curl_init();
+//    curl_setopt($ch, CURLOPT_URL, 'https://api.teamleader.eu/projects.info');
+//    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//    curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"id\": \"910537\"}");
+//    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+//    $response = curl_exec($ch);
+//    $data = json_decode($response, true);
+//    dpm($data);
+//    if ($build['#bundle'] === 'content_type_project') {
+//        dpm($build);
+//        $teamleader_id = $build['field_project_teamleader_id'][0]['#markup'];
+//        dpm($teamleader_id);
+//    }
+
+    if ($build['#node']->nid === "9") {
+        $arr = drupal_get_form('enorm_company_search_form');
+        print drupal_render($arr);
+    }
 
 }
 
 /*
- * Make admin role unavailable
+ * Make admin role unavailable. Customer role also unavailable from normal user form.
  */
 
 function enorm_form_user_register_form_alter(&$form, &$form_state, $form_id)
@@ -139,8 +250,7 @@ function enorm_node_access($node, $op, $account)
             } else {
                 return NODE_ACCESS_IGNORE;
             }
-        }
-        elseif($node->type === 'drive_link') {
+        } elseif ($node->type === 'drive_link') {
             $role_keys = array_keys($account->roles);
             if (in_array('4', $role_keys)) {
                 $profile2 = profile2_load_by_user($account->uid);
@@ -192,4 +302,38 @@ function enorm_views_pre_render(&$view)
     }
 }
 
+/**
+ * Implements hook_menu().
+ */
+function enorm_menu()
+{
+    $menu['company-search'] = array
+    (
+        'title' => 'Search for Company ID',
+        'page callback' => 'my_page_callback',
+        'access callback' => TRUE,
+    );
+    return $menu;
+}
 
+function enorm_company_search_callback()
+{
+    $page = array
+    (
+        'header' => array
+        (
+            '#prefix' => '<h2>',
+            '#suffix' => '</h2>',
+            '#markup' => t('Page Header'),
+        ),
+        'form' => drupal_get_form('enorm_company_search_form'),
+        'footer' => array
+        (
+            '#prefix' => '<div id="my_page_footer">',
+            '#suffix' => '</div>',
+            '#markup' => t('My page footer'),
+        ),
+    );
+
+    return $page;
+}

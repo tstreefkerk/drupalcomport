@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Contains install and update functions for npop module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function npop_uninstall() {
+  // Delete variables.
+  variable_del('npop_change_url');
+}
+
+/**
+ * Implements hook_install().
+ */
+function npop_install() {
+  db_update('system')
+    ->fields(array('weight' => -1))
+    ->condition('name', 'npop', '=')
+    ->execute();
+}
+
+/**
+ * Change module weight.
+ */
+function npop_update_7001() {
+  // Update the npop module weight, for correct altering ds fields.
+  db_update('system')
+    ->fields(array('weight' => -1))
+    ->condition('name', 'npop', '=')
+    ->execute();
+}
+
+/**
+ * Change url variables update.
+ */
+function npop_update_7002() {
+  // Set npop_change_urls variable values to 1 when npop_change_url is 1.
+  $npop_change_url = variable_get('npop_change_url', 1);
+  if ($npop_change_url) {
+    $node_types = node_type_get_names();
+    variable_set('npop_change_urls', array_keys($node_types));
+  }
+  // Delete npop_change_url variable.
+  variable_del('npop_change_url');
+}

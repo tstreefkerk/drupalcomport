@@ -1,0 +1,13 @@
+name  = Node popup module
+description = Allow to view nodes on popup window
+core = 7.x
+
+files[] = views/npop_handler_field_npop.inc
+files[] = views/npop_handler_field_npop_link.inc
+
+; Information added by Drupal.org packaging script on 2017-11-27
+version = "7.x-1.4"
+core = "7.x"
+project = "npop"
+datestamp = "1511770687"
+

@@ -1,0 +1,97 @@
+// Front page styling
+
+.block .views-row {
+  margin-top: 10px;
+}
+
+@mixin frontpage-block {
+  min-height: 70vh;
+  max-width: 30%;
+  min-width: 30%;
+  display: inline-block;
+  float: left;
+  margin: $gutterMargin;
+  padding: $gutterPadding;
+  background-image: url('../assets/img/card-background.png');
+  background-size: cover;
+  text-align: center;
+}
+
+.front .region-content section:nth-child(1) {
+  @include frontpage-block;
+}
+
+.front .region-content section:nth-child(2) {
+  @include frontpage-block;
+}
+
+.front .region-content section:nth-child(3) {
+  @include frontpage-block;
+}
+
+#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1 {
+  padding: 0;
+}
+
+.block-title, .view-recently-read h2, .view-recently-read span, .view-recently-read .view-header {
+  color: $primaryColorWhite;
+}
+
+.block-title {
+  padding: 1vw;
+}
+
+#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1 {
+
+  .view-recently-read, .view-view-all-projects-nodes {
+    width: 100%;
+    height: auto;
+    margin-top: 10%;
+
+    .view-header {
+      padding: 1vw;
+      position: relative;
+      width: 100%;
+      z-index: 99;
+      font-size: $font-size-medium;
+      background-color: rgba(113, 113, 113, 0.5);
+      color: $primaryColorWhite;
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none;
+      /* Non-prefixed version, currently
+                                       supported by Chrome and Opera */
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .view-content {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(113, 113, 113, 0.5);
+      padding-top: 1vh;
+      padding-bottom: 1vh;
+    }
+
+    p, a {
+      color: $primaryColorWhite;
+    }
+
+    a {
+      text-decoration: underline;
+
+      &:hover {
+        color: $primaryColorDarkGrey;
+      }
+    }
+
+    span {
+      font-size: $font-size-normal;
+    }
+  }
+}

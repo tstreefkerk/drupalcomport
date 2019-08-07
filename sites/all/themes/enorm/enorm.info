@@ -31,7 +31,7 @@ regions[page_bottom]    = 'Page bottom'
 ;;;;;;;;;;;;;;;;;;;;;
 
 stylesheets[all][] = css/style.css
-
+stylesheets[all][] = css/magic.min.css
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Javascript

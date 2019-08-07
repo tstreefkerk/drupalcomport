@@ -10,11 +10,11 @@
 
 .region-sidebar-first {
   text-align: center;
+  min-width: 10vw;
   position: fixed;
   top: 0;
   left: 0;
   min-height: 100%;
-  min-width: 15vw;
   background-color: #2A2A2A;
   border: 0;
   border-radius: 0;
@@ -38,11 +38,11 @@
 
 @media screen and (max-height: 909px) {
   #block-search-form {
-    width: 85vw;
+    width: 90vw;
     height: 8vh;
-    position: relative;
+    position: absolute;
     top: 0;
-    left: 15vw;
+    left: 11vw;
     background-color: #2A2A2A; }
   .content-search {
     background-color: #2A2A2A;
@@ -66,11 +66,11 @@
 
 @media screen and (min-height: 909px) {
   #block-search-form {
-    width: 85vw;
+    width: 90vw;
     height: 5vh;
-    position: relative;
+    position: absolute;
     top: 0;
-    left: 15vw;
+    left: 10vw;
     background-color: #2A2A2A; }
   .content-search {
     background-color: #2A2A2A;
@@ -92,11 +92,18 @@
   .content-search .input-group-btn {
     margin-top: 2.5vh; } }
 
-body {
-  background-color: #FFFFFF; }
+footer {
+  border: 0 !important; }
 
-.hidden {
-  display: none; }
+.hero-image {
+  width: 50%;
+  height: auto; }
+
+.nav li:nth-child(1) {
+  margin-top: 2vh; }
+
+.nav li:nth-child(2) {
+  margin-top: 10vh; }
 
 .block .views-row {
   margin-top: 10px; }
@@ -137,19 +144,73 @@ body {
   background-size: cover;
   text-align: center; }
 
-#block-views-recently-read-block {
+#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1 {
   padding: 0; }
 
 .block-title, .view-recently-read h2, .view-recently-read span, .view-recently-read .view-header {
   color: #FFFFFF; }
 
-.view-recently-read {
+.block-title {
+  padding: 1vw; }
+
+#block-views-recently-read-block .view-recently-read, #block-views-recently-read-block .view-view-all-projects-nodes, #block-views-view-all-projects-nodes-block-1 .view-recently-read, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes {
   width: 100%;
-  background-color: rgba(113, 113, 113, 0.5);
-  padding-top: 1vh;
-  padding-bottom: 1vh;
-  margin-top: 50%; }
-  .view-recently-read .view-header {
-    font-size: 30px; }
-    .view-recently-read .view-header:hover {
+  height: auto;
+  margin-top: 10%; }
+  #block-views-recently-read-block .view-recently-read .view-header, #block-views-recently-read-block .view-view-all-projects-nodes .view-header, #block-views-view-all-projects-nodes-block-1 .view-recently-read .view-header, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes .view-header {
+    padding: 1vw;
+    position: relative;
+    width: 100%;
+    z-index: 99;
+    font-size: 25px;
+    background-color: rgba(113, 113, 113, 0.5);
+    color: #FFFFFF;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                       supported by Chrome and Opera */ }
+    #block-views-recently-read-block .view-recently-read .view-header:hover, #block-views-recently-read-block .view-view-all-projects-nodes .view-header:hover, #block-views-view-all-projects-nodes-block-1 .view-recently-read .view-header:hover, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes .view-header:hover {
       cursor: pointer; }
+  #block-views-recently-read-block .view-recently-read .view-content, #block-views-recently-read-block .view-view-all-projects-nodes .view-content, #block-views-view-all-projects-nodes-block-1 .view-recently-read .view-content, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes .view-content {
+    position: relative;
+    z-index: 1;
+    background-color: rgba(113, 113, 113, 0.5);
+    padding-top: 1vh;
+    padding-bottom: 1vh; }
+  #block-views-recently-read-block .view-recently-read p, #block-views-recently-read-block .view-recently-read a, #block-views-recently-read-block .view-view-all-projects-nodes p, #block-views-recently-read-block .view-view-all-projects-nodes a, #block-views-view-all-projects-nodes-block-1 .view-recently-read p, #block-views-view-all-projects-nodes-block-1 .view-recently-read a, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes p, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes a {
+    color: #FFFFFF; }
+  #block-views-recently-read-block .view-recently-read a, #block-views-recently-read-block .view-view-all-projects-nodes a, #block-views-view-all-projects-nodes-block-1 .view-recently-read a, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes a {
+    text-decoration: underline; }
+    #block-views-recently-read-block .view-recently-read a:hover, #block-views-recently-read-block .view-view-all-projects-nodes a:hover, #block-views-view-all-projects-nodes-block-1 .view-recently-read a:hover, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes a:hover {
+      color: #2A2A2A; }
+  #block-views-recently-read-block .view-recently-read span, #block-views-recently-read-block .view-view-all-projects-nodes span, #block-views-view-all-projects-nodes-block-1 .view-recently-read span, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes span {
+    font-size: 20px; }
+
+body {
+  background-color: #FFFFFF; }
+
+.main-container {
+  margin: 0 auto; }
+
+.front .col-sm-9 {
+  margin: 0 auto; }
+
+.row {
+  position: relative;
+  top: 15vh;
+  margin-left: 10vw; }
+
+.notVisible {
+  visibility: hidden; }
+
+.col-sm-9 {
+  margin: 0 auto; }

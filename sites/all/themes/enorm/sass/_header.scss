@@ -15,11 +15,11 @@
 
 .region-sidebar-first {
   text-align: center;
+  min-width: 10vw;
   position: fixed;
   top: 0;
   left: 0;
   min-height: 100%;
-  min-width: 15vw;
   background-color: $primaryColorDarkGrey;
   border: 0;
   border-radius: 0;
@@ -54,11 +54,11 @@
 @media screen and (max-height: 909px) {
 
   #block-search-form {
-    width: 100vw - 15vw;
+    width: 90vw;
     height: 8vh;
-    position: relative;
+    position: absolute;
     top: 0;
-    left: 15vw;
+    left: 11vw;
     background-color: $primaryColorDarkGrey;
   }
 
@@ -95,11 +95,11 @@
 @media screen and (min-height: 909px) {
 
   #block-search-form {
-    width: 100vw - 15vw;
+    width: 90vw;
     height: 5vh;
-    position: relative;
+    position: absolute;
     top: 0;
-    left: 15vw;
+    left: 10vw;
     background-color: $primaryColorDarkGrey;
   }
 
@@ -131,4 +131,21 @@
   .content-search .input-group-btn {
     margin-top: 2.5vh;
   }
+}
+
+footer {
+  border: 0 !important;
+}
+
+.hero-image {
+  width: 50%;
+  height: auto;
+}
+
+.nav li:nth-child(1) {
+  margin-top: 2vh;
+}
+
+.nav li:nth-child(2) {
+  margin-top: 10vh;
 }

@@ -1,0 +1,499 @@
+<?php
+
+/**
+ * @file
+ * Create popup nodes with ajax and Drupal core functionality.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function npop_permission() {
+  return array(
+    'administer npop' => array(
+      'title' => t('Administer node popup settings'),
+      'description' => t('Perform administration tasks for node popup.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function npop_menu() {
+  $items['ajax/npop/node/%node/load/%'] = array(
+    'title' => 'Get node',
+    'page callback' => 'npop_ajax_load_node',
+    'page arguments' => array(3, 5),
+    'delivery callback' => 'ajax_deliver',
+    'access arguments' => array('access content'),
+  );
+  $items['ajax/npop/close'] = array(
+    'title' => 'Close',
+    'page callback' => 'npop_ajax_close_npop',
+    'delivery callback' => 'ajax_deliver',
+    'access arguments' => array('access content'),
+  );
+  // Settings pages.
+  $items['admin/config/content/npop'] = array(
+    'title' => 'Node popup settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('npop_admin_settings_form'),
+    'access arguments' => array('administer npop'),
+    'file' => 'npop.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Ajax node loading callback.
+ *
+ * @param object $node
+ *   Node or false if url is incorrect.
+ * @param string $mode
+ *   Query mode by default "nojs" automatically convert to "ajax" when core
+ *   ajax.js is attached to project.
+ *
+ * @return array
+ *   Ajax interface commands for showing loaded node.
+ */
+function npop_ajax_load_node($node, $mode) {
+  $commands = array();
+  // Check if $node is loaded correctly.
+  if (!$node) {
+    // Set watchdog message.
+    watchdog('npop', 'The link is not correct', array(), WATCHDOG_WARNING);
+
+    // If page is called without js show 404 not found page.
+    if ($mode == 'nojs') {
+      drupal_not_found();
+      drupal_exit();
+    }
+    else {
+      // Alert about incorrect link.
+      $commands[] = ajax_command_alert(t('The link is not correct'));
+      return array('#type' => 'ajax', '#commands' => $commands);
+    }
+  }
+  // Generate ajax commands for showing loaded node.
+  $nid = $node->nid;
+
+  // If page is called without js command, then redirect to node page.
+  if ($mode == 'nojs') {
+    drupal_goto('node/' . $nid);
+  }
+  $classes = array(
+    'npop-content',
+    'npop-nid-' . $node->nid,
+  );
+
+  // Load selected animation class name and apply it.
+  $animations_class_name = variable_get('npop_animations');
+  if ($animations_class_name) {
+    $classes[] = 'animated';
+    $classes[] = $animations_class_name;
+  }
+  $view['overlay']['#markup'] = '<div class="npop-overlay"></div>';
+  $view['node']['content'] = node_view($node, 'npop_ajax');
+
+  $view['node']['#prefix'] = '<div class="' . implode(" ", $classes) . '">';
+  $view['node']['#suffix'] = '</div>';
+
+  // Generate parent url link for History API.
+  // @todo - find another way for this feature.
+  $url = url('node/' . $nid);
+  $query = drupal_get_query_parameters();
+  if (isset($query['parent'])) {
+    $url_parent = check_plain($query['parent']);
+    unset($_GET['parent']);
+  }
+  else {
+    $url_parts = explode('/', $url);
+    array_pop($url_parts);
+    $url_parent = implode('/', $url_parts);
+  }
+
+  // Close button options.
+  $close_btn_options = array(
+    'html' => TRUE,
+    'attributes' => array(
+      'class' => array(
+        'use-ajax',
+        'npop-close-btn',
+        'icons',
+      ),
+    ),
+    'query' => array(
+      'url' => $url_parent,
+      'id' => $nid,
+    ),
+  );
+
+  // Check overrided close link text.
+  if (variable_get('npop_close_override', FALSE)) {
+    $close_link_text = variable_get('npop_close_override_text');
+  }
+  else {
+    $close_link_text = t('Close', array(), array('context' => 'npop'));
+  }
+
+  $view['node']['closebtn'] = array(
+    '#theme' => 'link',
+    '#text' => '<span class="npop-close-text">' . $close_link_text . '</span>',
+    '#path' => 'ajax/npop/close',
+    '#options' => $close_btn_options,
+  );
+
+  $wrapper_attributes = array(
+    'id' => 'npop-' . $nid,
+    'class' => array('npop', 'npop-node-type-' . $node->type),
+  );
+  $view['#prefix'] = '<div' . drupal_attributes($wrapper_attributes) . '>';
+  $view['#suffix'] = '</div>';
+
+  // Allow other modules to alter view data.
+  drupal_alter('npop_view_data', $view, $node);
+
+  $commands[] = ajax_command_append('body', render($view));
+  $commands[] = ajax_command_invoke('body', 'addClass', array('npop-over'));
+
+  if (npop_check_change_url($node->type)) {
+    $commands[] = array(
+      'command' => 'npop_change_url',
+      'url' => $url,
+    );
+  }
+  // Add an ability to alter commands before executing them.
+  drupal_alter('npop_ajax', $commands, $node);
+  drupal_add_css(drupal_get_path('module', 'npop') . '/css/npop.css');
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Close button callback function.
+ *
+ * @return array
+ *   Commands of ajax interface.
+ */
+function npop_ajax_close_npop() {
+  $query = drupal_get_query_parameters();
+
+  // Check url GET parameter for changing back page url.
+  $url = empty($query['url']) ? '/' : check_plain($query['url']);
+
+  // Check ID GET parameter for closing on of the multiple opened popup nodes.
+  $id = empty($query['id']) ? 0 : $query['id'];
+
+  if ($id) {
+    $selector = '#npop-' . $id;
+    $node = node_load($id);
+    $has_change_url = npop_check_change_url($node->type);
+  }
+  else {
+    $selector = '.npop';
+    $has_change_url = isset($query['url']);
+  }
+  $commands = array();
+  if ($has_change_url) {
+    $commands[] = array(
+      'command' => 'npop_change_url',
+      'url' => $url,
+    );
+  }
+  $commands[] = ajax_command_invoke('body', 'removeClass', array('npop-over'));
+  $commands[] = ajax_command_remove($selector);
+
+  // Allow other modules alter commands on closing window.
+  drupal_alter('npop_ajax_close', $commands);
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function npop_page_build(&$page) {
+  // Add core ajax script and npop.js script on each page.
+  // @todo set conditions for adding script.
+  $animations = variable_get('npop_animations');
+  if ($animations !== 'no_animate') {
+    $page['content']['#attached']['css'][] = drupal_get_path('module', 'npop') . '/css/animations.css';
+  }
+
+  $close_by_overlay_click = (bool) variable_get('npop_overlay_close', 1);
+  $page['content']['#attached']['js'][] = array(
+    'type' => 'setting',
+    'data' => array('npop_overlay_close' => $close_by_overlay_click),
+  );
+  $page['content']['#attached']['js'][] = drupal_get_path('module', 'npop') . '/js/npop.js';
+  $page['content']['#attached']['js'][] = drupal_get_path('module', 'npop') . '/js/npop-ajax.js';
+  $page['content']['#attached']['library'][] = array('system', 'drupal.ajax');
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function npop_entity_info_alter(&$entity_info) {
+
+  // Create view mode for ajax view nodes.
+  $entity_info['node']['view modes']['npop_ajax'] = array(
+    'label' => t('Ajax view'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function npop_preprocess_node(&$variables) {
+  if ($variables['view_mode'] == 'npop_ajax') {
+    // Create suggestions for node--npop_ajax.tpl.php template.
+    $variables['theme_hook_suggestions'][] = 'node__npop_ajax';
+
+    // Create suggestions for node--NODE-TYPE--npop_ajax.tpl.php template.
+    $variables['theme_hook_suggestions'][] = 'node__' . $variables['type'] . '__npop_ajax';
+  }
+}
+
+/**
+ * Generate and return link, that open node in popup window.
+ *
+ * @param string $title
+ *   Link title.
+ * @param int $nid
+ *   ID of node which must opened in popup window.
+ * @param array $options
+ *   (optional) An associative array of additional URL options to pass to url().
+ *
+ * @return string
+ *   html link generated from params.
+ */
+function npop_create_link($title, $nid, array $options = array()) {
+  $options['attributes']['data-npop'] = $nid;
+  $parent = request_path();
+  if ($parent) {
+    $options['query']['parent'] = $parent;
+  }
+  return l($title, 'node/' . $nid, $options);
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function npop_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'npop') . '/views',
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function npop_field_formatter_info() {
+  $info = array(
+    'npop_image_link' => array(
+      'label' => t('Link use npop'),
+      'field types' => array('image'),
+      'description' => t('Link to node using npop module.'),
+      'settings' => array(
+        'image_style' => '',
+      ),
+    ),
+  );
+  return $info;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function npop_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $image_styles = image_style_options(FALSE, PASS_THROUGH);
+  $element['image_style'] = array(
+    '#title' => t('Image style'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_style'],
+    '#empty_option' => t('None (original image)'),
+    '#options' => $image_styles,
+  );
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function npop_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = '';
+
+  $image_styles = image_style_options(FALSE, PASS_THROUGH);
+  // Unset possible 'No defined styles' option.
+  unset($image_styles['']);
+  // Styles could be lost because of enabled/disabled modules that defines
+  // their styles in code.
+  if (isset($image_styles[$settings['image_style']])) {
+    $summary = t('Image style: @style', array('@style' => $image_styles[$settings['image_style']]));
+  }
+  else {
+    $summary = t('Original image');
+  }
+  return $summary;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function npop_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  foreach ($items as $delta => $item) {
+    if ($entity_type == 'node') {
+      $uri = array(
+        'path' => 'node/' . $entity->nid,
+        'options' => array(
+          'attributes' => array(
+            'data-npop' => $entity->nid,
+          ),
+        ),
+      );
+      if (!drupal_is_front_page() && npop_check_change_url($entity->type)) {
+        $uri['options']['query']['parent'] = '/' . request_path();
+      }
+    }
+    else {
+      $uri = entity_uri($entity_type, $entity);
+    }
+    $element[$delta] = array(
+      '#theme' => 'image_formatter',
+      '#item' => $item,
+      '#image_style' => $display['settings']['image_style'],
+      '#path' => isset($uri) ? $uri : '',
+    );
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_ds_fields_info_alter().
+ */
+function npop_ds_fields_info_alter(&$fields, $entity_type) {
+  if (isset($fields['title'])) {
+    $fields['title']['properties']['settings']['npop'] = array(
+      'type' => 'select',
+      'options' => array('No', 'Yes'),
+    );
+    $fields['title']['properties']['default']['npop'] = 0;
+    $fields['title']['function'] = 'npop_ds_render_field';
+  }
+}
+
+/**
+ * Placeholder for ds_render_field(), processing ds title links by npop.
+ *
+ * @param object $field
+ *   Field which need to render.
+ *
+ * @return string
+ *   rendered field html code.
+ */
+function npop_ds_render_field($field) {
+  $output = '';
+  $settings = isset($field['formatter_settings']) ? $field['formatter_settings'] : array();
+  $settings += $field['properties']['default'];
+  if ($field['entity_type'] !== 'node' || empty($settings['npop']) || empty($settings['link']) || $field['field_name'] !== 'title') {
+    return ds_render_field($field);
+  }
+  // Basic string.
+  if (isset($settings['link text'])) {
+    $output = t($settings['link text']);
+  }
+  elseif (isset($field['properties']['entity_render_key']) && isset($field['entity']->{$field['properties']['entity_render_key']})) {
+    if ($field['entity_type'] == 'user' && $field['properties']['entity_render_key'] == 'name') {
+      $output = format_username($field['entity']);
+    }
+    else {
+      $output = $field['entity']->{$field['properties']['entity_render_key']};
+    }
+  }
+  if (empty($output)) {
+    return '';
+  }
+
+  // Add use-ajax class for ajax processing.
+  $link_options = array(
+    'attributes' => array(
+      'data-npop' => array($field['entity']->nid),
+    ),
+  );
+  if (!drupal_is_front_page() && npop_check_change_url($field['entity']->type)) {
+    $link_options['query']['parent'] = '/' . request_path();
+  }
+  $output = l($output, 'node/' . $field['entity']->nid, $link_options);
+  // Wrapper and class.
+  if (!empty($settings['wrapper'])) {
+    $wrapper = check_plain($settings['wrapper']);
+    $class = (!empty($settings['class'])) ? ' class="' . check_plain($settings['class']) . '"' : '';
+    $output = '<' . $wrapper . $class . '>' . $output . '</' . $wrapper . '>';
+  }
+
+  return $output;
+}
+
+/**
+ * Implements hook_contextual_links_view_alter().
+ */
+function npop_contextual_links_view_alter(&$element, $items) {
+  if(empty($element['#element'])){
+    return;
+  }
+
+  $contextual_element = $element['#element'];
+  // Change destinations for nodes with npop_ajax view_mode.
+  if (isset($contextual_element['#entity_type']) && $contextual_element['#entity_type'] == 'node' && $contextual_element['#view_mode'] == 'npop_ajax') {
+    if (!npop_check_change_url($contextual_element['#bundle'])) {
+      return;
+    }
+    foreach ($element['#links'] as &$link) {
+      if (!empty($link['query']['destination'])) {
+        // Set node url as destination.
+        $link['query']['destination'] = 'node/' . $contextual_element['#node']->nid;
+      }
+    }
+  }
+}
+
+/**
+ * Checking change url flag value for selected content type.
+ *
+ * @param string $type
+ *   The node bundle.
+ *
+ * @return bool
+ *   TRUE if urel need change and FALSE if not.
+ */
+function npop_check_change_url($type) {
+  $urls = variable_get('npop_change_urls', array());
+
+  return in_array($type, $urls);
+}
+
+/**
+ * Implements hook_npop_css_animations().
+ */
+function npop_npop_css_animations() {
+  return array(
+    'npop-animate-fade-left' => t('From left with fade side'),
+    'npop-animate-fade-right' => t('From right with fade side'),
+    'npop-animate-fade-top' => t('From top with fade side'),
+    'npop-animate-fade-bottom' => t('From bottom with fade side'),
+    'npop-animate-left' => t('From left side'),
+    'npop-animate-right' => t('From right side'),
+    'npop-animate-top' => t('From top side'),
+    'npop-animate-bottom' => t('From bottom side'),
+  );
+}

@@ -214,3 +214,8 @@ body {
 
 .col-sm-9 {
   margin: 0 auto; }
+
+.company-search-form-company-id {
+  border: 0;
+  box-shadow: none;
+  -webkit-box-shadow: none; }

@@ -73,7 +73,7 @@ function teamleader_client() {
       return new ApiClient(new GuzzleAdapter($guzzle_client));
 
     } catch (Exception $e) {
-      return NULL;
+        return NULL;
     }
   }
 }

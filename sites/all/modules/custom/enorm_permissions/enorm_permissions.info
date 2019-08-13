@@ -1,0 +1,5 @@
+name = EnoRm. Permissions
+description = This module provides access control for customers. If turned off, all projects will be visible to all customers.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm

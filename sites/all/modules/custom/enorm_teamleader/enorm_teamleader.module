@@ -1,0 +1,121 @@
+<?php
+
+/*
+ * Callback function for all Teamleader calls.
+ * $operation needs to be the action as defined in the API docs, i.e. projects.list
+ * $postfields is the JSON object that dictates the filters and conditions for the API call.
+ * It could return an array with data or an error. Errors contain an HTTP error code. Most common is 400, Token expired.
+ */
+
+function enorm_teamleader_call($operation, $postfields)
+{
+    a: {
+    // Get token from Drupal variable
+    $code = variable_get('teamleader_access_token');
+    $accessToken = $code['access_token'];
+    $refreshToken = $code['refresh_token'];
+
+    // Initialize curl handle
+    $ch = curl_init();
+
+    // Set params for curl
+    // @TODO URL is debug server, change when migrating to production
+    curl_setopt($ch, CURLOPT_URL, 'https://private-anon-2b86fb5b17-teamleadercrm.apiary-proxy.com/' . $operation);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    // Postfields is a JSON object. Check API docs for syntax.
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
+    // Authorization and content type header
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $accessToken, 'Content-Type: application/json'));
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $data = json_decode($response, true);
+    if (isset($data['errors'])) {
+        switch ($data['errors'][0]['status']) {
+            case 400:
+                drupal_set_message(t("Bad request, probably malformed JSON. Contact administrator."), "error");
+                break;
+            case 401:
+                enorm_teamleader_refresh_token();
+                watchdog('EnoRm', t('Teamleader Tokens were updated'), array(), WATCHDOG_INFO, NULL);
+                //header('Location: '.$_SERVER['REQUEST_URI']);  Enable when debugging is complete.
+                goto a;
+                break;
+            case 403:
+                drupal_set_message(t("Forbidden, you are not allowed to access this resource."), "error");
+                break;
+            case 404:
+                drupal_set_message(t("Not found, resource not found. Contact administrator."), "error");
+                break;
+            case 429:
+                drupal_set_message(t("Request limit exceeded (100 calls per minute). Try again in a minute."), "error");
+                break;
+            case 500:
+                drupal_set_message(t("Internal server error on the end of Teamleader. ComPort works fine. Try again in 30 minutes. If problem persists, contact Teamleader."), "error");
+                break;
+        }
+        return NULL;
+    } else {
+        return $data;
+    }
+}
+}
+
+/*
+ * This function refreshes the access and refresh tokens when expired.
+ * It gets called when an error with HTTP code 401 is detected, which means
+ * token expired or revoked. It will then try to get a new token using the refresh token
+ * and saves the new access and refresh tokens into the system.
+ */
+function enorm_teamleader_refresh_token()
+{
+    $client_id = variable_get('teamleader_client_id');
+    $client_secret = variable_get('teamleader_client_secret');
+
+    // Get token from Drupal variable
+    $code = variable_get('teamleader_access_token');
+    $accessToken = $code['access_token'];
+    $refreshToken = $code['refresh_token'];
+
+
+    $postfields = array(
+        'client_id' => $client_id,
+        'client_secret' => $client_secret,
+        'refresh_token' => $refreshToken,
+        'grant_type' => 'refresh_token',
+    );
+
+    $fields_string = http_build_query($postfields);
+
+    // Initialize curl handle
+    $ch = curl_init();
+
+    // Set params for curl
+    curl_setopt($ch, CURLOPT_URL, 'https://app.teamleader.eu/oauth2/access_token');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    // Postfields in this call is different than other calls. Its not a JSON object. Its simply an array that is then encoded into a query string.
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+    // Authorization and content type header
+    //    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $accessToken, 'Content-Type: application/json'));
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $data = json_decode($response, true);
+    if (array_key_exists('access_token', $data) === TRUE) {
+        $new_tokens = array(
+            'token_type' => $data['token_type'],
+            'expires_in' => $data['expires_in'],
+            'access_token' => $data['access_token'],
+            'refresh_token' => $data['refresh_token'],
+        );
+        variable_set('teamleader_access_token', $new_tokens);
+    } else {
+        //do nothing because drupal is fucking stupid and triggers this function twice
+    }
+    return $data;
+}

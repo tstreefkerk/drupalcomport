@@ -1,4 +1,4 @@
-name = 'Enorm'
+name = 'enorm_theme'
 description = 'Enorm subtheme based on Bootstrap.'
 core = 7.x
 base theme = bootstrap

@@ -1,0 +1,4 @@
+name = EnoRm.
+description = Sandbox project, to test out code before moving it to submodules. Don't turn off though.
+core = 7.x
+package = EnoRm.

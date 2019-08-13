@@ -4,6 +4,7 @@
 
 body {
   background-color: $primaryColorWhite;
+  overflow-x: hidden;
 }
 
 .main-container {
@@ -33,3 +34,5 @@ body {
   box-shadow: none;
   -webkit-box-shadow: none;
 }
+
+.page-user-login .

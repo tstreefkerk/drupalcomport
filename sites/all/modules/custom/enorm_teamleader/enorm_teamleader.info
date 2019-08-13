@@ -1,0 +1,7 @@
+name = EnoRm. Teamleader
+description = Module does not provide functionality directly, but contains all callback functions for other modules. Provides tokens as well.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm
+dependencies[] = enorm_permissions
+dependencies[] = teamleader

@@ -1,0 +1,134 @@
+<?php
+/**
+ * Implements hook_node_view_alter().
+ */
+function enorm_permissions_node_view_alter(&$build)
+{
+    if ($build['#bundle'] === 'content_type_project') {
+        $data = enorm_companies_get_teamleader_project_info($build['field_project_teamleader_id']['#items'][0]['value']);
+        if ($data['data']['description'] != NULL) {
+            $build['field_project_description'][0]['#markup'] = $data['data']['description'];
+        } else {
+            $build['field_project_description'][0]['#markup'] = t("No description entered in Teamleader.");
+        }
+        $build['field_project_start_date'][0]['#markup'] = $data['data']['starts_on'];
+        $build['field_project_end_date'][0]['#markup'] = $data['data']['due_on'];
+        $build['field_project_status'][0]['#markup'] = $data['data']['status'];
+        $participants = "";
+        $count = count($data['data']['participants']) - 1;
+        $i = 0;
+        foreach ($data['data']['participants'] as $value) {
+            $result = enorm_companies_get_teamleader_user_name($value['participant']['id']);
+            if ($i === $count) {
+                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . " (" . $value['role'] . ")";
+            } else {
+                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . "(" . $value['role'] . ")" . " + ";
+                $i++;
+            }
+        }
+        $build['field_project_participants'][0]['#markup'] = $participants;
+
+    }
+}
+
+/*
+ * Make admin role unavailable. Customer role also unavailable from normal user form.
+ */
+
+function enorm_permissions_form_user_register_form_alter(&$form, &$form_state, $form_id)
+{
+    $form['account']['roles'][3]['#access'] = FALSE;
+    $form['account']['roles'][4]['#access'] = FALSE;
+    $current_path = current_path();
+    if ($current_path === 'admin/people/p2rp-create/customer') {
+        $form['account']['roles'][3]['#access'] = FALSE;
+        $form['account']['roles'][4]['#access'] = TRUE;
+        $form['account']['roles'][5]['#access'] = FALSE;
+        $form['account']['roles'][6]['#access'] = FALSE;
+        $form['account']['roles'][7]['#access'] = FALSE;
+        $form['account']['roles'][8]['#access'] = FALSE;
+        $form['account']['roles'][9]['#access'] = FALSE;
+    }
+}
+
+/*
+ * Custom and global functions
+ */
+
+/**
+ * Implements hook_node_access().
+ * It looks for the target ID of entity references in both the content and the users profile.
+ * It references to
+ */
+function enorm_permissions_node_access($node, $op, $account)
+{
+    if (!is_string($node)) {
+        if ($node->type === 'content_type_project') {
+            $role_keys = array_keys($account->roles);
+            if (in_array('4', $role_keys)) {
+                $profile2 = profile2_load_by_user($account->uid);
+                $profile_group_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
+                if ($op == "view") {
+                    $access_value = $node->field_project_customer['und'][0]['target_id'];
+                    if ($profile_group_id === $access_value) {
+                        return NODE_ACCESS_ALLOW;
+                    } else {
+                        return NODE_ACCESS_DENY;
+                    }
+                } else {
+                    return NODE_ACCESS_IGNORE;
+                }
+            } else {
+                return NODE_ACCESS_IGNORE;
+            }
+        } elseif ($node->type === 'drive_link') {
+            $role_keys = array_keys($account->roles);
+            if (in_array('4', $role_keys)) {
+                $profile2 = profile2_load_by_user($account->uid);
+                $profile_group_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
+                if (!is_string($node)) {
+                    $node_group_id = $node->field_drive_link_customer['und'][0]['target_id'];
+                };
+                if ($op == "view") {
+                    $access_value = $node->field_drive_link_visibility['und'];
+                    $access_value_clean = array();
+                    foreach ($access_value as $key => $value) {
+                        array_push($access_value_clean, $value['value']);
+                    }
+                    $result = array_intersect($role_keys, $access_value_clean);
+                    if (!empty($result) && $profile_group_id === $node_group_id) {
+                        return NODE_ACCESS_ALLOW;
+                    } else {
+                        return NODE_ACCESS_DENY;
+                    }
+                } else {
+                    return NODE_ACCESS_IGNORE;
+                }
+            } else {
+                return NODE_ACCESS_IGNORE;
+            }
+        }
+    }
+}
+
+function enorm_permissions_views_pre_render(&$view)
+{
+    if ($view->name == 'view_my_projects') {
+        global $user;
+        $profile2 = profile2_load_by_user($user->uid);
+        $customer_group_id = $profile2['profile_type_klant']->field_customer_profile_group['und'][0]['target_id'];
+        foreach ($view->result as $key => $result) {
+            if ($result->field_field_group_project_customer[0]['raw']['target_id'] != $customer_group_id) {
+                unset($view->result[$key]);
+            }
+        }
+    }
+    if ($view->name == 'views_customer_my_files' || $view->name == 'view_all_projects_nodes') {
+        foreach ($view->result as $key => $result) {
+            $node = node_load($result->nid);
+            if (!node_access('view', $node)) {
+                unset($view->result[$key]);
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+name = EnoRm. Facturen
+description = Provides functionality to view invoices.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm
+dependencies[] = enorm_teamleader

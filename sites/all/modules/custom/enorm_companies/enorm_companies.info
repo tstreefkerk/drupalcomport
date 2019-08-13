@@ -1,0 +1,6 @@
+name = EnoRm. Companies
+description = Provides companies and projects functionality. Turning this module off will mainly break permissions.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm
+dependencies[] = enorm_teamleader

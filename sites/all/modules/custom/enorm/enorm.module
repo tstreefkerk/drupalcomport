@@ -1,0 +1,93 @@
+<?php
+
+use Nascom\TeamleaderApiClient\Http\Guzzle\Middleware;
+use GuzzleHttp\HandlerStack;
+use League\OAuth2\Client\Token\AccessToken;
+use Nascom\OAuth2\Client\Provider\Teamleader;
+use Nascom\TeamleaderApiClient\Http\ApiClient\ApiClient;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Nascom\TeamleaderApiClient\Http\Guzzle\Middleware\AuthenticationMiddleware;
+
+/**
+ * Implements hook_menu().
+ */
+
+function enorm_help($path, $arg)
+{
+    switch ($path) {
+        case "admin/help#enorm":
+            return t("Base module for other EnoRm. modules. Mainly a sandbox thing, to test out code before moving them to submodules. Don't turn off though.");
+            break;
+    }
+}
+
+function enorm_custom_field_info ($field_id) {
+    $operation = "customFieldDefinitions.info";
+    $postfields = "{
+      \"id\": \"" . $field_id . "\"
+    }";
+    return enorm_teamleader_call($operation, $postfields);
+}
+
+
+//function enorm_block_info()
+//{
+//    $blocks['enorm'] = array(
+//        'info' => t('Enorm Teamleader'),
+//        'cache' => DRUPAL_CACHE_PER_ROLE,
+//    );
+//    return $blocks;
+//}
+//
+///**
+// * Implements hook_block_view().
+// */
+//function enorm_block_view($delta = '')
+//{
+//    $block = array();
+//    switch ($delta) {
+//        case 'enorm':
+//            $block['subject'] = t('Enorm Teamleader');
+//            $block['content'] = array(
+//                '#markup' => enorm_get_teamleader_data_current_projects(),
+//            );
+//            break;
+//    }
+//    return $block;
+//}
+
+//
+///*
+// * Implements custom function that gets invoked in block view
+// */
+//function enorm_get_teamleader_data_current_projects()
+//{
+//    $operation = "projects.list";
+//    $postfields = "{
+//      \"page\": {
+//        \"size\": 100,
+//        \"number\": 1
+//      },
+//      \"sort\": [
+//        {
+//          \"field\": \"due_on\",
+//          \"order\": \"asc\"
+//        }
+//      ]
+//    }";
+//    $data = enorm_teamleader_call($operation, $postfields);
+//
+//    $results = count($data['data']) - 1;
+//    $projectlist = array();
+//
+//    $i = 0;
+//    while ($i <= $results) {
+//        array_push($projectlist, $data['data'][$i]['title']);
+//        $i++;
+//    }
+//
+//    $var = implode("<br>", $projectlist);
+//    $var = '<p>' . $var . '</p>';
+//    return $var;
+//}
+

@@ -1,0 +1,200 @@
+<?php
+
+/*
+ * Callback function for a custom page that searches for a companies Teamleader ID.
+ */
+
+function enorm_companies_search_teamleader_company_id($string)
+{
+    $operation = "companies.list";
+    $postfields = "{
+          \"filter\": {
+            \"term\": \"" . $string . "\"
+          },
+          \"page\": {
+            \"size\": 20,
+            \"number\": 1
+          },
+          \"sort\": [
+            {
+              \"field\": \"name\"
+            }
+          ]
+        }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
+
+}
+
+/*
+ * Callback function for a custom page that searches for a Projects Teamleader ID.
+ */
+
+function enorm_companies_search_teamleader_project_id($string)
+{
+    $operation = "projects.list";
+    $postfields = "{
+          \"filter\": {
+            \"term\": \"" . $string . "\"
+          },
+          \"page\": {
+            \"size\": 20,
+            \"number\": 1
+          },
+          \"sort\": [
+            {
+              \"field\": \"due_on\",
+              \"order\": \"asc\"
+            }
+          ]
+        }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
+}
+
+function enorm_companies_get_teamleader_project_info($project_id)
+{
+    $operation = "projects.info";
+    $postfields = "{
+        \"id\": \"" . $project_id . "\"
+    }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
+}
+
+function enorm_companies_get_teamleader_user_name($user_id)
+{
+    $operation = "users.info";
+    $postfields = "{
+        \"id\": \"" . $user_id . "\"
+}";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function enorm_companies_menu()
+{
+    $menu['company-search'] = array
+    (
+        'title' => 'Search for Company ID',
+        'description' => 'Search for a Companies Teamleader ID',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('enorm_companies_company_search_form'),
+        'access arguments' => array('access company search form'),
+    );
+
+    $menu['project-search'] = array
+    (
+        'title' => 'Search for Project ID',
+        'description' => 'Search for a Projects Teamleader ID',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('enorm_companies_project_search_form'),
+        'access arguments' => array('access company search form'),
+    );
+    return $menu;
+}
+
+/**
+ * Implements hook_form().
+ */
+function enorm_companies_company_search_form($node, &$form_state)
+{
+    $form['name'] = array(
+        '#title' => t("Company ID search"),
+        '#type' => 'textfield',
+        '#required' => TRUE,
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Search',
+    );
+
+    return $form;
+}
+
+/*
+ * Revised Company search form. It takes the user input, and searches for it in Teamleader.
+ * All found companies and their respective ID's are then returned. If there's more than 5 results,
+ * a message will be set warning the user to be cautious, since entering a wrong ID will throw errors.
+ */
+
+function enorm_companies_company_search_form_submit($form, &$form_state)
+{
+    $form_state['rebuild'] = TRUE;
+    $search_string = $form_state['input']['name'];
+    $result = enorm_companies_search_teamleader_company_id($search_string);
+    $total = count($result['data']);
+
+    if ($result['data'] != NULL) {
+        if($total > 5){
+            drupal_set_message(t("There's more than 5 results. Please proceed with caution and be sure to copy the right ID."), "warning");
+        }
+        drupal_set_message($total . t(" results <br><br>"));
+        for ($x = 0; $x < $total; $x++) {
+            drupal_set_message("Title: " . $result['data'][$x]['name'] . "<br>ID: " . $result['data'][$x]['id'] . "<br><br>");
+        }
+    } else {
+        drupal_set_message(t("No companies found. Perhaps a typo?"), 'error');
+    }
+}
+
+/**
+ * Implements hook_form().
+ */
+function enorm_companies_project_search_form($node, &$form_state)
+{
+    $form['name'] = array(
+        '#title' => t("Project name"),
+        '#type' => 'textfield',
+        '#required' => TRUE,
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Search',
+    );
+
+    return $form;
+}
+
+/*
+ * Implements hook_form_submit().
+ * The function is called when enorm_company_search_form is submitted.
+ * It takes the input from the user and sends it to a callback function that
+ * requests the Teamleader project using the input as a search term. It then
+ * checks whether there is a result. If there is, the original text and ID input
+ * values are replaced with whatever Teamleader gives us. If not, it sets a message.
+ */
+
+function enorm_companies_project_search_form_submit($form, &$form_state)
+{
+    $form_state['rebuild'] = TRUE;
+    $search_string = $form_state['input']['name'];
+    $result = enorm_companies_search_teamleader_project_id($search_string);
+    $total = count($result['data']);
+    if ($result['data'] != NULL) {
+        drupal_set_message($total . " results");
+        for ($x = 0; $x < $total; $x++) {
+            drupal_set_message("Title: " . $result['data'][$x]['title'] . "<br>ID: " . $result['data'][$x]['id'] . "<br><br>");
+        }
+    } else {
+        drupal_set_message(t("No projects found. Perhaps a typo?"), 'error');
+    }
+
+}
+
+/**
+ * Implements hook_permission().
+ */
+function enorm_companies_permission()
+{
+    return array(
+        'access company search form' => array(
+            'title' => t('Access the company search form'),
+        )
+    );
+}

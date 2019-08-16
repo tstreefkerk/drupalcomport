@@ -35,4 +35,29 @@ body {
   -webkit-box-shadow: none;
 }
 
-.page-user-login .
+.not-logged-in .row {
+  margin-left: 0;
+}
+
+.not-logged-in .col-sm-4 {
+  //background-color: rgba();
+  padding: 40px;
+  border-radius: 3px;
+}
+
+.not-logged-in {
+  background-image: url("/sites/all/themes/enorm/assets/img/background.png");
+  background-size: cover;
+}
+
+//.page-user-login .col-sm-12{
+//  width: 33.33333333%;
+//}
+
+@media screen and (min-width: 1439px) {
+  #block-search-form {
+    left: 10vw;
+  }
+}
+
+

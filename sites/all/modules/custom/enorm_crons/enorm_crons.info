@@ -1,0 +1,5 @@
+name = EnoRm. Crons
+description = Provides cron jobs for automatic project, company and other imports. It has no dependencies by design, though it relies on Elysia Cron, Teamleader, Enorm and Enorm Teamleader. This is by design, so you can disable this module if shit hits the fan.
+core = 7.x
+package = EnoRm.
+

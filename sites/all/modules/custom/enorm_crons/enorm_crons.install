@@ -1,0 +1,33 @@
+<?php
+
+function enorm_crons_schema() {
+    $schema = array();
+    $schema['teamleader_projects'] = array(
+        'description' => 'Contains Teamleader IDs for already existing projects within ComPort',
+        'fields' => array(
+            'teamleader_project_id' => array(
+                'description' => 'Teamleader Project ID',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'teamleader_project_nid' => array(
+                'description' => 'The NID that the Teamleader Project ID points to',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+        ),
+        'primary key' => array('teamleader_project_id')
+    );
+    return $schema;
+}
+
+function enorm_crons_update_7101() {
+    // Load the schema from mymodule_schema() so you don't have to duplicate code.
+    $schema = enorm_crons_schema();
+    // Pass the table name and schema for that table to db_create_table()
+    db_create_table('teamleader_projects', $schema['teamleader_projects']);
+}

@@ -1,0 +1,11 @@
+name = Disable Field
+description = Disable field in Edit field settings page by Admin
+core = 7.x
+package = Fields
+
+; Information added by Drupal.org packaging script on 2016-11-08
+version = "7.x-1.3"
+core = "7.x"
+project = "disable_field"
+datestamp = "1478614744"
+

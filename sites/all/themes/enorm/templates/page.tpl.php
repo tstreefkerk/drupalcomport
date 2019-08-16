@@ -127,12 +127,17 @@
         <?php print render($page['header']); ?>
     </header> <!-- /#page-header -->
     <?php if (!empty($page['sidebar_first']) && user_is_logged_in()): ?>
-        <aside role="complementary">
+        <aside role="complementary" id="main-menu">
             <?php print render($page['sidebar_first']); ?>
         </aside>  <!-- /#sidebar-first -->
     <?php endif; ?>
     <div class="row">
-        <section<?php print $content_column_class; ?>>
+        <?php if ($logged_in == FALSE || $logged_in == NULL): ?>
+            <section class="col-sm-4 col-sm-offset-4">
+        <?php endif; ?>
+        <?php if ($logged_in == TRUE): ?>
+            <section<?php print $content_column_class; ?>>
+        <?php endif; ?>
             <?php if (!empty($page['highlighted'])): ?>
                 <div class="highlighted jumbotron"><?php print render($page['highlighted']); ?></div>
             <?php endif; ?>

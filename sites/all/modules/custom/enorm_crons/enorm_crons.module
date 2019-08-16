@@ -1,0 +1,154 @@
+<?php
+
+function enorm_crons_cronapi($op, $job = NULL) {
+    $items['enorm_crons_new_projects_cron'] = array (
+        'description' => 'Look for new projects in Teamleader every 30 minutes, and add them to ComPort',
+        'rule' => '30 2 * * *',
+    );
+    $items['enorm_crons_new_companies_cron'] = array(
+        'description' => 'Look for new companies in Teamleader every 30 minutes, and add them to ComPort',
+        'rule' => '30 2 * * *',
+    );
+    return $items;
+}
+
+function enorm_crons_new_companies_cron() {
+    enorm_crons_check_new_companies();
+}
+
+function enorm_crons_check_new_companies() {
+    $last_updated = enorm_crons_get_company_list_by_date();
+    foreach($last_updated['data'] as $value) {
+        // Check whether company has an 'added' tag already
+        if(empty($value['tags'])) {
+            $company_name = $value['name'];
+            $company_id = $value['id'];
+            enorm_crons_save_new_company($company_id, $company_name);
+            // Unset vars, you never know..
+            unset($company_name);
+            unset($company_id);
+        }
+
+    }
+
+}
+
+function enorm_crons_save_new_company($company_id, $node_title) {
+    global $user;
+    $node = new stdClass();
+    $node->title = $node_title;
+    $node->type = "content_type_company";
+    $node->language = 'en';
+    $node->uid = $user->uid;
+    $node->status = 1;
+    $node->promote = 0;
+    $node->field_company_teamleader_id[LANGUAGE_NONE][0]['value'] = $company_id;
+    node_object_prepare($node);
+    $node = node_submit($node); // Prepare node for saving
+    node_save($node);
+    enorm_crons_update_company_tag($company_id);
+}
+
+function enorm_crons_update_company_tag($company_id) {
+    $operation = "companies.tag";
+    $postfields = "{
+      \"id\": \"" . $company_id . "\",
+      \"tags\": [
+        \"customerportal\"
+      ]
+    }";
+    $result = enorm_teamleader_call_send($operation, $postfields);
+    dpm("updated");
+}
+
+function enorm_crons_get_company_list_by_date() {
+    $operation = "companies.list";
+    $postfields = "{
+      
+      \"page\": {
+        \"size\": 10,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"added_at\",
+          \"order\": \"desc\"
+        }
+      ]
+    }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
+}
+
+function enorm_crons_new_projects_cron () {
+
+    $result = enorm_crons_get_project_list();
+    foreach($result['data'] as $value) {
+        $exists = enorm_crons_check_project_id($value['id']);
+        if(!empty($exists)) {
+            //dan is ie al opgeslagen
+            dpm("reeds opgeslagem");
+        }
+        else {
+            //nog niet opgeslagen
+            dpm("nog niet opgeslagen");
+            enorm_crons_save_new_project($value['id'], $value['title']);
+
+        }
+    }
+
+}
+
+function enorm_crons_save_new_project($teamleader_id, $node_title) {
+    global $user;
+    $node = new stdClass();
+    $node->title = $node_title;
+    $node->type = "content_type_project";
+    $node->language = 'en';
+    $node->uid = $user->uid;
+    $node->status = 1;
+    $node->promote = 0;
+    $node->field_project_teamleader_id[LANGUAGE_NONE][0]['value'] = $teamleader_id;
+    node_object_prepare($node);
+    $node = node_submit($node); // Prepare node for saving
+    node_save($node);
+    // Update database
+    $nid = $node->nid;
+    enorm_crons_new_project_database_insert($teamleader_id, $nid);
+}
+
+function enorm_crons_get_project_list() {
+    $operation = "projects.list";
+    $postfields = "{
+      \"page\": {
+        \"size\": 100,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"due_on\",
+          \"order\": \"desc\"
+        }
+      ]
+    }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
+}
+
+function enorm_crons_new_project_database_insert($teamleader_id, $nid) {
+    db_insert('teamleader_projects')
+        ->fields(array(
+            'teamleader_project_id' => $teamleader_id,
+            'teamleader_project_nid' => $nid
+        ))
+        ->execute();
+}
+
+function enorm_crons_check_project_id($teamleader_id) {
+    $result = db_select('teamleader_projects', 'tp')
+        ->fields('tp')
+        ->condition('teamleader_project_id', $teamleader_id, '=')
+        ->execute()
+        ->fetchAssoc();
+    return $result;
+}

@@ -117,7 +117,6 @@ function enorm_facturen_invoice_list_form($node, &$form_state) {
     $form['name'] = array(
         '#title' => t("Company ID"),
         '#type' => 'textfield',
-        '#required' => TRUE,
     );
 
     $form['submit'] = array(
@@ -134,11 +133,14 @@ function enorm_facturen_invoice_list_form_submit($form, &$form_state) {
     $total = count($result['data']);
 
     if ($result['data'] != NULL) {
-        dpm($result);
+        foreach($result['data'] as $value) {
+            drupal_set_message("Company: " . enorm_facturen_get_teamleader_invoice_info($value['id']) . ", Total: " . $value['total']['due']['amount'] . " " . $value['total']['due']['currency']);
+        }
     } else {
         drupal_set_message(t("No invoices found."), 'error');
     }
 }
+
 
 
 

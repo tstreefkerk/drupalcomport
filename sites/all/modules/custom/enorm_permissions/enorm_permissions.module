@@ -67,10 +67,17 @@ function enorm_permissions_node_access($node, $op, $account)
             $role_keys = array_keys($account->roles);
             if (in_array('4', $role_keys)) {
                 $profile2 = profile2_load_by_user($account->uid);
-                $profile_group_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
+                $entity_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
+                $result = enorm_permissions_entity_load($entity_id);
+                $teamleader_id = $result->field_company_teamleader_id['und'][0]['value'];
+                if(!empty($node->field_project_company_id['und'][0]['value'])) {
+                    $teamleader_id_node = $node->field_project_company_id['und'][0]['value'];
+                }
+                else {
+                    return NODE_ACCESS_DENY;
+                }
                 if ($op == "view") {
-                    $access_value = $node->field_project_customer['und'][0]['target_id'];
-                    if ($profile_group_id === $access_value) {
+                    if ($teamleader_id === $teamleader_id_node) {
                         return NODE_ACCESS_ALLOW;
                     } else {
                         return NODE_ACCESS_DENY;
@@ -109,6 +116,10 @@ function enorm_permissions_node_access($node, $op, $account)
             }
         }
     }
+}
+
+function enorm_permissions_entity_load($entity_id) {
+    return @entity_load_single('node', $entity_id);
 }
 
 function enorm_permissions_views_pre_render(&$view)

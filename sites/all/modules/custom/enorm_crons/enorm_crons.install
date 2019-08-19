@@ -31,3 +31,33 @@ function enorm_crons_update_7101() {
     // Pass the table name and schema for that table to db_create_table()
     db_create_table('teamleader_projects', $schema['teamleader_projects']);
 }
+
+function enorm_crons_schema_two() {
+    $schematwo = array();
+    $schematwo['teamleader_invoices'] = array(
+        'description' => 'Contains Teamleader IDs for already existing invoices within ComPort',
+        'fields' => array(
+            'teamleader_invoice_id' => array(
+                'description' => 'Teamleader Project ID',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'teamleader_invoice_nid' => array(
+                'description' => 'The NID that the Teamleader invoice ID points to',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+        ),
+        'primary key' => array('teamleader_invoice_id')
+    );
+    return $schematwo;
+}
+
+function enorm_crons_update_7102() {
+    $schematwo = enorm_crons_schema_two();
+    db_create_table('teamleader_invoices', $schematwo['teamleader_invoices']);
+}

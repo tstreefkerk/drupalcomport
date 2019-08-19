@@ -2,14 +2,92 @@
 
 function enorm_crons_cronapi($op, $job = NULL) {
     $items['enorm_crons_new_projects_cron'] = array (
-        'description' => 'Look for new projects in Teamleader every 30 minutes, and add them to ComPort',
-        'rule' => '30 2 * * *',
+        'description' => 'Look for new projects in Teamleader once every night, and add them to ComPort. While possible, its highly discouraged to force this cron due to major performance drops.',
+        'rule' => '30 1 * * *',
     );
     $items['enorm_crons_new_companies_cron'] = array(
-        'description' => 'Look for new companies in Teamleader every 30 minutes, and add them to ComPort',
+        'description' => 'Look for new companies in Teamleader once every night, and add them to ComPort. While possible, its highly discouraged to force this cron due to major performance drops.',
         'rule' => '30 2 * * *',
     );
+    $items['enorm_crons_new_invoices_cron'] = array(
+        'description' => 'Look for new invoices in Teamleader once every night, and add them to ComPort. While possible, its highly discouraged to force this cron due to major performance drops.',
+        'rule' => '30 3 * * *'
+    );
     return $items;
+}
+
+function enorm_crons_new_invoices_cron() {
+    $result = enorm_crons_check_new_invoices();
+    dpm($result);
+    foreach($result['data'] as $value) {
+        $exists = enorm_crons_check_invoice_id($value['id']);
+        if(!empty($exists)) {
+            //dan is ie al opgeslagen
+            dpm("invoice reeds opgeslagen");
+        }
+        else {
+            //nog niet opgeslagen
+            dpm("invoice nog niet opgeslagen");
+            enorm_crons_save_new_invoice($value['id'], $value['invoicee']['name'], $value['invoicee']['customer']['id'], $value['total']['due']['amount'], $value['invoice_date']);
+        }
+    }
+}
+
+function enorm_crons_save_new_invoice($invoice_id, $node_title, $company_teamleader_id, $invoice_total, $invoice_date) {
+    global $user;
+    $node = new stdClass();
+    $node->title = $node_title;
+    $node->type = "content_type_invoice";
+    $node->language = 'en';
+    $node->uid = $user->uid;
+    $node->status = 1;
+    $node->promote = 0;
+    $node->field_invoice_total[LANGUAGE_NONE][0]['value'] = $invoice_total;
+    $node->field_invoice_date[LANGUAGE_NONE][0]['value'] = $invoice_date;
+    $node->field_invoice_company_name[LANGUAGE_NONE][0]['value'] = $node_title;
+    $node->field_invoice_company_id[LANGUAGE_NONE][0]['value'] = $company_teamleader_id;
+    $node->field_invoice_invoice_id	[LANGUAGE_NONE][0]['value'] = $invoice_id;
+    node_object_prepare($node);
+    $node = node_submit($node); // Prepare node for saving
+    node_save($node);
+    // Update database
+    $nid = $node->nid;
+    enorm_crons_new_invoice_database_insert($invoice_id, $nid);
+}
+
+function enorm_crons_new_invoice_database_insert($invoice_id, $nid) {
+    db_insert('teamleader_invoices')
+        ->fields(array(
+            'teamleader_invoice_id' => $invoice_id,
+            'teamleader_invoice_nid' => $nid
+        ))
+        ->execute();
+}
+
+function enorm_crons_check_invoice_id($invoice_id) {
+    $result = db_select('teamleader_invoices', 'ti')
+        ->fields('ti')
+        ->condition('teamleader_invoice_id', $invoice_id, '=')
+        ->execute()
+        ->fetchAssoc();
+    return $result;
+}
+
+function enorm_crons_check_new_invoices() {
+    $operation = "invoices.list";
+    $postfields =
+        "{
+      \"page\": {
+        \"size\": 40,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"invoice_number\"
+        }
+      ]
+    }";
+    return enorm_teamleader_call($operation, $postfields);
 }
 
 function enorm_crons_new_companies_cron() {
@@ -87,19 +165,19 @@ function enorm_crons_new_projects_cron () {
         $exists = enorm_crons_check_project_id($value['id']);
         if(!empty($exists)) {
             //dan is ie al opgeslagen
-            dpm("reeds opgeslagem");
+            dpm("reeds opgeslagen");
         }
         else {
             //nog niet opgeslagen
             dpm("nog niet opgeslagen");
-            enorm_crons_save_new_project($value['id'], $value['title']);
+            enorm_crons_save_new_project($value['id'], $value['title'], $value['customer']['id']);
 
         }
     }
 
 }
 
-function enorm_crons_save_new_project($teamleader_id, $node_title) {
+function enorm_crons_save_new_project($teamleader_id, $node_title, $company_teamleader_id) {
     global $user;
     $node = new stdClass();
     $node->title = $node_title;
@@ -109,6 +187,7 @@ function enorm_crons_save_new_project($teamleader_id, $node_title) {
     $node->status = 1;
     $node->promote = 0;
     $node->field_project_teamleader_id[LANGUAGE_NONE][0]['value'] = $teamleader_id;
+    $node->field_project_company_id[LANGUAGE_NONE][0]['value'] = $company_teamleader_id;
     node_object_prepare($node);
     $node = node_submit($node); // Prepare node for saving
     node_save($node);

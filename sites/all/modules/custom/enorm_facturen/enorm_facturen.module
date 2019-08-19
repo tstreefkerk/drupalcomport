@@ -1,146 +1,41 @@
 <?php
 
-/**
- * Implements hook_menu().
- */
-function enorm_facturen_menu()
-{
-    $menu['facturen-all'] = array(
-        'title' => 'All invoices',
-        'description' => 'Show all invoices',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('enorm_facturen_invoice_list_form'),
-        'access arguments' => array('access all invoices'),
-    );
-    $menu['company-info'] = array(
-        'title' => 'Company info',
-        'description' => 'Show info about one company',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('enorm_facturen_company_info_form'),
-        'access arguments' => array('access all invoices'),
-    );
+function enorm_facturen_node_view_alter(&$build) {
+    if($build['#bundle'] === 'content_type_invoice') {
+        $info = enorm_facturen_get_invoice_info($build['field_invoice_invoice_id'][0]['#markup']);
+        $build['field_invoice_status'][0]['#markup'] = ucfirst($info['data']['status']);
+        if($info['data']['invoice_number'] != NULL) {
+            $build['field_invoice_number'][0]['#markup'] = $info['data']['invoice_number'];
+        }
+        else {
+            $build['field_invoice_number'][0]['#markup'] = "Invoice is still a draft, no number is available.";
+        }
+        $build['field_invoice_date'][0]['#markup'] = $info['data']['invoice_date'];
+        if($info['data']['due_on'] != NULL) {
+            $build['field_invoice_due_on'][0]['#markup'] = $info['data']['due_on'];
+        }
+        else {
+            $build['field_invoice_number'][0]['#markup'] = "Invoice is still a draft, no due date is available.";
+        }
+        if($info['data']['paid'] === FALSE) {
+            $build['field_invoice_paid'][0]['#markup'] = "No";
+        }
+        else {
+            $build['field_invoice_paid'][0]['#markup'] = "Yes";
+        }
+        $build['field_invoice_total'][0]['#markup'] = $info['data']['total']['due']['amount'] . $info['data']['total']['due']['currency'];
 
-    return $menu;
+    }
 }
 
-/**
- * Implements hook_permission().
- */
-function enorm_facturen_permission()
-{
-    return array(
-        'access all invoices' => array(
-            'title' => t('Access all invoices'),
-        )
-    );
-}
-
-//function enorm_facturen_empty_page()
-//{
-//    return dpm(enorm_facturen_get_teamleader_invoices());
-//}
-
-
-function enorm_facturen_get_teamleader_invoices()
-{
-//    $operation = "invoices.list";
-//    $postfields = "{
-//          \"page\": {
-//            \"size\": 10,
-//            \"number\": 1
-//          },
-//          \"sort\": [
-//            {
-//              \"field\": \"invoice_number\"
-//            }
-//          ]
-//        }";
-
-    return enorm_teamleader_call("invoices.list","");
-
-    //    $result = enorm_teamleader_call($operation, $postfields);
-//    dpm($result);
-//    return $result;
-}
-
-function enorm_facturen_get_teamleader_invoice_info($invoice_id) {
+function enorm_facturen_get_invoice_info($invoice_id) {
     $operation = "invoices.info";
     $postfields = "{
       \"id\": \"" . $invoice_id . "\"
     }";
 
-    $result = enorm_teamleader_call($operation, $postfields);
-    dpm($result);
+    return enorm_teamleader_call($operation, $postfields);
 }
-
-function enorm_facturen_company_info($company_id) {
-    $operation = "companies.info";
-    $postfields = "{
-        \"id\": \"" . $company_id . "\"
-    }";
-
-    $result = enorm_teamleader_call($operation, $postfields);
-    return $result;
-}
-
-function enorm_facturen_company_info_form($node, &$form_state) {
-
-        $form['name'] = array(
-            '#title' => t("Company ID"),
-            '#type' => 'textfield',
-            '#required' => TRUE,
-        );
-
-        $form['submit'] = array(
-            '#type' => 'submit',
-            '#value' => 'Search',
-        );
-
-        return $form;
-}
-
-function enorm_facturen_company_info_form_submit($form, &$form_state) {
-    $form_state['rebuild'] = TRUE;
-    $search_string = $form_state['input']['name'];
-    $result = enorm_facturen_company_info($search_string);
-    $total = count($result['data']);
-
-    if ($result['data'] != NULL) {
-        dpm($result);
-    } else {
-        drupal_set_message(t("No companies found. Perhaps a typo?"), 'error');
-    }
-}
-
-function enorm_facturen_invoice_list_form($node, &$form_state) {
-
-    $form['name'] = array(
-        '#title' => t("Company ID"),
-        '#type' => 'textfield',
-    );
-
-    $form['submit'] = array(
-        '#type' => 'submit',
-        '#value' => 'Search',
-    );
-    return $form;
-}
-
-function enorm_facturen_invoice_list_form_submit($form, &$form_state) {
-    $form_state['rebuild'] = TRUE;
-//    $search_string = $form_state['input']['name'];
-    $result = enorm_facturen_get_teamleader_invoices();
-    $total = count($result['data']);
-
-    if ($result['data'] != NULL) {
-        foreach($result['data'] as $value) {
-            drupal_set_message("Company: " . enorm_facturen_get_teamleader_invoice_info($value['id']) . ", Total: " . $value['total']['due']['amount'] . " " . $value['total']['due']['currency']);
-        }
-    } else {
-        drupal_set_message(t("No invoices found."), 'error');
-    }
-}
-
 
 
 

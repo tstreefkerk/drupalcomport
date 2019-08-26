@@ -1,7 +1,8 @@
 <?php
 
-function enorm_crons_cronapi($op, $job = NULL) {
-    $items['enorm_crons_new_projects_cron'] = array (
+function enorm_crons_cronapi($op, $job = NULL)
+{
+    $items['enorm_crons_new_projects_cron'] = array(
         'description' => 'Look for new projects in Teamleader once every night, and add them to ComPort. While possible, its highly discouraged to force this cron due to major performance drops.',
         'rule' => '30 1 * * *',
     );
@@ -16,24 +17,28 @@ function enorm_crons_cronapi($op, $job = NULL) {
     return $items;
 }
 
-function enorm_crons_new_invoices_cron() {
+function enorm_crons_new_invoices_cron()
+{
     $result = enorm_crons_check_new_invoices();
-    dpm($result);
-    foreach($result['data'] as $value) {
+    foreach ($result['data'] as $value) {
         $exists = enorm_crons_check_invoice_id($value['id']);
-        if(!empty($exists)) {
+        if (!empty($exists)) {
             //dan is ie al opgeslagen
             dpm("invoice reeds opgeslagen");
-        }
-        else {
-            //nog niet opgeslagen
-            dpm("invoice nog niet opgeslagen");
-            enorm_crons_save_new_invoice($value['id'], $value['invoicee']['name'], $value['invoicee']['customer']['id'], $value['total']['due']['amount'], $value['invoice_date']);
+        } else {
+            if ($value['status'] === 'draft') {
+                //discard, dont want drafts
+                dpm("draft, not saving");
+            } else {
+                //nog niet opgeslagen
+                enorm_crons_save_new_invoice($value['id'], $value['invoice_number'], $value['invoicee']['customer']['id'], $value['total']['due']['amount'], $value['invoice_date'], $value['invoicee']['name']);
+            }
         }
     }
 }
 
-function enorm_crons_save_new_invoice($invoice_id, $node_title, $company_teamleader_id, $invoice_total, $invoice_date) {
+function enorm_crons_save_new_invoice($invoice_id, $node_title, $company_teamleader_id, $invoice_total, $invoice_date, $company_name)
+{
     global $user;
     $node = new stdClass();
     $node->title = $node_title;
@@ -43,10 +48,10 @@ function enorm_crons_save_new_invoice($invoice_id, $node_title, $company_teamlea
     $node->status = 1;
     $node->promote = 0;
     $node->field_invoice_total[LANGUAGE_NONE][0]['value'] = $invoice_total;
+    $node->field_invoice_company_name[LANGUAGE_NONE][0]['value'] = $company_name;
     $node->field_invoice_date[LANGUAGE_NONE][0]['value'] = $invoice_date;
-    $node->field_invoice_company_name[LANGUAGE_NONE][0]['value'] = $node_title;
     $node->field_invoice_company_id[LANGUAGE_NONE][0]['value'] = $company_teamleader_id;
-    $node->field_invoice_invoice_id	[LANGUAGE_NONE][0]['value'] = $invoice_id;
+    $node->field_invoice_invoice_id[LANGUAGE_NONE][0]['value'] = $invoice_id;
     node_object_prepare($node);
     $node = node_submit($node); // Prepare node for saving
     node_save($node);
@@ -55,7 +60,8 @@ function enorm_crons_save_new_invoice($invoice_id, $node_title, $company_teamlea
     enorm_crons_new_invoice_database_insert($invoice_id, $nid);
 }
 
-function enorm_crons_new_invoice_database_insert($invoice_id, $nid) {
+function enorm_crons_new_invoice_database_insert($invoice_id, $nid)
+{
     db_insert('teamleader_invoices')
         ->fields(array(
             'teamleader_invoice_id' => $invoice_id,
@@ -64,7 +70,8 @@ function enorm_crons_new_invoice_database_insert($invoice_id, $nid) {
         ->execute();
 }
 
-function enorm_crons_check_invoice_id($invoice_id) {
+function enorm_crons_check_invoice_id($invoice_id)
+{
     $result = db_select('teamleader_invoices', 'ti')
         ->fields('ti')
         ->condition('teamleader_invoice_id', $invoice_id, '=')
@@ -73,32 +80,36 @@ function enorm_crons_check_invoice_id($invoice_id) {
     return $result;
 }
 
-function enorm_crons_check_new_invoices() {
+function enorm_crons_check_new_invoices()
+{
     $operation = "invoices.list";
     $postfields =
         "{
       \"page\": {
-        \"size\": 40,
+        \"size\": 100,
         \"number\": 1
       },
       \"sort\": [
         {
-          \"field\": \"invoice_number\"
+          \"field\": \"invoice_number\",
+          \"order\": \"desc\"
         }
       ]
     }";
     return enorm_teamleader_call($operation, $postfields);
 }
 
-function enorm_crons_new_companies_cron() {
+function enorm_crons_new_companies_cron()
+{
     enorm_crons_check_new_companies();
 }
 
-function enorm_crons_check_new_companies() {
+function enorm_crons_check_new_companies()
+{
     $last_updated = enorm_crons_get_company_list_by_date();
-    foreach($last_updated['data'] as $value) {
+    foreach ($last_updated['data'] as $value) {
         // Check whether company has an 'added' tag already
-        if(empty($value['tags'])) {
+        if (empty($value['tags'])) {
             $company_name = $value['name'];
             $company_id = $value['id'];
             enorm_crons_save_new_company($company_id, $company_name);
@@ -111,7 +122,8 @@ function enorm_crons_check_new_companies() {
 
 }
 
-function enorm_crons_save_new_company($company_id, $node_title) {
+function enorm_crons_save_new_company($company_id, $node_title)
+{
     global $user;
     $node = new stdClass();
     $node->title = $node_title;
@@ -127,7 +139,8 @@ function enorm_crons_save_new_company($company_id, $node_title) {
     enorm_crons_update_company_tag($company_id);
 }
 
-function enorm_crons_update_company_tag($company_id) {
+function enorm_crons_update_company_tag($company_id)
+{
     $operation = "companies.tag";
     $postfields = "{
       \"id\": \"" . $company_id . "\",
@@ -139,7 +152,8 @@ function enorm_crons_update_company_tag($company_id) {
     dpm("updated");
 }
 
-function enorm_crons_get_company_list_by_date() {
+function enorm_crons_get_company_list_by_date()
+{
     $operation = "companies.list";
     $postfields = "{
       
@@ -158,16 +172,16 @@ function enorm_crons_get_company_list_by_date() {
     return $result;
 }
 
-function enorm_crons_new_projects_cron () {
+function enorm_crons_new_projects_cron()
+{
 
     $result = enorm_crons_get_project_list();
-    foreach($result['data'] as $value) {
+    foreach ($result['data'] as $value) {
         $exists = enorm_crons_check_project_id($value['id']);
-        if(!empty($exists)) {
+        if (!empty($exists)) {
             //dan is ie al opgeslagen
             dpm("reeds opgeslagen");
-        }
-        else {
+        } else {
             //nog niet opgeslagen
             dpm("nog niet opgeslagen");
             enorm_crons_save_new_project($value['id'], $value['title'], $value['customer']['id']);
@@ -177,7 +191,8 @@ function enorm_crons_new_projects_cron () {
 
 }
 
-function enorm_crons_save_new_project($teamleader_id, $node_title, $company_teamleader_id) {
+function enorm_crons_save_new_project($teamleader_id, $node_title, $company_teamleader_id)
+{
     global $user;
     $node = new stdClass();
     $node->title = $node_title;
@@ -196,7 +211,8 @@ function enorm_crons_save_new_project($teamleader_id, $node_title, $company_team
     enorm_crons_new_project_database_insert($teamleader_id, $nid);
 }
 
-function enorm_crons_get_project_list() {
+function enorm_crons_get_project_list()
+{
     $operation = "projects.list";
     $postfields = "{
       \"page\": {
@@ -214,7 +230,8 @@ function enorm_crons_get_project_list() {
     return $result;
 }
 
-function enorm_crons_new_project_database_insert($teamleader_id, $nid) {
+function enorm_crons_new_project_database_insert($teamleader_id, $nid)
+{
     db_insert('teamleader_projects')
         ->fields(array(
             'teamleader_project_id' => $teamleader_id,
@@ -223,7 +240,8 @@ function enorm_crons_new_project_database_insert($teamleader_id, $nid) {
         ->execute();
 }
 
-function enorm_crons_check_project_id($teamleader_id) {
+function enorm_crons_check_project_id($teamleader_id)
+{
     $result = db_select('teamleader_projects', 'tp')
         ->fields('tp')
         ->condition('teamleader_project_id', $teamleader_id, '=')

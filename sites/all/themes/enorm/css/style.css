@@ -221,17 +221,141 @@ body {
   box-shadow: none;
   -webkit-box-shadow: none; }
 
-.not-logged-in .row {
-  margin-left: 0; }
-
-.not-logged-in .col-sm-4 {
-  padding: 40px;
-  border-radius: 3px; }
-
 .not-logged-in {
-  background-image: url("/sites/all/themes/enorm/assets/img/background.png");
+  background-image: url(/sites/all/themes/enorm/assets/img/background-test.png);
   background-size: cover; }
+  .not-logged-in .title {
+    color: #FFFFFF; }
+  .not-logged-in label {
+    color: #FFFFFF; }
+  .not-logged-in .row {
+    margin-left: 0; }
+  .not-logged-in .main-container {
+    min-height: 100%; }
+  .not-logged-in #auth_box #middle_part {
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none; }
+  .not-logged-in .form-text {
+    background-color: transparent;
+    color: #FFFFFF; }
+  .not-logged-in #auth_box input[type="text"], .not-logged-in #auth_box input[type="password"] {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #FFFFFF;
+    box-shadow: none;
+    border-radius: 0 !important; }
+  .not-logged-in .form-item-name-prefix {
+    display: inline-block;
+    float: left;
+    width: 15%;
+    color: #FFFFFF;
+    font-size: 20px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid white;
+    border-right: 1px solid white;
+    text-align: center;
+    margin-bottom: 15px; }
+  .not-logged-in .form-item-name, .not-logged-in .form-item-pass {
+    display: inline-block;
+    float: right;
+    width: 85%; }
+  .not-logged-in #auth_box input[type="text"], .not-logged-in #auth_box input[type="password"] {
+    text-align: center; }
+    .not-logged-in #auth_box input[type="text"]::placeholder, .not-logged-in #auth_box input[type="password"]::placeholder {
+      color: #FFFFFF; }
+  .not-logged-in label {
+    display: none; }
+  .not-logged-in .btn-primary {
+    color: #2A2A2A;
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid white;
+    background-color: #EFEFEF;
+    -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
+    -ms-transition: background-color 0.2s;
+    -o-transition: background-color 0.2s;
+    transition: background-color 0.2s; }
+    .not-logged-in .btn-primary:hover {
+      background-color: transparent;
+      color: #FFFFFF;
+      -webkit-transition: background-color 0.2s;
+      -moz-transition: background-color 0.2s;
+      -ms-transition: background-color 0.2s;
+      -o-transition: background-color 0.2s;
+      transition: background-color 0.2s; }
+  .not-logged-in .enorm-logo {
+    width: 100%;
+    margin-bottom: 10vh; }
 
 @media screen and (min-width: 1439px) {
   #block-search-form {
     left: 10vw; } }
+
+.node-type-content-type-invoice .panel-title {
+  background-color: #2A2A2A;
+  color: #FFFFFF !important; }
+
+.node-type-content-type-invoice .field {
+  padding-top: 2px; }
+
+.node-type-content-type-invoice .field-name-field-invoice-company-name .field-item {
+  font-size: 30px; }
+
+.node-type-content-type-invoice .group-invoice-adminstrative {
+  display: none; }
+
+#sidr-0 {
+  background-color: #2A2A2A; }
+
+#sidr-wrapper-0 {
+  background-color: #2A2A2A;
+  min-height: 8vh;
+  max-width: 11vw;
+  text-align: center; }
+
+#sidr-0-button {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 30px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  top: 1vh; }
+
+.sidr-class-first {
+  text-align: center; }
+
+.sidr-class-hero-image {
+  width: 30%;
+  padding-top: 3vh;
+  padding-bottom: 3vh; }
+
+.sidr-class-leaf, li.sidr-class-active-trail {
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid #EFEFEF !important;
+  background-color: #2A2A2A;
+  padding-bottom: 2vh; }
+  .sidr-class-leaf .sidr-class-glyphicon, li.sidr-class-active-trail .sidr-class-glyphicon {
+    display: none; }
+  .sidr-class-leaf a, li.sidr-class-active-trail a {
+    font-family: Roboto; }
+  .sidr-class-leaf a.sidr-class-active, li.sidr-class-active-trail a.sidr-class-active {
+    font-weight: bold;
+    color: #CC0C00; }
+
+.sidr ul li {
+  line-height: 20px; }
+
+.sidr ul li.sidr-class-active {
+  line-height: 25px; }
+
+@media screen and (max-width: 880px) {
+  .form-search .input-group {
+    width: 70%;
+    margin-left: 10vw; } }

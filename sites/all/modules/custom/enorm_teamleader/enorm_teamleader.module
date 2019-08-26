@@ -39,16 +39,16 @@ function enorm_teamleader_call($operation, $postfields)
                 drupal_set_message(t("Bad request, probably malformed JSON. Contact administrator."), "error");
                 break;
             case 401:
+                // Update token and report to the logs. Go back to the original call if token is updated.
                 enorm_teamleader_refresh_token();
                 watchdog('EnoRm', t('Teamleader Tokens were updated'), array(), WATCHDOG_INFO, NULL);
-                //header('Location: '.$_SERVER['REQUEST_URI']);  Enable when debugging is complete.
                 goto a;
                 break;
             case 403:
                 drupal_set_message(t("Forbidden, you are not allowed to access this resource."), "error");
                 break;
             case 404:
-                drupal_set_message(t("Not found, resource not found. Contact administrator."), "error");
+                drupal_set_message(t("Not found. Contact administrator."), "error");
                 break;
             case 429:
                 drupal_set_message(t("Request limit exceeded (100 calls per minute). Try again in a minute."), "error");

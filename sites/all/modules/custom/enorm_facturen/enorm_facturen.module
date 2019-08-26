@@ -10,12 +10,14 @@ function enorm_facturen_node_view_alter(&$build) {
         else {
             $build['field_invoice_number'][0]['#markup'] = "Invoice is still a draft, no number is available.";
         }
-        $build['field_invoice_date'][0]['#markup'] = $info['data']['invoice_date'];
-        if($info['data']['due_on'] != NULL) {
-            $build['field_invoice_due_on'][0]['#markup'] = $info['data']['due_on'];
+        $date = explode("-", $info['data']['invoice_date']);
+        $build['field_invoice_date'][0]['#markup'] = $date[2] . "/" .  $date[1] . "/" . $date[0];
+        if(empty($info['data']['due_on'])) {
+            $build['field_invoice_due_on'][0]['#markup'] = "Invoice is still a draft, no due date is available.";
         }
         else {
-            $build['field_invoice_number'][0]['#markup'] = "Invoice is still a draft, no due date is available.";
+            $date_due = explode("-", $info['data']['due_on']);
+            $build['field_invoice_due_on'][0]['#markup'] = $date_due[2] . "/" .  $date_due[1] . "/" . $date_due[0];
         }
         if($info['data']['paid'] === FALSE) {
             $build['field_invoice_paid'][0]['#markup'] = "No";
@@ -33,7 +35,6 @@ function enorm_facturen_get_invoice_info($invoice_id) {
     $postfields = "{
       \"id\": \"" . $invoice_id . "\"
     }";
-
     return enorm_teamleader_call($operation, $postfields);
 }
 

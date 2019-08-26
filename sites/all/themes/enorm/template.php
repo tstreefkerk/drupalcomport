@@ -7,7 +7,6 @@
  * Place your custom PHP code in this file.
  */
 
-
 /*
     Code was here for testing purposes, do not turn on or remove.
 */

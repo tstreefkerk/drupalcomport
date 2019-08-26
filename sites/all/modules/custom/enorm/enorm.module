@@ -29,6 +29,16 @@ function enorm_custom_field_info ($field_id) {
     return enorm_teamleader_call($operation, $postfields);
 }
 
+/**
+ * Implements hook_form_alter().
+ */
+function enorm_form_user_login_alter(&$form, &$form_state, $form_id)
+{
+    $form['name']['#prefix'] = "<div class='form-item-name-prefix'><span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span></div>";
+    $form['name']['#attributes']['placeholder'] = t('Username..');
+    $form['pass']['#prefix'] = "<div class='form-item-name-prefix'><span class=\"glyphicon glyphicon-lock\" aria-hidden=\"true\"></span></div>";
+    $form['pass']['#attributes']['placeholder'] = t('Password..');
+}
 
 //function enorm_block_info()
 //{

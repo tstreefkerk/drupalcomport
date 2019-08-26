@@ -115,6 +115,26 @@ function enorm_permissions_node_access($node, $op, $account)
                 return NODE_ACCESS_IGNORE;
             }
         }
+        elseif($node->type === 'content_type_invoice') {
+            $role_keys = array_keys($account->roles);
+            if(in_array('4', $role_keys)) {
+                $profile2 = profile2_load_by_user($account->uid);
+                $entity_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
+                $result = enorm_permissions_entity_load($entity_id);
+                $profile_company_id = $result->field_company_teamleader_id['und'][0]['value'];
+                $teamleader_id = $node->field_invoice_company_id['und'][0]['value'];
+                if($profile_company_id === $teamleader_id) {
+                    return NODE_ACCESS_ALLOW;
+                }
+                else {
+                    return NODE_ACCESS_DENY;
+                }
+
+            }
+            else {
+                return NODE_ACCESS_IGNORE;
+            }
+        }
     }
 }
 
@@ -134,9 +154,23 @@ function enorm_permissions_views_pre_render(&$view)
             }
         }
     }
-    if ($view->name == 'views_customer_my_files' || $view->name == 'view_all_projects_nodes') {
+    if ($view->name == 'views_customer_my_files' || $view->name == 'view_all_projects_nodes' || $view->name == 'view_all_invoices') {
+        $x = 0;
         foreach ($view->result as $key => $result) {
-            $node = node_load($result->nid);
+            $node = @node_load($result->nid);
+            if (!node_access('view', $node)) {
+                unset($view->result[$key]);
+            }
+            else {
+                $x ++;
+            }
+        }
+        $view->query->pager->total_items = $x;
+        $view->query->pager->update_page_info();
+    }
+    if($view->name == 'search_view') {
+        foreach($view->result as $key => $result) {
+            $node = node_load($result->entity);
             if (!node_access('view', $node)) {
                 unset($view->result[$key]);
             }

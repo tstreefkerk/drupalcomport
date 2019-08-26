@@ -1,0 +1,5 @@
+name = EnoRm. Search
+description = This module provides search control for the core Search. If turned off, all nodes will be visible to everyone when searching.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm

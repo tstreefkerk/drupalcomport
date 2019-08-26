@@ -1,0 +1,44 @@
+<?php
+
+
+/**
+ * Implementation of hook_form_alter()
+ */
+function enorm_search_form_search_block_form_alter(&$form, &$form_state, $form_id) {
+      $form['#submit'][0] = 'enorm_search_form_submit';
+}
+
+/**
+ * Process a block search form submission.
+ */
+function enorm_search_form_submit($form, &$form_state) {
+$keys = $form_state['values']['search_block_form'];
+
+  // The search form relies on control of the redirect destination for its
+  // functionality, so we override any static destination set in the request,
+  // for example by drupal_access_denied() or drupal_not_found()
+  // (see http://drupal.org/node/292565).
+  if (isset($_GET['destination'])) {
+      unset($_GET['destination']);
+  }
+
+  // Check to see if the form was submitted empty.
+  // If it is empty, display an error message.
+  // (This method is used instead of setting #required to TRUE for this field
+  // because that results in a confusing error message.  It would say a plain
+  // "field is required" because the search keywords field has no title.
+  // The error message would also complain about a missing #title field.)
+  if ($form_state['values']['search_block_form'] == '') {
+      form_set_error('keys', t('Please enter some keywords.'));
+  }
+  else {
+      $form_state['redirect'] = array(
+          'search-view',
+          array(
+              'query' => array(
+                  'search_api_views_fulltext' => $keys,
+              ),
+          ),
+      );
+  }
+}

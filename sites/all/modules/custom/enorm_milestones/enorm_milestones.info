@@ -1,0 +1,5 @@
+name = EnoRm. Milestones
+description = This module provides milestone viewing options for projects.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm

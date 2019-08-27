@@ -1,6 +1,7 @@
 @import "variables.scss";
 @import "header.scss";
 @import "home.scss";
+@import "other.scss";
 
 body {
   background-color: $primaryColorWhite;
@@ -36,6 +37,19 @@ body {
 }
 
 .not-logged-in {
+
+  #auth_box #bottom_part {
+    padding: 15px;
+
+    a {
+      color: $primaryColorWhite;
+      text-decoration: underline;
+    }
+  }
+
+  .alert-warning {
+    display: none;
+  }
 
   //background-color: #c0392b;
   background-image: url(/sites/all/themes/enorm/assets/img/background-test.png);
@@ -239,4 +253,6 @@ body {
   }
 }
 
-
+.page-node .field-label {
+  font-weight: bold;
+}

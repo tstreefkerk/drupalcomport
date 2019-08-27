@@ -12,8 +12,10 @@
   float: left;
   margin: $gutterMargin;
   padding: $gutterPadding;
-  background-image: url('../assets/img/card-background.png');
-  background-size: cover;
+  //background-image: url('../assets/img/card-background.png');
+  //background-size: cover;
+  background-color: $primaryColorLightGrey;
+  box-shadow: -1px 1px 10px 1px;
   text-align: center;
 }
 
@@ -37,18 +39,25 @@
   color: $primaryColorWhite;
 }
 
+.front .views-field {
+  font-size: $font-size-block;
+  color: $primaryColorWhite;
+}
+
 .block-title {
   padding: 1vw;
 }
 
-#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1 {
+#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block {
+  padding: 0;
 
-  .view-recently-read, .view-view-all-projects-nodes {
+  .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices {
     width: 100%;
     height: auto;
     margin-top: 10%;
 
     .view-header {
+      text-decoration: underline;
       padding: 1vw;
       position: relative;
       width: 100%;
@@ -91,7 +100,20 @@
     }
 
     span {
-      font-size: $font-size-normal;
+      font-size: $font-size-block;
     }
+  }
+}
+
+@media screen and (max-width: 880px) {
+  .front .region-content section:nth-child(1), .front .region-content section:nth-child(2), .front .region-content section:nth-child(3) {
+    min-height: 40vh;
+    max-height: 40vh;
+    overflow: scroll;
+  }
+
+
+  #block-views-recently-read-block .view-recently-read .view-header{
+    font-size: $font-size-normal;
   }
 }

@@ -144,6 +144,7 @@ function enorm_permissions_entity_load($entity_id) {
 
 function enorm_permissions_views_pre_render(&$view)
 {
+    // Check view name and then unset results if not accessible.
     if ($view->name == 'view_my_projects') {
         global $user;
         $profile2 = profile2_load_by_user($user->uid);
@@ -153,7 +154,12 @@ function enorm_permissions_views_pre_render(&$view)
                 unset($view->result[$key]);
             }
         }
+        // Hide exposed filters when view is empty.
+        if(empty($view->result)) {
+            $view->exposed_widgets = NULL;
+        }
     }
+    // Check view name and then unset results if not accessible.
     if ($view->name == 'views_customer_my_files' || $view->name == 'view_all_projects_nodes' || $view->name == 'view_all_invoices') {
         $x = 0;
         foreach ($view->result as $key => $result) {
@@ -165,9 +171,15 @@ function enorm_permissions_views_pre_render(&$view)
                 $x ++;
             }
         }
-        $view->query->pager->total_items = $x;
-        $view->query->pager->update_page_info();
+        // Hide exposed filters when view is empty.
+        if(empty($view->result)) {
+            $view->exposed_widgets = NULL;
+        }
+        // Update pager, because its rendered before adjusting our results.
+//        $view->query->pager->total_items = $x;
+//        $view->query->pager->update_page_info();
     }
+    // Same logic as above but different fields because it renders entities and not tables or fields.
     if($view->name == 'search_view') {
         foreach($view->result as $key => $result) {
             $node = node_load($result->entity);

@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Install, Uninstall and Update functions for the no_autocomplete module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function no_autocomplete_install() {
+  // The status for the "autocomplete=off" option on user login form.
+  variable_set('no_autocomplete_login_form', FALSE);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function no_autocomplete_uninstall() {
+  // Deleting the variable.
+  variable_del('no_autocomplete_login_form');
+}
+
+/**
+ * Issue #2951274: The autocomplete option is not needed for the user edit form.
+ */
+function no_autocomplete_update_7101() {
+  // Deleting the variable.
+  variable_del('no_autocomplete_profile_form');
+}

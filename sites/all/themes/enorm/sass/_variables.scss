@@ -6,6 +6,15 @@ $primaryColorGrey: #EFEFEF;
 $primaryColorDarkGrey: #2A2A2A;
 $primaryColorLightGrey: #3F3F3F;
 
+// Block colors
+$block-background-color-one: $primaryColorDarkGrey;
+$block-background-color-two: $primaryColorLightGrey;
+$block-background-color-three: $primaryColorGrey;
+
+
+
+$block-highlight-color:  rgba(113, 113, 113, 0.5);
+
 // Font settings
 $font-standard: Roboto;
 $font-size-small: 15px;
@@ -19,6 +28,6 @@ $h4-color-red: #CC0C00;
 $h4-color-black: #000000;
 
 // Margin and padding settings
-$gutterMargin: 10px;
+$gutterMargin: 5px;
 $gutterPadding: 10px;
 

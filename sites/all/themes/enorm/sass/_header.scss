@@ -38,7 +38,7 @@
 .nav a {
   color: $primaryColorWhite;
 
-  &:hover {
+  &:hover{
     color: $primaryColorRed;
     background-color: $primaryColorLightGrey !important;
   }
@@ -47,6 +47,30 @@
     background-color: $primaryColorLightGrey;
     color: $primaryColorRed;
   }
+}
+
+.menu li.active {
+  background-color: $primaryColorWhite;
+  a {
+    color: $primaryColorRed;
+    &:hover, &:focus {
+      background-color: $primaryColorWhite !important;
+    }
+  }
+}
+
+.menu {
+  li.active{
+    a{
+      &:hover, &:focus {
+        background-color: $primaryColorDarkGrey !important;
+      }
+    }
+  }
+}
+
+.menu li.first {
+  background-color: $primaryColorDarkGrey;
 }
 
 //search form
@@ -101,10 +125,10 @@
     top: 0;
     left: 10vw;
     background-color: $primaryColorDarkGrey;
+    box-shadow: inset 0 -1px 0 0 #e4e4e6;
   }
 
   .content-search {
-    background-color: $primaryColorBlack;
     min-height: 20px;
     border-radius: 0;
   }

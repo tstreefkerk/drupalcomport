@@ -1,0 +1,7 @@
+name = EnoRm. Dashboard
+description = Provides dashboards.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm
+dependencies[] = enorm_teamleader
+dependencies[] = context

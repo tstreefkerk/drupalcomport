@@ -4,31 +4,45 @@
   margin-top: 10px;
 }
 
+.front .row {
+  display: table;
+  margin: 0 auto;
+}
+
 @mixin frontpage-block {
-  min-height: 70vh;
-  max-width: 30%;
-  min-width: 30%;
+  min-height: 25vw;
+  max-height: 25vw;
+  max-width: 15vw;
+  min-width: 15vw;
   display: inline-block;
-  float: left;
-  margin: $gutterMargin;
+  //margin: $gutterMargin;
   padding: $gutterPadding;
+  position: relative;
+  float: left;
   //background-image: url('../assets/img/card-background.png');
   //background-size: cover;
-  background-color: $primaryColorLightGrey;
-  box-shadow: -1px 1px 10px 1px;
+  -webkit-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+  -moz-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+  box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
   text-align: center;
+  margin: 0 2px;
 }
 
 .front .region-content section:nth-child(1) {
   @include frontpage-block;
+  background-color: $block-background-color-one;
 }
 
 .front .region-content section:nth-child(2) {
   @include frontpage-block;
+  background-color: $block-background-color-two;
+  left: 12.5%;
 }
 
 .front .region-content section:nth-child(3) {
   @include frontpage-block;
+  background-color: $block-background-color-three;
+  left: 25%;
 }
 
 #block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1 {
@@ -48,22 +62,21 @@
   padding: 1vw;
 }
 
-#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block {
+#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block, #block-views-view-all-invoices-block-1, #block-views-my-files-block-1 {
   padding: 0;
 
-  .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices {
+  .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices, .view-my-files {
     width: 100%;
     height: auto;
     margin-top: 10%;
 
     .view-header {
-      text-decoration: underline;
       padding: 1vw;
       position: relative;
       width: 100%;
       z-index: 99;
-      font-size: $font-size-medium;
-      background-color: rgba(113, 113, 113, 0.5);
+      font-size: $font-size-block;
+      background-color: $block-highlight-color;
       color: $primaryColorWhite;
       -webkit-touch-callout: none; /* iOS Safari */
       -webkit-user-select: none; /* Safari */
@@ -74,9 +87,9 @@
       /* Non-prefixed version, currently
                                        supported by Chrome and Opera */
 
-      &:hover {
-        cursor: pointer;
-      }
+      //&:hover {
+      //  cursor: pointer;
+      //}
     }
 
     .view-content {
@@ -95,12 +108,31 @@
       text-decoration: underline;
 
       &:hover {
-        color: $primaryColorDarkGrey;
+        color: $primaryColorRed;
       }
     }
 
     span {
       font-size: $font-size-block;
+    }
+  }
+}
+
+.front {
+  #block-views-view-all-invoices-block-1 {
+    .views-field {
+      font-size: $font-size-big;
+    }
+  }
+
+  .more-link {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    padding: $gutterPadding;
+
+    a{
+      color: $primaryColorRed !important;
     }
   }
 }
@@ -112,8 +144,13 @@
     overflow: scroll;
   }
 
-
-  #block-views-recently-read-block .view-recently-read .view-header{
+  #block-views-recently-read-block .view-recently-read .view-header {
     font-size: $font-size-normal;
+  }
+}
+
+#block-views-my-files-block-1, #block-views-view-all-companies-block-1 {
+  .view-content {
+    display: none;
   }
 }

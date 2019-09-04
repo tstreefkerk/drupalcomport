@@ -2,9 +2,10 @@
 @import "header.scss";
 @import "home.scss";
 @import "other.scss";
+@import "node-project.scss";
 
 body {
-  background-color: $primaryColorWhite;
+  background-color: #EFEFEF;
   overflow-x: hidden;
 }
 
@@ -257,4 +258,3 @@ body {
 .page-node .field-label {
   font-weight: bold;
 }
-

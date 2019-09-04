@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * Implements hook_node_view_alter().
+ */
+function enorm_timetracking_node_view_alter(&$build)
+{
+//    dpm($build);
+}
+
+function enorm_timetracking_cleanup($data)
+{
+    $cleanup = '';
+    foreach ($data['data'] as $value) {
+//        $cleanup = $cleanup . $value;
+//        dpm($value);
+        if (!empty($value)) {
+            $duration = $value['duration'] / 60;
+            $cleanup = $cleanup . $value['description'] . ', duration (min): ' . $duration;
+            unset($duration);
+        }
+    }
+    return $cleanup;
+}
+
+function enorm_timetracking_get_timetracking_list($milestone_id)
+{
+    $operation = "timeTracking.list";
+    $postfields = "{
+      \"page\": {
+        \"size\": 50,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"started_on\",
+          \"order\": \"desc\"
+        }
+      ]
+    }";
+    return enorm_teamleader_call($operation, $postfields);
+}
+
+function enorm_timetracking_get_worktype ($worktype_id) {
+    $operation = "workTypes.list";
+    $postfields = "{
+      \"filter\": {
+        \"ids\": [
+          \"" . $worktype_id . "\",
+        ]
+      },
+      \"page\": {
+        \"size\": 20,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"name\",
+          \"order\": \"asc\"
+        }
+      ]
+    }";
+    return enorm_teamleader_call($operation, $postfields);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

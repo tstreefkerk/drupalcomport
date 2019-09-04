@@ -13,21 +13,32 @@ function enorm_permissions_node_view_alter(&$build)
         }
         $build['field_project_start_date'][0]['#markup'] = $data['data']['starts_on'];
         $build['field_project_end_date'][0]['#markup'] = $data['data']['due_on'];
-        $build['field_project_status'][0]['#markup'] = $data['data']['status'];
+        $build['field_project_status'][0]['#markup'] = ucfirst($data['data']['status']);
         $participants = "";
         $count = count($data['data']['participants']) - 1;
         $i = 0;
         foreach ($data['data']['participants'] as $value) {
             $result = enorm_companies_get_teamleader_user_name($value['participant']['id']);
             if ($i === $count) {
-                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . " (" . $value['role'] . ")";
+                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . " (" . enorm_permissions_role_cleanup($value['role']) . ")";
             } else {
-                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . "(" . $value['role'] . ")" . " + ";
+                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . " (" . enorm_permissions_role_cleanup($value['role']) . ")" . "<br>";
                 $i++;
             }
         }
         $build['field_project_participants'][0]['#markup'] = $participants;
 
+    }
+}
+
+function enorm_permissions_role_cleanup($role) {
+    switch ($role) {
+        case 'decision_maker':
+            return 'Chief';
+            break;
+        case 'member':
+            return 'Participant';
+            break;
     }
 }
 

@@ -1,0 +1,5 @@
+name = EnoRm. Timetracking
+description = This module provides timetracking information for milestones within project nodes.
+core = 7.x
+package = EnoRm.
+dependencies[] = enorm

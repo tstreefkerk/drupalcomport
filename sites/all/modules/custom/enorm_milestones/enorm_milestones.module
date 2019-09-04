@@ -6,13 +6,26 @@ function enorm_milestones_node_view_alter(&$build)
         $project_id = $build['field_project_teamleader_id'][0]['#markup'];
         $milestones = enorm_milestones_get_info($project_id);
         $milestone_amount = count($milestones['data']);
-        if (!empty($milestones)) {
-            $build['field_project_milestones'][0]['#markup'] = '';
-            for ($x = 0; $x < $milestone_amount; $x++) {
-                $due_date = explode("-", $milestones['data'][$x]['due_on']);
-                $build['field_project_milestones'][0]['#markup'] = $build['field_project_milestones'][0]['#markup'] . $milestones['data'][$x]['name'] . ', status: ' . $milestones['data'][$x]['status'] . '. Due on: ' .$due_date[2] . "/" .  $due_date[1] . "/" . $due_date[0] . '<br><br>';
+        $active = 0;
+        $closed = 0;
+        $timetracking = 0;
+        $build['field_project_milestones'][0]['#markup'] = '';
+        for ($x = 0; $x < $milestone_amount; $x++) {
+            if($milestones['data'][$x]['status'] == 'closed') {
+                $closed++;
             }
+            elseif($milestones['data'][$x]['status'] == 'open'){
+                $active++;
+            }
+            $due_date = explode("-", $milestones['data'][$x]['due_on']);
+            $timetracking += enorm_timetracking_get_timetracking_list($milestones['data'][$x]['id']);
+            $build['field_project_milestones'][0]['#markup'] = $build['field_project_milestones'][0]['#markup'] . $milestones['data'][$x]['name'] . ', status: ' . $milestones['data'][$x]['status'] . '. Due on: ' . $due_date[2] . "/" . $due_date[1] . "/" . $due_date[0] . '<br><br>';
         }
+        $timetracking = round($timetracking / 60 / 60);
+        $build['field_project_hours_spent'][0]['#markup'] = $timetracking . '<br><p>hours tracked to project.</p>';
+        $total = $closed + $active;
+        $percentage = round($closed / $total * 100) . "%";
+        $build['field_project_percentage'][0]['#markup'] = $percentage;
     }
 }
 

@@ -61,3 +61,33 @@ function enorm_crons_update_7102() {
     $schematwo = enorm_crons_schema_two();
     db_create_table('teamleader_invoices', $schematwo['teamleader_invoices']);
 }
+
+function enorm_crons_schema_three() {
+    $schemathree = array();
+    $schemathree['teamleader_milestones'] = array(
+        'description' => 'Contains Teamleader IDs for already existing milestones within ComPort',
+        'fields' => array(
+            'teamleader_milestone_id' => array(
+                'description' => 'Teamleader Milestone ID',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'teamleader_milestone_nid' => array(
+                'description' => 'The NID that the Teamleader invoice ID points to',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+        ),
+        'primary key' => array('teamleader_milestone_id')
+    );
+    return $schemathree;
+}
+
+function enorm_crons_update_7103() {
+    $schemathree = enorm_crons_schema_three();
+    db_create_table('teamleader_milestones', $schemathree['teamleader_milestones']);
+}

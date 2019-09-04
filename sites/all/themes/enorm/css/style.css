@@ -131,7 +131,7 @@ footer {
   max-width: 15vw;
   min-width: 15vw;
   display: inline-block;
-  padding: 10px;
+  padding: 20px;
   position: relative;
   float: left;
   -webkit-box-shadow: -5px 2px 30px -7px gray;
@@ -147,7 +147,7 @@ footer {
   max-width: 15vw;
   min-width: 15vw;
   display: inline-block;
-  padding: 10px;
+  padding: 20px;
   position: relative;
   float: left;
   -webkit-box-shadow: -5px 2px 30px -7px gray;
@@ -164,7 +164,7 @@ footer {
   max-width: 15vw;
   min-width: 15vw;
   display: inline-block;
-  padding: 10px;
+  padding: 20px;
   position: relative;
   float: left;
   -webkit-box-shadow: -5px 2px 30px -7px gray;
@@ -237,7 +237,7 @@ footer {
   position: absolute;
   bottom: -40px;
   left: 0;
-  padding: 10px; }
+  padding: 20px; }
   .front .more-link a {
     color: #CC0C00 !important; }
 
@@ -259,8 +259,66 @@ footer {
 .page-node .submitted {
   display: none; }
 
-body {
+.node-type-content-type-project .row {
+  top: 10vh; }
+
+.node-type-content-type-project .page-header {
+  font-size: 45px; }
+
+.node-type-content-type-project .nav-tabs {
+  display: none; }
+
+.node-type-content-type-project #node-content-type-project-detail, .node-type-content-type-project #node-content-type-project-milestones, .node-type-content-type-project #node-content-type-project-timetracking {
   background-color: #FFFFFF;
+  padding: 0 20px 20px 20px;
+  display: inline-block;
+  position: relative;
+  float: left;
+  width: 48%;
+  -webkit-box-shadow: -5px 2px 30px -7px gray;
+  -moz-box-shadow: -5px 2px 30px -7px gray;
+  box-shadow: -5px 2px 30px -7px gray;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 30px; }
+  .node-type-content-type-project #node-content-type-project-detail h3, .node-type-content-type-project #node-content-type-project-milestones h3, .node-type-content-type-project #node-content-type-project-timetracking h3 {
+    border-bottom: 1px solid #2A2A2A;
+    padding-bottom: 2px; }
+
+.node-type-content-type-project #node-content-type-project-timetracking h3 {
+  display: none; }
+
+.node-type-content-type-project #node-content-type-project-milestones {
+  float: right; }
+
+.node-type-content-type-project .field-group-format-title {
+  color: #2A2A2A; }
+
+.node-type-content-type-project .milestone-percentage-container {
+  -webkit-box-shadow: -5px 2px 30px -7px gray;
+  -moz-box-shadow: -5px 2px 30px -7px gray;
+  box-shadow: -5px 2px 30px -7px gray;
+  width: 100%;
+  background-color: #ddd;
+  margin-bottom: 10vh; }
+
+.node-type-content-type-project .milestone-percentage-bar {
+  height: 30px;
+  background-color: #CC0C00;
+  text-align: center;
+  line-height: 30px;
+  color: white; }
+
+.node-type-content-type-project .field-name-field-project-hours-spent {
+  text-align: center;
+  padding: 20px; }
+  .node-type-content-type-project .field-name-field-project-hours-spent .field-item {
+    font-size: 45px; }
+    .node-type-content-type-project .field-name-field-project-hours-spent .field-item p {
+      font-size: 14px; }
+
+body {
+  background-color: #EFEFEF;
   overflow-x: hidden; }
 
 .main-container {

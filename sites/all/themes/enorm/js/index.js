@@ -1,6 +1,9 @@
 (function ($) {
     Drupal.behaviors.enorm = {
         attach: function (context, settings) {
+            var $percentage = $(".field-name-field-project-percentage").find('.field-item').text();
+            $(".milestone-percentage-bar").css("width", $percentage);
+            $(".milestone-percentage-bar").text($percentage);
             $(".company-search-form-company-id").once('enorm').click(function() {
                 var copyText = $(".company-search-form-company-id");
                 copyText.select();

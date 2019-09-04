@@ -1,0 +1,82 @@
+@mixin box-shadow{
+  -webkit-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+  -moz-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+  box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+}
+
+.node-type-content-type-project {
+  .row {
+    top: 10vh;
+  }
+
+  .page-header {
+    font-size: $font-size-enormous;
+  }
+
+  .nav-tabs {
+    display: none;
+  }
+
+  #node-content-type-project-detail, #node-content-type-project-milestones, #node-content-type-project-timetracking {
+    background-color: $primaryColorWhite;
+    padding: 0 $gutterPadding $gutterPadding $gutterPadding;
+    display: inline-block;
+    position: relative;
+    float: left;
+    width: 48%;
+    -webkit-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+    -moz-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+    box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 30px;
+
+    h3{
+      border-bottom: 1px solid $primaryColorBlack;
+      padding-bottom: 2px;
+    }
+  }
+
+  #node-content-type-project-timetracking {
+    h3{
+      display: none;
+    }
+  }
+
+  #node-content-type-project-milestones {
+    float: right;
+  }
+
+  .field-group-format-title {
+    color: $primaryColorBlack;
+  }
+
+  .milestone-percentage-container {
+    @include box-shadow;
+    width: 100%;
+    background-color: #ddd;
+    margin-bottom: 10vh;
+  }
+
+  .milestone-percentage-bar {
+    height: 30px;
+    background-color: $primaryColorRed;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+  }
+
+  .field-name-field-project-hours-spent {
+    text-align: center;
+    padding: 20px;
+    .field-item {
+      font-size: $font-size-enormous;
+
+      p{
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+

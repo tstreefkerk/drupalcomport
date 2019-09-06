@@ -1,10 +1,15 @@
 @mixin box-shadow{
-  -webkit-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
-  -moz-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
-  box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
 }
 
 .node-type-content-type-project {
+
+  .page-header {
+    color: $primaryColorDarkGrey;
+  }
+
   .row {
     top: 10vh;
   }
@@ -17,34 +22,41 @@
     display: none;
   }
 
-  #node-content-type-project-detail, #node-content-type-project-milestones, #node-content-type-project-timetracking {
+  #node-content-type-project-detail div.field, #node-content-type-project-milestones, #node-content-type-project-timetracking, #block-enorm-milestones-enorm-milestones {
+    @include box-shadow;
     background-color: $primaryColorWhite;
     padding: 0 $gutterPadding $gutterPadding $gutterPadding;
     display: inline-block;
     position: relative;
     float: left;
-    width: 48%;
-    -webkit-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
-    -moz-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
-    box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+    min-width: 22%;
+    max-width: 30%;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 30px;
+    margin-right: 10px;
 
-    h3{
+    h3, .field-label{
       border-bottom: 1px solid $primaryColorBlack;
       padding-bottom: 2px;
+      padding-top: 10px;
+      font-size: 25px;
     }
   }
 
-  #node-content-type-project-timetracking {
-    h3{
+  #block-enorm-milestones-enorm-milestones {
+    min-width: 50%;
+    float: right;
+    h2 {
       display: none;
     }
   }
 
-  #node-content-type-project-milestones {
+  #node-content-type-project-timetracking {
     float: right;
+    h3{
+      display: none;
+    }
   }
 
   .field-group-format-title {
@@ -60,7 +72,7 @@
 
   .milestone-percentage-bar {
     height: 30px;
-    background-color: $primaryColorRed;
+    background-color: #009688;
     text-align: center;
     line-height: 30px;
     color: white;
@@ -76,6 +88,39 @@
         font-size: 14px;
       }
     }
+  }
+
+  .percentage-done-hidden {
+    display: none;
+  }
+
+  .project-expiring {
+    text-align: center;
+    p {
+      text-align: left;
+    }
+  }
+
+  .milestones-contact-button {
+    @include box-shadow;
+    background-color: transparent;
+    border-radius: 1px;
+    color: $primaryColorRed;
+    border: 1px solid $primaryColorRed;
+    padding: 10px;
+    margin-top: 10px;
+    font-family: 'Druk';
+    font-size: 23px;
+  }
+
+  #node-content-type-project-detail {
+    h3 {
+      display: none;
+    }
+  }
+
+  .field-name-field-project-participants {
+    float: left;
   }
 }
 

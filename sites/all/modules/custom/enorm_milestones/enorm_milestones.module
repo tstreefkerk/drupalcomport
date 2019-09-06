@@ -1,34 +1,5 @@
 <?php
 
-function enorm_milestones_node_view_alter(&$build)
-{
-    if ($build['#bundle'] === 'content_type_project') {
-        $project_id = $build['field_project_teamleader_id'][0]['#markup'];
-        $milestones = enorm_milestones_get_info($project_id);
-        $milestone_amount = count($milestones['data']);
-        $active = 0;
-        $closed = 0;
-        $timetracking = 0;
-        $build['field_project_milestones'][0]['#markup'] = '';
-        for ($x = 0; $x < $milestone_amount; $x++) {
-            if($milestones['data'][$x]['status'] == 'closed') {
-                $closed++;
-            }
-            elseif($milestones['data'][$x]['status'] == 'open'){
-                $active++;
-            }
-            $due_date = explode("-", $milestones['data'][$x]['due_on']);
-            $timetracking += enorm_timetracking_get_timetracking_list($milestones['data'][$x]['id']);
-            $build['field_project_milestones'][0]['#markup'] = $build['field_project_milestones'][0]['#markup'] . $milestones['data'][$x]['name'] . ', status: ' . $milestones['data'][$x]['status'] . '. Due on: ' . $due_date[2] . "/" . $due_date[1] . "/" . $due_date[0] . '<br><br>';
-        }
-        $timetracking = round($timetracking / 60 / 60);
-        $build['field_project_hours_spent'][0]['#markup'] = $timetracking . '<br><p>hours tracked to project.</p>';
-        $total = $closed + $active;
-        $percentage = round($closed / $total * 100) . "%";
-        $build['field_project_percentage'][0]['#markup'] = $percentage;
-    }
-}
-
 function enorm_milestones_get_info($id)
 {
     $operation = "milestones.list";
@@ -49,3 +20,125 @@ function enorm_milestones_get_info($id)
     }";
     return enorm_teamleader_call($operation, $postfields);
 }
+
+function enorm_milestones_block_info()
+{
+    $blocks['enorm_milestones'] = array(
+        'info' => t('Enorm Milestones'),
+        'cache' => DRUPAL_CACHE_PER_ROLE,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function enorm_milestones_block_view($delta = '')
+{
+    $block = array();
+    switch ($delta) {
+        case 'enorm_milestones':
+            $block['subject'] = t('Enorm Milestones');
+            $block['content'] = array(
+                '#markup' => enorm_milestones_get_milestones_block(),
+            );
+            break;
+    }
+    return $block;
+}
+
+function enorm_milestones_get_milestones_block()
+{
+    if (arg(0) == 'node') {
+        $nid = arg(1);
+        $result = db_select('teamleader_milestones', 'tm')
+            ->fields('tm')
+            ->condition('teamleader_milestone_nid', $nid, '=')
+            ->execute()
+            ->fetchAllAssoc('teamleader_milestone_own_nid');
+        $returnable = "<h3><span>Milestones</span></h3>";
+        ksort($result);
+        $open = 0;
+        $closed = 0;
+        foreach ($result as $value) {
+            $own_nid = $value->teamleader_milestone_own_nid;
+            $node = node_load($own_nid);
+            if ($node->field_milestone_status['und'][0]['value'] === 'open') {
+                $open++;
+            } else {
+                $closed++;
+            }
+            $returnable = $returnable . $node->title . ", status: " . $node->field_milestone_status['und'][0]['safe_value'] . ". Due on: " . $node->field_milestone_due['und'][0]['value'] . ".<br>";
+        }
+        $total = $closed + $open;
+        $percentage = floor($closed / $total * 100);
+        if (variable_get('milestones_contact_enable') === 1) {
+            if ($percentage >= 50 && $total > 2) {
+                $returnable = $returnable . "<div class='percentage-done-hidden'>" . $percentage . "%</div><br><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p><button class='milestones-contact-button' type='button'>Yes, call me!</button></div>";
+            } else {
+                $returnable = $returnable . "<div class='percentage-done-hidden'>" . $percentage . "%</div>";
+            }
+        }
+        else {
+            $returnable = $returnable . "<div class='percentage-done-hidden'>" . $percentage . "%</div>";
+        }
+        return $returnable;
+    };
+}
+
+function enorm_milestones_admin()
+{
+    $form = array();
+
+    $form['milestones_contact_enable'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable contact message on milestone overview'),
+        '#description' => t('Display a contact me message when the open milestones are 1 or less'),
+        '#required' => FALSE,
+        '#default_value' => variable_get('milestones_contact_enable', TRUE),
+    );
+
+    $form['milestones_contact_message'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Message to be displayed'),
+        '#description' => t('The message that is to be displayed when milestones are 1 or less'),
+        '#required' => FALSE,
+        '#size' => 60,
+        '#maxlength' => 255,
+        '#default_value' => variable_get('milestones_contact_message', 'It seems we"re down to the last milestone. Would you like to talk about possible opportunities over a cup of coffee?'),
+    );
+
+    return system_settings_form($form);
+}
+
+function enorm_milestones_menu()
+{
+    $items = array();
+
+    $items['admin/settings/enorm_milestones'] = array(
+        'title' => 'Enorm Milestones module settings',
+        'description' => 'Control the contact me message on milestones overview',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('enorm_milestones_admin'),
+        'access arguments' => array('administer enorm milestones settings'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

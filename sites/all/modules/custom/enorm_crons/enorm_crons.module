@@ -21,6 +21,10 @@ function enorm_crons_cronapi($op, $job = NULL)
     return $items;
 }
 
+function enorm_crons_new_milestones_cron() {
+//    $result = enorm_crons_
+}
+
 function enorm_crons_new_invoices_cron()
 {
     $result = enorm_crons_check_new_invoices();
@@ -212,7 +216,67 @@ function enorm_crons_save_new_project($teamleader_id, $node_title, $company_team
     node_save($node);
     // Update database
     $nid = $node->nid;
+    enorm_crons_milestone_processor($teamleader_id, $nid);
     enorm_crons_new_project_database_insert($teamleader_id, $nid);
+}
+
+function enorm_crons_milestone_processor($project_id, $nid) {
+    $data = enorm_crons_get_milestones($project_id);
+    if(!empty($data['data'])) {
+        foreach ($data['data'] as $value) {
+            enorm_crons_save_new_milestone($value['name'], $value['id'], $value['due_on'], $value['status'], $value['project']['id'], $value['project']['type'], $value['responsible_user']['id'], $value['actuals']['billable_amount']['amount'], $nid);
+        }
+    }
+}
+
+function enorm_crons_save_new_milestone($node_title, $milestone_id, $due_on, $milestone_status, $project_id, $project_type, $user_id, $billable_amount, $nid) {
+    global $user;
+    $node = new stdClass();
+    $node->title = $node_title;
+    $node->type = "content_type_milestone";
+    $node->language = 'en';
+    $node->uid = $user->uid;
+    $node->status = 1;
+    $node->promote = 0;
+    $node->field_milestone_id[LANGUAGE_NONE][0]['value'] = $milestone_id;
+    $node->field_milestone_due[LANGUAGE_NONE][0]['value'] = $due_on;
+    $node->field_milestone_status[LANGUAGE_NONE][0]['value'] = $milestone_status;
+    $node->field_milestone_project_id[LANGUAGE_NONE][0]['value'] = $project_id;
+    $node->field_milestone_project_type[LANGUAGE_NONE][0]['value'] = $project_type;
+    //not from drupal! This is the responsible user as defined in Teamleader.
+    $node->field_milestone_user_id[LANGUAGE_NONE][0]['value'] = $user_id;
+    $node->field_milestone_billable_amount[LANGUAGE_NONE][0]['value'] = $billable_amount;
+    node_object_prepare($node);
+    $node = node_submit($node); // Prepare node for saving
+    node_save($node);
+    $own_nid = $node->nid;
+    // Update database
+    enorm_crons_new_milestone_database_insert($milestone_id, $nid, $own_nid);
+}
+
+function enorm_crons_get_project_list()
+{
+    $operation = "projects.list";
+    $postfields = "{
+      \"filter\": {
+        \"customer\": {
+          \"type\": \"company\",
+          \"id\": \"0308243b-bc4e-01d8-9362-a5f5d4d9d577\"
+        }
+      },
+      \"page\": {
+        \"size\": 100,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"due_on\",
+          \"order\": \"desc\"
+        }
+      ]
+    }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    return $result;
 }
 
 function enorm_crons_get_milestones($project_id) {
@@ -235,67 +299,12 @@ function enorm_crons_get_milestones($project_id) {
     return enorm_teamleader_call($operation, $postfields);
 }
 
-function enorm_crons_milestone_processor($project_id) {
-    $data = enorm_crons_get_milestones($project_id);
-    if(!empty($data['data'])) {
-        foreach ($data['data'] as $value) {
-            enorm_crons_save_new_milestone($value['name'], $value['id'], $value['due_on'], $value['status'], $value['project']['id'], $value['project']['type'], $value['responsible_user']['id'], $value['actuals']['billable_amount']['amount']);
-        }
-    }
-    else {
-        exit;
-    }
-}
-
-function enorm_crons_save_new_milestone($node_title, $milestone_id, $due_on, $milestone_status, $project_id, $project_type, $user_id, $billable_amount) {
-    global $user;
-    $node = new stdClass();
-    $node->title = $node_title;
-    $node->type = "content_type_project";
-    $node->language = 'en';
-    $node->uid = $user->uid;
-    $node->status = 1;
-    $node->promote = 0;
-    $node->field_milestone_id[LANGUAGE_NONE][0]['value'] = $milestone_id;
-    $node->field_milestone_due[LANGUAGE_NONE][0]['value'] = $due_on;
-    $node->field_milestone_status[LANGUAGE_NONE][0]['value'] = $milestone_status;
-    $node->field_milestone_project_id[LANGUAGE_NONE][0]['value'] = $project_id;
-    $node->field_milestone_project_type[LANGUAGE_NONE][0]['value'] = $project_type;
-    //not from drupal! This is the responsible user as defined in Teamleader.
-    $node->field_milestone_user_id[LANGUAGE_NONE][0]['value'] = $user_id;
-    $node->field_milestone_billable_amount[LANGUAGE_NONE][0]['value'] = $billable_amount;
-    node_object_prepare($node);
-    $node = node_submit($node); // Prepare node for saving
-    node_save($node);
-    // Update database
-    $nid = $node->nid;
-//    enorm_crons_new_project_database_insert($milestone_id, $nid);
-}
-
-function enorm_crons_get_project_list()
-{
-    $operation = "projects.list";
-    $postfields = "{
-      \"page\": {
-        \"size\": 100,
-        \"number\": 1
-      },
-      \"sort\": [
-        {
-          \"field\": \"due_on\",
-          \"order\": \"desc\"
-        }
-      ]
-    }";
-    $result = enorm_teamleader_call($operation, $postfields);
-    return $result;
-}
-
-function enorm_crons_new_milestone_database_insert($milestone_id, $nid) {
+function enorm_crons_new_milestone_database_insert($milestone_id, $nid, $own_nid) {
     db_insert('teamleader_milestones')
         ->fields(array(
             'teamleader_milestone_id' => $milestone_id,
-            'teamleader_milestone_nid' => $nid
+            'teamleader_milestone_nid' => $nid,
+            'teamleader_milestone_own_nid' => $own_nid
         ))
         ->execute();
 }

@@ -91,3 +91,12 @@ function enorm_crons_update_7103() {
     $schemathree = enorm_crons_schema_three();
     db_create_table('teamleader_milestones', $schemathree['teamleader_milestones']);
 }
+
+function enorm_crons_update_7104() {
+    db_add_field('teamleader_milestones', 'teamleader_milestone_own_nid', array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+    ));
+}

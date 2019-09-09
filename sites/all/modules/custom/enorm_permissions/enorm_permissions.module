@@ -5,6 +5,21 @@
 function enorm_permissions_node_view_alter(&$build)
 {
     if ($build['#bundle'] === 'content_type_project') {
+        $node = node_load(arg(1));
+        $project_id_milestone = $node->field_project_teamleader_id['und'][0]['value'];
+        $nid = $node->nid;
+        dpm($node);
+        $date = node_last_changed($nid);
+        $readable_date = date('d-m-Y', $date);
+        $today = date('d-m-Y');
+        $difference = strtotime($today) - strtotime($readable_date);
+        $days_changed = round($difference / (60 * 60 * 24));
+        dpm($days_changed);
+        if($days_changed >= 3) {
+            enorm_permissions_delete_old_milestones($nid);
+            enorm_crons_milestone_processor($project_id_milestone, $nid);
+            enorm_permissions_update_last_changed($nid);
+        }
         $data = enorm_companies_get_teamleader_project_info($build['field_project_teamleader_id']['#items'][0]['value']);
         if ($data['data']['description'] != NULL) {
             $build['field_project_description'][0]['#markup'] = $data['data']['description'];
@@ -200,3 +215,58 @@ function enorm_permissions_views_pre_render(&$view)
         }
     }
 }
+
+function enorm_permissions_delete_old_milestones($nid) {
+    $result = db_select('teamleader_milestones', 'tm')
+        ->fields('tm')
+        ->condition('teamleader_milestone_nid', $nid, '=')
+        ->execute()
+        ->fetchAll();
+    foreach ($result as $value) {
+        $num_deleted = db_delete('node')
+            ->condition('nid', $value->teamleader_milestone_own_nid)
+            ->execute();
+        $deleted = db_delete('teamleader_milestones')
+            ->condition('teamleader_milestone_own_nid', $value->teamleader_milestone_own_nid)
+            ->execute();
+    }
+}
+
+function enorm_permissions_update_last_changed($nid) {
+    $node = node_load($nid);
+    $node_wrapper = entity_metadata_wrapper('node', $node);
+    $node_wrapper->log->set('updated');
+    $node_wrapper->save();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

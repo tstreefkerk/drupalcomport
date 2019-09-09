@@ -25,7 +25,7 @@ function enorm_facturen_node_view_alter(&$build) {
         else {
             $build['field_invoice_paid'][0]['#markup'] = "Yes";
         }
-        $build['field_invoice_total'][0]['#markup'] = $info['data']['total']['due']['amount'] . $info['data']['total']['due']['currency'];
+        $build['field_invoice_total'][0]['#markup'] = $info['data']['total']['payable']['amount'] . " " . $info['data']['total']['payable']['currency'];
 
     }
 }

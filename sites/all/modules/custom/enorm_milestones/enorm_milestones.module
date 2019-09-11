@@ -56,13 +56,16 @@ function enorm_milestones_get_milestones_block()
             ->condition('teamleader_milestone_nid', $nid, '=')
             ->execute()
             ->fetchAllAssoc('teamleader_milestone_own_nid');
-        $returnable = "<h3><span>Milestones</span></h3>";
+        $returnable = "<div id='block-enorm-milestones-custom'><h3><span>Milestones</span></h3>";
         ksort($result);
         $open = 0;
         $closed = 0;
+        $timetracking = 0;
         foreach ($result as $value) {
             $own_nid = $value->teamleader_milestone_own_nid;
             $node = node_load($own_nid);
+            $milestone_id = $node->field_milestone_id['und'][0]['value'];
+            $timetracking += enorm_milestones_get_timetracking($milestone_id);
             if ($node->field_milestone_status['und'][0]['value'] === 'open') {
                 $open++;
             } else {
@@ -70,20 +73,50 @@ function enorm_milestones_get_milestones_block()
             }
             $returnable = $returnable . $node->title . ", status: " . $node->field_milestone_status['und'][0]['safe_value'] . ". Due on: " . $node->field_milestone_due['und'][0]['value'] . ".<br>";
         }
+        $returnable = $returnable . "</div>";
         $total = $closed + $open;
         $percentage = floor($closed / $total * 100);
         if (variable_get('milestones_contact_enable') === 1) {
-            if ($percentage >= 50 && $total > 2) {
-                $returnable = $returnable . "<div class='percentage-done-hidden'>" . $percentage . "%</div><br><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p><button class='milestones-contact-button' type='button'>Yes, call me!</button></div>";
+            if ($percentage >= 75 && $total > 2) {
+                $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. This is a mere indication, since hours can be tracked to meetings and such as well.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><br><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p><button class='milestones-contact-button' type='button'>Yes, call me!</button></div>";
             } else {
-                $returnable = $returnable . "<div class='percentage-done-hidden'>" . $percentage . "%</div>";
+                $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. This is a mere indication, since hours can be tracked to meetings and such as well.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
             }
         }
         else {
-            $returnable = $returnable . "<div class='percentage-done-hidden'>" . $percentage . "%</div>";
+            $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. This is a mere indication, since hours can be tracked to meetings and such as well.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
         }
         return $returnable;
     };
+}
+
+function enorm_milestones_get_timetracking($milestone_id) {
+    $operation = "timeTracking.list";
+    $postfields = "{
+      \"filter\": {
+        \"subject\": {
+          \"type\": \"milestone\",
+          \"id\": \"" . $milestone_id . "\"
+        }
+      },
+      \"page\": {
+        \"size\": 99,
+        \"number\": 1
+      },
+      \"sort\": [
+        {
+          \"field\": \"started_on\",
+          \"order\": \"desc\"
+        }
+      ]
+    }";
+    $result = enorm_teamleader_call($operation, $postfields);
+    $timeTotal = 0;
+    foreach ($result['data'] as $value) {
+        $timeTotal += $value['duration'];
+    }
+    $timeTotal = $timeTotal / 60 / 60;
+    return $timeTotal;
 }
 
 function enorm_milestones_admin()

@@ -108,11 +108,7 @@
     hide($content['links']);
     hide($content['field_tags']);
     print render($content);
-    $block = block_load('enorm_milestones', 'enorm_milestones');
-    $input = _block_get_renderable_array(_block_render_blocks(array($block)));
-    $output = drupal_render($input);
 //    echo views_embed_view('view_all_notes', $display_id = 'views_block_notes');
-    print $output;
     ?>
     <?php
     // Only display the wrapper div if there are tags or links.

@@ -1,0 +1,276 @@
+<?php
+// $Id: page_throbber.module,v 1.9.2.11 2008/11/02 13:04:01  Exp $
+
+define ('PAGE_THROBBER_VIS_NOTLISTED', 0);
+define ('PAGE_THROBBER_VIS_LISTED', 1);
+define ('PAGE_THROBBER_VIS_PHP', 2);
+
+/**
+* Implements hook_init().
+*
+* @return array
+*/
+function page_throbber_init() {
+  drupal_add_js(drupal_get_path('module', 'page_throbber') . "/assets/page_throbber.js");
+  drupal_add_js(drupal_get_path('module', 'page_throbber') . "/assets/spin.min.js");
+  drupal_add_css(drupal_get_path('module', 'page_throbber') . "/assets/page_throbber.css");
+
+  $pages = variable_get('page_throbber_pages', array());                     
+  $close = variable_get('page_throbber_close_button', 0);
+  $buttons = array();
+  
+  // pull out button ids
+  foreach ($pages as $index => $page) {
+    foreach ($page as $key => $item) {
+      // add i18n support for msgs
+      if (stristr($key, 'message_')) {
+        $pages[$index][$key] = t($item);
+      }
+      if (stristr($key, 'buttons_')) {
+        if ($item) {
+          $items = explode("\r\n", $item);
+          foreach ($items as $value) {
+            $buttons[] = array('id' => $value, 'key' => $key);
+          }
+        }
+      }
+    }
+  }
+  
+  drupal_add_js(array('page_throbber' => array(
+    'pages' => $pages,
+    'buttons' => $buttons,
+    'close' => $close)), 'setting');          
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * @return array
+ */
+function page_throbber_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/page-throbber'] = array(
+    'title' => 'Page Throbber',
+    'description' => "Add pages which will display throbber.",
+    'access arguments' => array('administer site configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('page_throbber_admin_settings_form'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+// Admin settings
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function page_throbber_admin_settings_form($form, &$form_state) {
+  // do we have any pages already stored - because we'll need to start with enough fields for them all
+  $pages = variable_get('page_throbber_pages', array()); 
+  // remove any we deleted and re-key
+  $x = 1;
+  if (count($pages)) {
+    foreach ($pages as $key => $page) {
+      if (!current($page)) unset($pages[$key]);
+      else {
+        $rekeyed['page_throbber_page_' . $x]['page_throbber_page_message_' . $x] = $page[str_replace('row_', 'message_', $key)];
+        $rekeyed['page_throbber_page_' . $x]['page_throbber_page_vis_' . $x] = $page[str_replace('row_', 'vis_', $key)];    
+        $rekeyed['page_throbber_page_' . $x]['page_throbber_page_path_' . $x] = $page[str_replace('row_', 'path_', $key)];    
+        $rekeyed['page_throbber_page_' . $x]['page_throbber_page_buttons_' . $x] = $page[str_replace('row_', 'buttons_', $key)];
+        $x++;  
+      }
+    }  
+    $pages = $rekeyed;
+  }
+
+  // We check to see if quantity has been set, ie if the form has been submitted yet.  
+  // If not, we show 1 field, you can change this to however many fields you want to show as default.
+  if (!isset($form_state['quantity'])) {
+    $quantity = count($pages) ? count($pages) : 1;
+  }
+  else {
+    // If the form has been submitted we get the quantity that was stored.
+    $quantity = $form_state['quantity'];
+  }
+
+  // should ensure we have at least 1 page field
+  $quantity = $quantity ? $quantity : 1;
+
+  // We create a hidden form element to store the amount of fields that the user has added.
+  $form_state['quantity'] = $quantity;
+
+  // Because we have many fields with the same values, we have to set
+  // #tree to be able to access them.
+  $form['#tree'] = TRUE;
+  
+  $form['page_throbber_close_button'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Close button'),
+    '#description' => t('Check this if you would like to allow the popup message to be closed before the page loads.'),
+    '#default_value' => variable_get('page_throbber_close_button', 0),
+  );  
+  
+  $form['page_throbber_pages'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Pages'),
+    '#prefix' => '<div id="page-throbber-pages-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $access = user_access('use PHP for settings');
+  $msg = '';
+
+  // We now do a simple loop, creating however many sections are defined by $form_state['storage']['quantity']
+  for ($i = 1; $i <= $quantity; $i++) {
+    if (count($pages) > 0) {
+      $vis = $pages['page_throbber_page_' . $i]['page_throbber_page_vis_' . $i];
+      $path = $pages['page_throbber_page_' . $i]['page_throbber_page_path_' . $i];     
+      $buttons = $pages['page_throbber_page_' . $i]['page_throbber_page_buttons_' . $i];
+      $msg = $pages['page_throbber_page_' . $i]['page_throbber_page_message_' . $i];
+      // force translation entry; but let's not allow admin interface in multiple languages
+      $dummy = t($msg);
+    }
+    
+    
+    $form['page_throbber_pages']['page_throbber_page_row_' . $i] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Page'). " " . $i . ': ' . substr($msg, 0, 150),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    
+    // The element name needs to be different for each textfield, otherwise we will only get one value after the form is submitted.
+    $form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_message_' . $i] = array(
+      '#type' => 'textarea',
+      '#title' => t('Message'),
+      '#rows' => 3,
+      '#default_value' => isset($msg) ? $msg : '',       
+    );         
+    
+    //$form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_page_' . $i] = array(
+
+    if (isset($visibility) && $visibility == PAGE_THROBBER_VIS_PHP && $access) {
+      $form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_vis_' . $i] = array(
+        '#type' => 'value',
+        '#value' => isset($vis) ? $vis : 0,
+      );
+      $form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_path_' . $i] = array(
+        '#type' => 'value',
+        '#value' => isset($path) ? $path : '',
+      );
+    }
+    else {
+      $options = array(
+        PAGE_THROBBER_VIS_NOTLISTED => t('All pages except those listed'),
+        PAGE_THROBBER_VIS_LISTED => t('Only the listed pages'),
+      );
+      $description = t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard 
+      for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>'));
+
+      if (module_exists('php') && $access) {
+        $options += array(PAGE_THROBBER_VIS_PHP => t('Pages on which this PHP code returns <code>TRUE</code> (experts only)'));
+        $title = t('Pages or PHP code');
+        $description .= ' ' . t('If the PHP option is chosen, enter PHP code between %php. To refer to arguments in the path use $args array, e.g. $arg[0], $arg[1], etc. Note 
+        that executing incorrect PHP code can break your Drupal site.', array('%php' => '<?php ?>'));
+      }
+      else {
+        $title = t('Pages');
+      }
+      $form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_vis_' . $i] = array(
+        '#type' => 'radios',
+        '#title' => t('Show throbber for selected pages'),
+        '#options' => $options,
+        '#default_value' => isset($vis) ? $vis : 0,
+      );
+      $form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_path_' . $i] = array(
+        '#type' => 'textarea',
+        '#title' => '<span class="element-invisible">' . $title . '</span>',
+        '#default_value' => isset($path) ? $path : '',
+        '#description' => $description,
+      );            
+      $form['page_throbber_pages']['page_throbber_page_row_' . $i]['page_throbber_page_buttons_' . $i] = array(
+        '#type' => 'textarea',
+        '#title' => t('Show throbber for specific form buttons (selectors)'),
+        '#default_value' => isset($buttons) ? $buttons : '',
+        '#description' => t('You may also include a list of form buttons on which you wish to attach the throbber. One selector per line. Wildcards are not allowed. The throbber will be called once the button or selector is clicked. (Example selector: .node-page-form #edit-submit)'),
+      );
+    }  
+  }
+
+  // We add in a button with the #ahah element which will handle all our work for us.
+  $form['page_throbber_pages']['add_more'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add another row'), 
+    '#submit' => array('page_throbber_add_another_page'),
+    '#ajax' => array(
+      'callback' => 'page_throbber_add_more_callback',
+      'wrapper' => 'page-throbber-pages-wrapper',
+    ),
+    '#weight' => 1201,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Callback for both ajax-enabled buttons.
+ *
+ * This simply selects and returns the fieldset with the names in it.
+ */
+function page_throbber_add_more_callback($form, $form_state) {
+  return $form['page_throbber_pages'];
+}
+
+/**
+ * Ajax callback in response to a new empty widget being added to the form.
+ *
+ * This returns the new pages fieldset content to replace the existing one
+ *
+ */
+function page_throbber_add_another_page($form, &$form_state) {
+  $form_state['quantity']++;
+  $form_state['rebuild'] = TRUE;
+}
+
+function page_throbber_url_outbound_alter(&$link, &$options, $original_path) {
+  $pages = variable_get('page_throbber_pages', array()); 
+  foreach ($pages as $key => $page) {
+    $page_match = FALSE;
+    $row = str_replace('page_throbber_page_row_', '', $key);
+    $links = $page['page_throbber_page_path_' . $row];
+    
+    // Match path if necessary.
+    if ($links) {
+      $vis = $page['page_throbber_page_vis_' . $row];
+      // Convert path to lowercase. This allows comparison of the same path
+      // with different case. Ex: /Page, /page, /PAGE.
+      $links = drupal_strtolower($links);
+      if ($vis < PAGE_THROBBER_VIS_PHP) {
+        // Convert the Drupal path to lowercase
+        $path = drupal_strtolower(drupal_get_path_alias($link));
+        // Compare the lowercase internal and lowercase path alias (if any).
+        $page_match = drupal_match_path($path, $links);
+        if ($path != $link) {
+          $page_match = $page_match || drupal_match_path($link, $links);
+        }
+        // When $visibility has a value of 0 (PAGE_THROBBER_VISIBILITY_NOTLISTED),
+        // the link is modified on all links except those listed in $page.
+        // When set to 1 (PAGE_THROBBER_VISIBILITY_LISTED), it is modified only on those
+        // pages listed in $page.
+        $page_match = !($vis xor $page_match);
+      }
+      elseif (module_exists('php')) {
+        $code = str_replace('<?php', '<?php $args = explode("/", "' . $link . '");', $page['page_throbber_page_path_' . $row]);
+        $page_match = php_eval($code);
+      }
+    
+      if ($page_match) {
+        $options['query']['throbber'] = $row;
+      }
+    }
+  }
+}

@@ -263,7 +263,8 @@ footer {
   color: #2A2A2A; }
 
 .node-type-content-type-project .row {
-  top: 10vh; }
+  top: 10vh;
+  display: flex; }
 
 .node-type-content-type-project .page-header {
   font-size: 45px; }
@@ -271,37 +272,61 @@ footer {
 .node-type-content-type-project .nav-tabs {
   display: none; }
 
-.node-type-content-type-project #node-content-type-project-detail div.field, .node-type-content-type-project #node-content-type-project-milestones, .node-type-content-type-project #node-content-type-project-timetracking, .node-type-content-type-project #block-enorm-milestones-enorm-milestones {
+.node-type-content-type-project #node-content-type-project-detail div.field, .node-type-content-type-project #node-content-type-project-milestones, .node-type-content-type-project #node-content-type-project-timetracking, .node-type-content-type-project #block-enorm-milestones-custom, .node-type-content-type-project #absolute-done, .node-type-content-type-project .project-expiring, .node-type-content-type-project #block-views-view-all-notes-block, .node-type-content-type-project #timetracking-container {
   -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   background-color: #FFFFFF;
   padding: 0 20px 20px 20px;
-  display: inline-block;
-  position: relative;
-  float: left;
-  min-width: 22%;
-  max-width: 30%;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 30px;
   margin-right: 10px; }
-  .node-type-content-type-project #node-content-type-project-detail div.field h3, .node-type-content-type-project #node-content-type-project-detail div.field .field-label, .node-type-content-type-project #node-content-type-project-milestones h3, .node-type-content-type-project #node-content-type-project-milestones .field-label, .node-type-content-type-project #node-content-type-project-timetracking h3, .node-type-content-type-project #node-content-type-project-timetracking .field-label, .node-type-content-type-project #block-enorm-milestones-enorm-milestones h3, .node-type-content-type-project #block-enorm-milestones-enorm-milestones .field-label {
-    border-bottom: 1px solid #2A2A2A;
+  .node-type-content-type-project #node-content-type-project-detail div.field h3, .node-type-content-type-project #node-content-type-project-detail div.field .field-label, .node-type-content-type-project #node-content-type-project-milestones h3, .node-type-content-type-project #node-content-type-project-milestones .field-label, .node-type-content-type-project #node-content-type-project-timetracking h3, .node-type-content-type-project #node-content-type-project-timetracking .field-label, .node-type-content-type-project #block-enorm-milestones-custom h3, .node-type-content-type-project #block-enorm-milestones-custom .field-label, .node-type-content-type-project #absolute-done h3, .node-type-content-type-project #absolute-done .field-label, .node-type-content-type-project .project-expiring h3, .node-type-content-type-project .project-expiring .field-label, .node-type-content-type-project #block-views-view-all-notes-block h3, .node-type-content-type-project #block-views-view-all-notes-block .field-label, .node-type-content-type-project #timetracking-container h3, .node-type-content-type-project #timetracking-container .field-label {
     padding-bottom: 2px;
     padding-top: 10px;
     font-size: 25px; }
+  .node-type-content-type-project #node-content-type-project-detail div.field .field-items, .node-type-content-type-project #node-content-type-project-milestones .field-items, .node-type-content-type-project #node-content-type-project-timetracking .field-items, .node-type-content-type-project #block-enorm-milestones-custom .field-items, .node-type-content-type-project #absolute-done .field-items, .node-type-content-type-project .project-expiring .field-items, .node-type-content-type-project #block-views-view-all-notes-block .field-items, .node-type-content-type-project #timetracking-container .field-items {
+    text-align: center;
+    margin-top: 15px; }
 
-.node-type-content-type-project #block-enorm-milestones-enorm-milestones {
-  min-width: 50%;
-  float: right; }
-  .node-type-content-type-project #block-enorm-milestones-enorm-milestones h2 {
-    display: none; }
+.node-type-content-type-project .project-expiring {
+  background-color: #009688;
+  max-width: 25%; }
+  .node-type-content-type-project .project-expiring p {
+    padding-top: 10px; }
+
+.node-type-content-type-project #absolute-done {
+  font-size: 13px;
+  text-align: center; }
+  .node-type-content-type-project #absolute-done h3 {
+    font-size: 45px;
+    border: 0;
+    color: #009688; }
+
+.node-type-content-type-project #timetracking-container {
+  font-size: 12px;
+  text-align: center; }
+  .node-type-content-type-project #timetracking-container h3 {
+    font-size: 45px;
+    border: 0;
+    color: #009688; }
+
+.node-type-content-type-project #block-enorm-milestones-enorm-milestones h2 {
+  display: none; }
+
+.node-type-content-type-project #block-enorm-milestones-custom {
+  min-width: calc(44% + 10px);
+  float: left; }
 
 .node-type-content-type-project #node-content-type-project-timetracking {
   float: right; }
   .node-type-content-type-project #node-content-type-project-timetracking h3 {
     display: none; }
+
+.node-type-content-type-project .field-name-field-project-end-date {
+  float: right; }
 
 .node-type-content-type-project .field-group-format-title {
   color: #2A2A2A; }
@@ -319,6 +344,7 @@ footer {
   background-color: #009688;
   text-align: center;
   line-height: 30px;
+  padding-left: 10px;
   color: white; }
 
 .node-type-content-type-project .field-name-field-project-hours-spent {
@@ -343,18 +369,36 @@ footer {
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   background-color: transparent;
   border-radius: 1px;
-  color: #CC0C00;
-  border: 1px solid #CC0C00;
+  color: #009688;
+  border: 1px solid #009688;
   padding: 10px;
   margin-top: 10px;
   font-family: 'Druk';
   font-size: 23px; }
 
-.node-type-content-type-project #node-content-type-project-detail h3 {
+.node-type-content-type-project #node-content-type-project-detail {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1; }
+  .node-type-content-type-project #node-content-type-project-detail h3 {
+    display: none; }
+
+.node-type-content-type-project .field-name-field-project-participants .field-item {
+  display: flex; }
+
+.node-type-content-type-project .field-name-field-project-participants #participant-container {
+  flex: 1;
+  margin-right: 20px; }
+
+.node-type-content-type-project #block-views-view-all-notes-block .block-title {
   display: none; }
 
-.node-type-content-type-project .field-name-field-project-participants {
-  float: left; }
+.node-type-content-type-project #line-break {
+  flex-basis: 100%; }
+
+.node-type-content-type-project .teamleader-avatar {
+  border-radius: 50%;
+  margin-bottom: 10px; }
 
 body {
   background-color: #EFEFEF;
@@ -530,3 +574,53 @@ body {
 
 .page-node .field-label {
   font-weight: bold; }
+
+.node-type-content-type-company .page-header {
+  color: #2A2A2A; }
+
+.node-type-content-type-company .row {
+  top: 10vh;
+  display: flex; }
+
+.node-type-content-type-company .page-header {
+  font-size: 45px; }
+
+.node-type-content-type-company .nav-tabs {
+  display: none; }
+
+.node-type-content-type-company .field-name-field-company-address, .node-type-content-type-company .field-name-field-company-email, .node-type-content-type-company .field-name-field-company-project, .node-type-content-type-company .field-name-field-company-teamleader-link, .node-type-content-type-company .field-name-field-company-telephone, .node-type-content-type-company .field-name-field-company-remarks, .node-type-content-type-company .field-name-field-company-account-manager {
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  background-color: #FFFFFF;
+  padding: 0 20px 20px 20px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 30px;
+  margin-right: 10px; }
+  .node-type-content-type-company .field-name-field-company-address h3, .node-type-content-type-company .field-name-field-company-address .field-label, .node-type-content-type-company .field-name-field-company-email h3, .node-type-content-type-company .field-name-field-company-email .field-label, .node-type-content-type-company .field-name-field-company-project h3, .node-type-content-type-company .field-name-field-company-project .field-label, .node-type-content-type-company .field-name-field-company-teamleader-link h3, .node-type-content-type-company .field-name-field-company-teamleader-link .field-label, .node-type-content-type-company .field-name-field-company-telephone h3, .node-type-content-type-company .field-name-field-company-telephone .field-label, .node-type-content-type-company .field-name-field-company-remarks h3, .node-type-content-type-company .field-name-field-company-remarks .field-label, .node-type-content-type-company .field-name-field-company-account-manager h3, .node-type-content-type-company .field-name-field-company-account-manager .field-label {
+    padding-bottom: 2px;
+    padding-top: 10px;
+    font-size: 25px; }
+  .node-type-content-type-company .field-name-field-company-address .field-items, .node-type-content-type-company .field-name-field-company-email .field-items, .node-type-content-type-company .field-name-field-company-project .field-items, .node-type-content-type-company .field-name-field-company-teamleader-link .field-items, .node-type-content-type-company .field-name-field-company-telephone .field-items, .node-type-content-type-company .field-name-field-company-remarks .field-items, .node-type-content-type-company .field-name-field-company-account-manager .field-items {
+    text-align: center;
+    margin-top: 15px; }
+
+.node-type-content-type-company .field-name-field-company-teamleader-id {
+  display: none; }
+
+.node-type-content-type-company #node-content-type-company-detail {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  overflow: scroll; }
+  .node-type-content-type-company #node-content-type-company-detail h3 {
+    display: none; }
+
+.node-type-content-type-company #line-break {
+  flex-basis: 100%; }
+
+.node-type-content-type-company .teamleader-avatar {
+  border-radius: 50%;
+  margin-bottom: px; }

@@ -130,7 +130,7 @@ function enorm_companies_company_search_form_submit($form, &$form_state)
     $total = count($result['data']);
 
     if ($result['data'] != NULL) {
-        if($total > 5){
+        if ($total > 5) {
             drupal_set_message(t("There's more than 5 results. Please proceed with caution and be sure to copy the right ID."), "warning");
         }
         drupal_set_message($total . t(" results <br><br>"));
@@ -198,3 +198,71 @@ function enorm_companies_permission()
         )
     );
 }
+
+/**
+ * Implements hook_node_view_alter().
+ */
+function enorm_companies_node_view_alter(&$build)
+{
+    if ($build['#bundle'] === 'content_type_company') {
+        $company_id = $build['field_company_teamleader_id']['#items'][0]['value'];
+        $data = enorm_companies_get_company_info($company_id);
+        if(!empty($data['data']['responsible_user']['id'])) {
+            $responsible_user = enorm_companies_get_teamleader_user_name($data['data']['responsible_user']['id']);
+            $build['field_company_account_manager'][0]['#markup'] = "<img class='teamleader-avatar' src='" . $responsible_user['data']['avatar_url'] . "'><br>" . $responsible_user['data']['first_name'] . " " . $responsible_user['data']['last_name'] . ", " . $responsible_user['data']['function'];
+        }
+        if (!empty($data['data']['addresses'][0]['address']['line_1'])) {
+            $build['field_company_address'][0]['#markup'] = $data['data']['addresses'][0]['address']['line_1'] . "<br>" . $data['data']['addresses'][0]['address']['postal_code'] . "<br>" . $data['data']['addresses'][0]['address']['city'];
+        }
+        if (!empty($data['data']['emails'][0]['email'])) {
+            $build['field_company_email'][0]['#markup'] = ucfirst($data['data']['emails'][0]['type']) . ": " . $data['data']['emails'][0]['email'];
+        }
+        if (!empty($data['data']['website'])) {
+            $build['field_company_project'][0]['#markup'] = $data['data']['website'];
+        }
+        if (!empty($data['data']['web_url'])) {
+            $build['field_company_teamleader_link'][0]['#markup'] = "<a href='" . $data['data']['web_url'] . "' target='_blank' rel='nofollow'>Open in Teamleader</a>";
+        }
+        if (!empty($data['data']['telephones'])) {
+            $build['field_company_telephone'][0]['#markup'] = $data['data']['telephones'][0]['number'];
+        }
+        if (!empty($data['data']['remarks'])) {
+            $build['field_company_remarks'][0]['#markup'] = $data['data']['remarks'];
+        }
+    }
+}
+
+function enorm_companies_get_company_info($company_id)
+{
+    $operation = "companies.info";
+    $postfields = "{
+        \"id\": \"" . $company_id . "\"
+    }";
+    return enorm_teamleader_call($operation, $postfields);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

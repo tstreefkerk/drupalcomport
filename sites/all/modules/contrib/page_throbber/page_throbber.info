@@ -1,0 +1,15 @@
+name = "Page Throbber"
+description = "Adds a throbber and customized message to pages which take a long time to load."
+core = 7.x
+
+
+
+
+
+
+; Information added by Drupal.org packaging script on 2014-11-13
+version = "7.x-1.6"
+core = "7.x"
+project = "page_throbber"
+datestamp = "1415846881"
+

@@ -1,9 +1,3 @@
-@mixin box-shadow{
-  -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
-  -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
-}
-
 .node-type-content-type-project {
 
   .page-header {
@@ -12,6 +6,7 @@
 
   .row {
     top: 10vh;
+    display: flex;
   }
 
   .page-header {
@@ -22,34 +17,65 @@
     display: none;
   }
 
-  #node-content-type-project-detail div.field, #node-content-type-project-milestones, #node-content-type-project-timetracking, #block-enorm-milestones-enorm-milestones {
+  #node-content-type-project-detail div.field, #node-content-type-project-milestones, #node-content-type-project-timetracking, #block-enorm-milestones-custom, #absolute-done, .project-expiring, #block-views-view-all-notes-block, #timetracking-container {
     @include box-shadow;
     background-color: $primaryColorWhite;
     padding: 0 $gutterPadding $gutterPadding $gutterPadding;
-    display: inline-block;
-    position: relative;
-    float: left;
-    min-width: 22%;
-    max-width: 30%;
+    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 30px;
     margin-right: 10px;
 
     h3, .field-label{
-      border-bottom: 1px solid $primaryColorBlack;
       padding-bottom: 2px;
       padding-top: 10px;
       font-size: 25px;
     }
+
+    .field-items {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+
+  .project-expiring {
+    background-color: $secondaryColorGreen;
+    max-width: 25%;
+    p {
+      padding-top: 10px;
+    }
+  }
+
+  #absolute-done {
+    font-size: 13px;
+    text-align: center;
+    h3 {
+      font-size: $font-size-enormous;
+      border: 0;
+      color: $secondaryColorGreen;
+    }
+  }
+
+  #timetracking-container {
+    font-size: 12px;
+    text-align: center;
+    h3 {
+      font-size: $font-size-enormous;
+      border: 0;
+      color: $secondaryColorGreen;
+    }
   }
 
   #block-enorm-milestones-enorm-milestones {
-    min-width: 50%;
-    float: right;
     h2 {
       display: none;
     }
+  }
+
+  #block-enorm-milestones-custom {
+    min-width: calc(44% + 10px);
+    float: left;
   }
 
   #node-content-type-project-timetracking {
@@ -57,6 +83,10 @@
     h3{
       display: none;
     }
+  }
+
+  .field-name-field-project-end-date {
+    float: right;
   }
 
   .field-group-format-title {
@@ -72,9 +102,10 @@
 
   .milestone-percentage-bar {
     height: 30px;
-    background-color: #009688;
+    background-color: $secondaryColorGreen;
     text-align: center;
     line-height: 30px;
+    padding-left: 10px;
     color: white;
   }
 
@@ -105,8 +136,8 @@
     @include box-shadow;
     background-color: transparent;
     border-radius: 1px;
-    color: $primaryColorRed;
-    border: 1px solid $primaryColorRed;
+    color: $secondaryColorGreen;
+    border: 1px solid $secondaryColorGreen;
     padding: 10px;
     margin-top: 10px;
     font-family: 'Druk';
@@ -114,14 +145,40 @@
   }
 
   #node-content-type-project-detail {
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
     h3 {
       display: none;
     }
   }
 
   .field-name-field-project-participants {
-    float: left;
+    .field-item {
+      display: flex;
+    }
+    #participant-container {
+      flex: 1;
+      margin-right: 20px;
+    }
   }
+
+  #block-views-view-all-notes-block {
+    .block-title{
+      display: none;
+    }
+  }
+
+  #line-break {
+    flex-basis: 100%;
+  }
+
+  .teamleader-avatar {
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+
+
 }
 
 

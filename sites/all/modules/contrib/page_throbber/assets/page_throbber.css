@@ -1,0 +1,47 @@
+/* overlay styling */
+
+#lean_overlay {
+    position: fixed;
+    z-index:900;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #FFF;
+    display: none;
+}
+
+#throbber-message {
+  display: none;
+  width:auto;
+  background:white;
+  position:relative;
+  padding:15px;
+  padding-top:60px;
+  box-shadow: 1px 1px 5px #CCC;
+  font-size:1.1em;
+  font-weight: bold;
+  color:#999;
+  z-index: 950;
+}
+
+#throbber-message .spinner {
+  top:20px;
+}
+
+#throbber-message p {
+  margin-bottom:0px;
+  color:#444;
+}
+
+#throbber-message #throbber-close {
+  background:url(close.png) left bottom no-repeat;
+  width:20px;
+  height:20px;
+  overflow: hidden;
+  cursor: pointer;
+  text-indent:-9999px;
+  position: absolute;
+  top:-8px;
+  right:-8px;
+}

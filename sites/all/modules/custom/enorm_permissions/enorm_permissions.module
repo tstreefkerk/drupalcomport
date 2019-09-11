@@ -8,13 +8,11 @@ function enorm_permissions_node_view_alter(&$build)
         $node = node_load(arg(1));
         $project_id_milestone = $node->field_project_teamleader_id['und'][0]['value'];
         $nid = $node->nid;
-        dpm($node);
         $date = node_last_changed($nid);
         $readable_date = date('d-m-Y', $date);
         $today = date('d-m-Y');
         $difference = strtotime($today) - strtotime($readable_date);
         $days_changed = round($difference / (60 * 60 * 24));
-        dpm($days_changed);
         if($days_changed >= 3) {
             enorm_permissions_delete_old_milestones($nid);
             enorm_crons_milestone_processor($project_id_milestone, $nid);
@@ -28,16 +26,21 @@ function enorm_permissions_node_view_alter(&$build)
         }
         $build['field_project_start_date'][0]['#markup'] = $data['data']['starts_on'];
         $build['field_project_end_date'][0]['#markup'] = $data['data']['due_on'];
-        $build['field_project_status'][0]['#markup'] = ucfirst($data['data']['status']);
+        if($data['data']['status'] === 'done') {
+            $build['field_project_status'][0]['#markup'] = "<span style='color: #009688;'>" . ucfirst($data['data']['status']) . "</span>";
+        }
+        else {
+            $build['field_project_status'][0]['#markup'] = "<span>" . ucfirst($data['data']['status']) . "</span>";
+        }
         $participants = "";
         $count = count($data['data']['participants']) - 1;
         $i = 0;
         foreach ($data['data']['participants'] as $value) {
             $result = enorm_companies_get_teamleader_user_name($value['participant']['id']);
             if ($i === $count) {
-                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . " (" . enorm_permissions_role_cleanup($value['role']) . ")";
+                $participants = $participants . "<div id='participant-container'><img src='" . $result['data']['avatar_url'] . "' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
             } else {
-                $participants = $participants . $result['data']['first_name'] . " " . $result['data']['last_name'] . " (" . enorm_permissions_role_cleanup($value['role']) . ")" . "<br>";
+                $participants = $participants . "<div id='participant-container'><img src='" . $result['data']['avatar_url'] . "' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
                 $i++;
             }
         }
@@ -49,12 +52,13 @@ function enorm_permissions_node_view_alter(&$build)
 function enorm_permissions_role_cleanup($role) {
     switch ($role) {
         case 'decision_maker':
-            return 'Chief';
+            return '<span style="color: #009688;">(Chief)</span>';
             break;
         case 'member':
-            return 'Participant';
+            return '(Participant)';
             break;
     }
+    return 'No roles';
 }
 
 /*

@@ -4,10 +4,11 @@
             var $percentage = $(".percentage-done-hidden").text();
             $(".milestone-percentage-bar").css("width", $percentage);
             $(".milestone-percentage-bar").text($percentage);
-            $(".company-search-form-company-id").once('enorm').click(function() {
-                var copyText = $(".company-search-form-company-id");
-                copyText.select();
-                document.execCommand("copy");
+            $(".field-name-field-company-telephone").after("<div id='line-break'></div>");
+            $(".field-name-field-project-end-date").after("<div id='line-break'></div>");
+            $(".field-name-field-project-participants").after("<div id='line-break'></div>");
+            $(".views-field-title").click(function (e) {
+                $(this).after("<img src='/sites/all/modules/contrib/views/images/loading.gif'>");
             });
             $(".view-header").once('enorm').click(function () {
                 if ($(this).next(".view-content").hasClass("vanishIn")) {

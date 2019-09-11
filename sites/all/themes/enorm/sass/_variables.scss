@@ -6,6 +6,14 @@ $primaryColorGrey: #EFEFEF;
 $primaryColorDarkGrey: #2A2A2A;
 $primaryColorLightGrey: #3F3F3F;
 
+// Secondary Colors
+$secondaryColorGreen: #009688;
+$secondaryColorOrange: #FF9800;
+$secondaryColorBlueGrey: #607D8B;
+$secondaryColorBrown: #795548;
+$secondaryColorIndigo: #3F51B5;
+
+
 // Block colors
 $block-background-color-one: $primaryColorDarkGrey;
 $block-background-color-two: $primaryColorLightGrey;
@@ -31,4 +39,11 @@ $h4-color-black: #000000;
 // Margin and padding settings
 $gutterMargin: 5px;
 $gutterPadding: 20px;
+
+// Mixins
+@mixin box-shadow{
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+}
 

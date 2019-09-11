@@ -61,7 +61,7 @@ body {
     color: $primaryColorWhite;
   }
 
-  label{
+  label {
     color: $primaryColorWhite;
   }
 
@@ -108,12 +108,12 @@ body {
   }
 
   .form-item-name, .form-item-pass {
-    display:inline-block;
+    display: inline-block;
     float: right;
     width: 85%;
   }
 
-  #auth_box input[type="text"], #auth_box input[type="password"]{
+  #auth_box input[type="text"], #auth_box input[type="password"] {
     text-align: center;
     &::placeholder {
       color: $primaryColorWhite;
@@ -136,7 +136,7 @@ body {
     -o-transition: background-color 0.2s;
     transition: background-color 0.2s;
 
-    &:hover{
+    &:hover {
       background-color: transparent;
       color: $primaryColorWhite;
       -webkit-transition: background-color 0.2s;
@@ -163,7 +163,7 @@ body {
 // Invoices
 
 .node-type-content-type-invoice {
-  .panel-title{
+  .panel-title {
     background-color: $primaryColorDarkGrey;
     color: $primaryColorWhite !important;
   }
@@ -225,7 +225,7 @@ body {
   background-color: $primaryColorDarkGrey;
   padding-bottom: 2vh;
 
-  .sidr-class-glyphicon  {
+  .sidr-class-glyphicon {
     display: none;
   }
 
@@ -257,4 +257,68 @@ body {
 
 .page-node .field-label {
   font-weight: bold;
+}
+
+.node-type-content-type-company {
+  .page-header {
+    color: $primaryColorDarkGrey;
+  }
+
+  .row {
+    top: 10vh;
+    display: flex;
+  }
+
+  .page-header {
+    font-size: $font-size-enormous;
+  }
+
+  .nav-tabs {
+    display: none;
+  }
+
+  .field-name-field-company-address, .field-name-field-company-email, .field-name-field-company-project, .field-name-field-company-teamleader-link, .field-name-field-company-telephone, .field-name-field-company-remarks, .field-name-field-company-account-manager {
+    @include box-shadow;
+    background-color: $primaryColorWhite;
+    padding: 0 $gutterPadding $gutterPadding $gutterPadding;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 30px;
+    margin-right: 10px;
+
+    h3, .field-label {
+      padding-bottom: 2px;
+      padding-top: 10px;
+      font-size: 25px;
+    }
+
+    .field-items {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+
+  .field-name-field-company-teamleader-id {
+    display: none;
+  }
+
+  #node-content-type-company-detail {
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    overflow: scroll;
+    h3 {
+      display: none;
+    }
+  }
+
+  #line-break {
+    flex-basis: 100%;
+  }
+
+  .teamleader-avatar {
+    border-radius: 50%;
+    margin-bottom: px;
+  }
 }

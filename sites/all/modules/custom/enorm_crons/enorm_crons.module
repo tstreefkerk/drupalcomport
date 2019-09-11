@@ -230,6 +230,8 @@ function enorm_crons_milestone_processor($project_id, $nid) {
 }
 
 function enorm_crons_save_new_milestone($node_title, $milestone_id, $due_on, $milestone_status, $project_id, $project_type, $user_id, $billable_amount, $nid) {
+    $due_on = explode('-', $due_on);
+    $new_due_on = $due_on[2] . "/" . $due_on[1]  . "/" . $due_on[0];
     global $user;
     $node = new stdClass();
     $node->title = $node_title;
@@ -239,7 +241,7 @@ function enorm_crons_save_new_milestone($node_title, $milestone_id, $due_on, $mi
     $node->status = 1;
     $node->promote = 0;
     $node->field_milestone_id[LANGUAGE_NONE][0]['value'] = $milestone_id;
-    $node->field_milestone_due[LANGUAGE_NONE][0]['value'] = $due_on;
+    $node->field_milestone_due[LANGUAGE_NONE][0]['value'] = $new_due_on;
     $node->field_milestone_status[LANGUAGE_NONE][0]['value'] = $milestone_status;
     $node->field_milestone_project_id[LANGUAGE_NONE][0]['value'] = $project_id;
     $node->field_milestone_project_type[LANGUAGE_NONE][0]['value'] = $project_type;

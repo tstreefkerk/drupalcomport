@@ -6,7 +6,7 @@
 }
 
 .page-header {
-  color: $primaryColorRed;
+  color: $secondaryColorGreen;
 }
 
 #navbar {
@@ -39,20 +39,20 @@
   color: $primaryColorWhite;
 
   &:hover{
-    color: $primaryColorRed;
+    color: $secondaryColorGreen;
     background-color: $primaryColorLightGrey !important;
   }
 
   &:active {
     background-color: $primaryColorLightGrey;
-    color: $primaryColorRed;
+    color: $secondaryColorGreen;
   }
 }
 
 .menu li.active {
-  background-color: $primaryColorWhite;
+  background-color: #EFEFEF;
   a {
-    color: $primaryColorRed;
+    color: $secondaryColorGreen;
     &:hover, &:focus {
       background-color: $primaryColorWhite !important;
     }

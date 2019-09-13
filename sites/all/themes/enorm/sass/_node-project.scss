@@ -50,6 +50,7 @@
   #absolute-done {
     font-size: 13px;
     text-align: center;
+    min-width: 100%;
     h3 {
       font-size: $font-size-enormous;
       border: 0;
@@ -154,6 +155,7 @@
   }
 
   .field-name-field-project-participants {
+    overflow-x: scroll !important;
     .field-item {
       display: flex;
     }

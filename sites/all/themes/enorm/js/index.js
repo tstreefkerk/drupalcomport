@@ -7,8 +7,10 @@
             $(".field-name-field-company-telephone").after("<div id='line-break'></div>");
             $(".field-name-field-project-end-date").after("<div id='line-break'></div>");
             $(".field-name-field-project-participants").after("<div id='line-break'></div>");
+            $(".field-name-field-project-description").after("<div id='line-break'></div>");
             $(".views-field-title").click(function (e) {
-                $(this).after("<img src='/sites/all/modules/contrib/views/images/loading.gif'>");
+                $(".view").fadeOut();
+                $(".page-header").after("<img src='/sites/all/themes/enorm/assets/img/logo-enormkopie.gif'>");
             });
             $(".view-header").once('enorm').click(function () {
                 if ($(this).next(".view-content").hasClass("vanishIn")) {

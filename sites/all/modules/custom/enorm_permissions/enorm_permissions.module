@@ -26,26 +26,36 @@ function enorm_permissions_node_view_alter(&$build)
         }
         $build['field_project_start_date'][0]['#markup'] = $data['data']['starts_on'];
         $build['field_project_end_date'][0]['#markup'] = $data['data']['due_on'];
-        if($data['data']['status'] === 'done') {
-            $build['field_project_status'][0]['#markup'] = "<span style='color: #009688;'>" . ucfirst($data['data']['status']) . "</span>";
-        }
-        else {
-            $build['field_project_status'][0]['#markup'] = "<span>" . ucfirst($data['data']['status']) . "</span>";
-        }
+        $build['field_project_status'][0]['#markup'] = enorm_permissions_status_cleanup($data['data']['status']);
         $participants = "";
-        $count = count($data['data']['participants']) - 1;
-        $i = 0;
         foreach ($data['data']['participants'] as $value) {
             $result = enorm_companies_get_teamleader_user_name($value['participant']['id']);
-            if ($i === $count) {
+            if ($result['data']['avatar_url'] != NULL) {
                 $participants = $participants . "<div id='participant-container'><img src='" . $result['data']['avatar_url'] . "' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
-            } else {
-                $participants = $participants . "<div id='participant-container'><img src='" . $result['data']['avatar_url'] . "' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
-                $i++;
+            }
+            else {
+                $participants = $participants . "<div id='participant-container'><img src='/sites/all/themes/enorm/assets/img/no-profile-picture.png' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
             }
         }
         $build['field_project_participants'][0]['#markup'] = $participants;
 
+    }
+}
+
+function enorm_permissions_status_cleanup($status) {
+    switch ($status) {
+        case 'done':
+            return "<span style='color:#009688;'>Done</span>";
+            break;
+        case 'on_hold':
+            return "<span style='color:#FF9800;'>On hold</span>";
+            break;
+        case 'active':
+            return "<span style='color:#8BC34A'>Active</span>";
+            break;
+        case 'cancelled':
+            return "<span style='color:#F44336'>Cancelled</span>";
+            break;
     }
 }
 

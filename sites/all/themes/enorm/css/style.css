@@ -3,7 +3,7 @@
   padding-left: 0; }
 
 .page-header {
-  color: #CC0C00; }
+  color: #009688; }
 
 #navbar {
   display: none; }
@@ -30,16 +30,16 @@
 .nav a {
   color: #FFFFFF; }
   .nav a:hover {
-    color: #CC0C00;
+    color: #009688;
     background-color: #3F3F3F !important; }
   .nav a:active {
     background-color: #3F3F3F;
-    color: #CC0C00; }
+    color: #009688; }
 
 .menu li.active {
-  background-color: #FFFFFF; }
+  background-color: #EFEFEF; }
   .menu li.active a {
-    color: #CC0C00; }
+    color: #009688; }
     .menu li.active a:hover, .menu li.active a:focus {
       background-color: #FFFFFF !important; }
 
@@ -299,7 +299,8 @@ footer {
 
 .node-type-content-type-project #absolute-done {
   font-size: 13px;
-  text-align: center; }
+  text-align: center;
+  min-width: 100%; }
   .node-type-content-type-project #absolute-done h3 {
     font-size: 45px;
     border: 0;
@@ -383,12 +384,13 @@ footer {
   .node-type-content-type-project #node-content-type-project-detail h3 {
     display: none; }
 
-.node-type-content-type-project .field-name-field-project-participants .field-item {
-  display: flex; }
-
-.node-type-content-type-project .field-name-field-project-participants #participant-container {
-  flex: 1;
-  margin-right: 20px; }
+.node-type-content-type-project .field-name-field-project-participants {
+  overflow-x: scroll !important; }
+  .node-type-content-type-project .field-name-field-project-participants .field-item {
+    display: flex; }
+  .node-type-content-type-project .field-name-field-project-participants #participant-container {
+    flex: 1;
+    margin-right: 20px; }
 
 .node-type-content-type-project #block-views-view-all-notes-block .block-title {
   display: none; }
@@ -559,7 +561,7 @@ body {
     font-family: Roboto; }
   .sidr-class-leaf a.sidr-class-active, li.sidr-class-active-trail a.sidr-class-active {
     font-weight: bold;
-    color: #CC0C00; }
+    color: #009688; }
 
 .sidr ul li {
   line-height: 20px; }
@@ -623,4 +625,4 @@ body {
 
 .node-type-content-type-company .teamleader-avatar {
   border-radius: 50%;
-  margin-bottom: px; }
+  width: 20%; }

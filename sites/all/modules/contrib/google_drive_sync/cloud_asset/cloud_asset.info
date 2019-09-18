@@ -1,0 +1,21 @@
+name = Cloud asset
+core = 7.x
+package = Features
+php = 5.2.4
+version = 7.x-1.0
+project = cloud_asset
+dependencies[] = ctools
+dependencies[] = features
+dependencies[] = link
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:1
+features[field][] = node-cloud_asset-field_file_id
+features[field][] = node-cloud_asset-field_url
+features[node][] = cloud_asset
+
+; Information added by drupal.org packaging script on 2012-11-07
+version = "7.x-1.0-alpha1"
+core = "7.x"
+project = "google_drive_sync"
+datestamp = "1352282203"
+

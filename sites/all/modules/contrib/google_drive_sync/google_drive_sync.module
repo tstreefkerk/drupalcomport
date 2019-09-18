@@ -1,0 +1,465 @@
+<?php
+
+/**
+ * Implements hook_permission().
+ */
+function google_drive_sync_permission() {
+  $permissions = array();
+
+  $permissions['administer googledrive'] = array(
+    'title' => t('Administer Google Drive settings'),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function google_drive_sync_menu() {
+  $items = array();
+
+  $items['goauth/authenticate'] = array(
+    'title' => 'Google Drive OAuth login',
+    'page callback' => 'google_drive_sync_authenticate_page',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'google_drive_sync.pages.inc',
+  );
+
+  $items['admin/config/people/googledrive'] = array(
+    'title' => 'Google Drive authentication settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('google_drive_sync_admin_auth_form'),
+    'file' => 'google_drive_sync.pages.inc',
+    'access arguments' => array('administer googledrive'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_user_load().
+ */
+function google_drive_sync_user_load($users) {
+  $result = db_query('SELECT * FROM {google_oauth} WHERE uid IN (:uids)', array(
+    ':uids' => array_keys($users),
+  ));
+  foreach ($result as $record) {
+    $users[$record->uid]->googledrive = $record;
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function google_drive_sync_user_insert(&$edit, $account, $category) {
+  if (!empty($account->googledrive)) {
+    $data = $account->googledrive;
+    $data['uid'] = $account->uid;
+    db_insert('google_oauth')
+      ->fields(_google_drive_sync_prepare_db_data($data))
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function google_drive_sync_user_update(&$edit, $account, $category) {
+  if (empty($account->googledrive)) {
+    db_delete('google_oauth')
+      ->condition('uid', $account->uid)
+      ->execute();
+  }
+  else {
+    $data = $account->googledrive;
+
+    if (is_object($data)) {
+      $data = get_object_vars($data);
+    }
+
+    unset($data['uid']);
+    db_merge('google_oauth')
+      ->key(array(
+        'uid' => $account->uid,
+      ))
+      ->fields(_googledrive_prepare_db_data($data))
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function google_drive_sync_block_info() {
+  $blocks = array();
+
+  $blocks['gdrive_login'] = array(
+    'info' => t('Google Drive Login'),
+    'cache' => DRUPAL_CACHE_PER_USER,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function google_drive_sync_block_view() {
+  global $user;
+
+  $account = user_load($user->uid);
+
+  $content = array(
+    'subject' => '',
+    'content' => '',
+  );
+
+  if ($account->uid ? empty($account->googledrive) : TRUE) {
+    $content['subject'] = t('Google Drive');
+    $content['content'] = l(t('Connect with Google Drive'), 'https://accounts.google.com/o/oauth2/auth', array(
+      'query' => array(
+        'response_type' => 'code',
+        'client_id' => variable_get('googledrive_client_id'),
+        'redirect_uri' => variable_get('googledrive_redirect_uri'),
+        'scope' => implode(' ', array(
+          'https://www.googleapis.com/auth/drive',
+          'https://www.googleapis.com/auth/drive.file',
+          'https://www.googleapis.com/auth/userinfo.email',
+          'https://www.googleapis.com/auth/userinfo.profile',
+        )),
+        'access_type' => 'offline',
+        'approval_prompt' => 'force',
+      ),
+    ));
+  }
+
+  return $content;
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function google_drive_sync_libraries_info() {
+  $libraries = array();
+
+  $libraries['google-api-php-client'] = array(
+    'name' => 'Google API PHP Client',
+    'vendor url' => 'https://code.google.com/p/google-api-php-client/',
+    'download url' => 'https://code.google.com/p/google-api-php-client/downloads/detail?name=google-api-php-client-0.6.0.tar.gz&can=2&q=',
+    'path' => 'src',
+    'version callback' => 'googledrive_clientsdk_get_version',
+    'files' => array(
+      'php' => array(
+        'auth/Google_AssertionCredentials.php',
+        'auth/Google_Auth.php',
+        'auth/Google_AuthNone.php',
+        'auth/Google_LoginTicket.php',
+        'auth/Google_OAuth2.php',
+        'auth/Google_P12Signer.php',
+        'auth/Google_PemVerifier.php',
+        'auth/Google_Signer.php',
+        'auth/Google_Verifier.php',
+        'cache/Google_ApcCache.php',
+        'cache/Google_Cache.php',
+        'cache/Google_FileCache.php',
+        'cache/Google_MemcacheCache.php',
+        'config.php',
+        'contrib/Google_AdexchangebuyerService.php',
+        'contrib/Google_AdsensehostService.php',
+        'contrib/Google_AdsenseService.php',
+        'contrib/Google_AnalyticsService.php',
+        'contrib/Google_BigqueryService.php',
+        'contrib/Google_BloggerService.php',
+        'contrib/Google_BooksService.php',
+        'contrib/Google_CalendarService.php',
+        'contrib/Google_ComputeService.php',
+        'contrib/Google_CustomsearchService.php',
+        'contrib/Google_DriveService.php',
+        'contrib/Google_FreebaseService.php',
+        'contrib/Google_FusiontablesService.php',
+        'contrib/Google_GanService.php',
+        'contrib/Google_LatitudeService.php',
+        'contrib/Google_LicensingService.php',
+        'contrib/Google_ModeratorService.php',
+        'contrib/Google_Oauth2Service.php',
+        'contrib/Google_OrkutService.php',
+        'contrib/Google_PagespeedonlineService.php',
+        'contrib/Google_PlusMomentsService.php',
+        'contrib/Google_PlusService.php',
+        'contrib/Google_PredictionService.php',
+        'contrib/Google_ShoppingService.php',
+        'contrib/Google_SiteVerificationService.php',
+        'contrib/Google_StorageService.php',
+        'contrib/Google_TaskqueueService.php',
+        'contrib/Google_TasksService.php',
+        'contrib/Google_TranslateService.php',
+        'contrib/Google_UrlshortenerService.php',
+        'contrib/Google_WebfontsService.php',
+        'contrib/Google_YoutubeService.php',
+        'external/URITemplateParser.php',
+        'Google_Client.php',
+        'io/Google_CacheParser.php',
+        'io/Google_CurlIO.php',
+        'io/Google_HttpRequest.php',
+        'io/Google_IO.php',
+        'io/Google_REST.php',
+        'service/Google_BatchRequest.php',
+        'service/Google_MediaFileUpload.php',
+        'service/Google_Model.php',
+        'service/Google_Service.php',
+        'service/Google_ServiceResource.php',
+        'service/Google_Utils.php',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function google_drive_sync_cron_queue_info() {
+  $queues['google_drive_sync'] = array(
+    'worker callback' => 'google_drive_sync_callback',
+    'time' => 60,
+  );
+  return $queues;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function google_drive_sync_cron() {
+  if (variable_get('googledrive_auto_sync')) {
+    // Get all users' creadential.
+    $users_credentials = google_drive_sync_get_users_credential();
+    $queue = DrupalQueue::get('google_drive_sync');
+    foreach ($users_credentials as $credentials) {
+      $queue->createItem($credentials);
+    }
+  }
+}
+
+
+function google_drive_sync_callback($credentials) {
+  $handler = new GoogleDriveServiceHandler(
+    variable_get('googledrive_client_id'),
+    variable_get('googledrive_client_secret'),
+    variable_get('googledrive_redirect_uri')
+  );
+
+  $user_info = google_drive_sync_get_userinfo($handler, $credentials);
+
+  // Create conditions to select only the documents which are modified
+  // after the last synchronization, and the checked user is one of the owners
+  // of the documents.
+  $timestamp = google_drive_sync_get_last_sync($credentials['uid']);
+  $date = new DateTime();
+  $date->setTimezone(new DateTimeZone('UTC'));
+
+  if ($timestamp) {
+    $date->setTimestamp($timestamp);
+    $sync_last = $date->format(DateTime::RFC3339);
+  }
+  else {
+    $date = $date->createFromFormat('d/m/Y', '01/01/1970');
+    $sync_last = $date->format(DateTime::RFC3339);
+  }
+
+  $conditions = "modifiedDate > '{$sync_last}' and '{$user_info['email']}' in owners";
+
+  $service = $handler->buildService($credentials);
+  $files = $handler->getFiles($service, $conditions);
+
+  if (count($files)) {
+    // Save new documents.
+    foreach ($files as $file) {
+      if (!google_drive_sync_get_node_by_file_id($file->id)) {
+        $node = new stdClass();
+        $node->type = 'cloud_asset';
+        $node->status = 0;
+        $node->language = LANGUAGE_NONE;
+        node_object_prepare($node);
+
+        $node->uid = $credentials['uid'];
+        $node->title = $file->title;
+        $node->field_url[$node->language][0]['url'] = $file->alternateLink;
+        $node->field_url[$node->language][0]['title'] = $file->alternateLink;
+        $node->field_file_id[$node->language][0]['value'] = $file->id;
+
+        node_save($node);
+      }
+    }
+  }
+
+  db_merge('google_data_sync')
+    ->key(array('uid' => $credentials['uid']))
+    ->fields(array('last_sync' => REQUEST_TIME))
+    ->execute();
+}
+
+/**
+ * Dummy version callback for the Google Client SDK.
+ *
+ * Unfortunately, there is no way to determine the version from the source code.
+ */
+function google_drive_sync_clientsdk_get_version() {
+  return '1.0';
+}
+
+/**
+ * Filters data from the user's googledrive property before saving.
+ *
+ * @param $data
+ *   $user->googledrive
+ *
+ * @return array
+ *   Filtered array.
+ */
+function _google_drive_sync_prepare_db_data($data) {
+  $tabledata = drupal_get_schema('google_oauth');
+  return array_intersect_key($data, $tabledata['fields']);
+}
+
+/**
+ * Return all users' google credentials, whose have one.
+ *
+ * @param mixed $uid
+ *  user id of an account.
+ *
+ * @return array
+ *  An array of users' credentials indexed by user id.
+ */
+function google_drive_sync_get_users_credential($uid = NULL) {
+  $credentials = array();
+
+  $query = db_select('google_oauth', 'go')
+    ->fields('go');
+
+  if (isset($uid)) {
+    $query->condition('uid', $uid);
+  }
+
+  $result = $query->execute();
+
+  while ($row = $result->fetch()) {
+    $credentials[$row->uid] = array(
+      'uid' => $row->uid,
+      'access_token' => $row->access_token,
+      'token_type' => $row->token_type,
+      'id_token' => $row->id_token,
+      'refresh_token' => $row->refresh_token,
+      'created' => $row->created,
+      'expires_in' => $row->expires_in,
+      'client_id' => variable_get('googledrive_client_id'),
+      'client_secret' => variable_get('googledrive_client_secret'),
+    );
+  }
+
+  return $credentials;
+}
+
+/**
+ * Return the proper node based on the given file id.
+ *
+ * @param $file_id
+ *   The google file id.
+ * @return bool|mixed|null
+ *   The proper node object, or a NULL.
+ */
+function google_drive_sync_get_node_by_file_id($file_id) {
+  $query = db_select('node', 'n');
+  $query->leftJoin('field_data_field_file_id', 'ffi', 'n.nid=ffi.entity_id');
+  $query->fields('n', array('nid'));
+  $query->condition('n.type', 'cloud_asset')
+    ->condition('ffi.field_file_id_value', $file_id)
+    ->range(0, 1);
+  $result = $query->execute()->fetchAssoc();
+
+  if ($result) {
+    $node = node_load($result['nid']);
+  }
+
+  return isset($node) ? $node : NULL;
+}
+
+/**
+ * Implements hook_preprocess_hook().
+ *
+ * Changing the submitted by user name to the name of the google drive account.
+ */
+function google_drive_sync_preprocess_node(&$variables) {
+  if ($variables['type'] == 'cloud_asset') {
+    $author = user_load($variables['uid']);
+
+    $handler = new GoogleDriveServiceHandler(
+      variable_get('googledrive_client_id'),
+      variable_get('googledrive_client_secret'),
+      variable_get('googledrive_redirect_uri')
+    );
+
+    $credentials = google_drive_sync_get_users_credential($author->uid);
+    $credentials = reset($credentials);
+    $user_info = google_drive_sync_get_userinfo($handler, $credentials);
+
+    $author->name = $user_info['name'];
+    $name = theme('username', array('account' => $author));
+
+    $variables['submitted'] = t('Submitted by !username on !datetime',
+      array('!username' => $name, '!datetime' => $variables['date']));
+  }
+}
+
+/**
+ * Return The Google account user's information.
+ *
+ * @param $credentials
+ * @return array
+ */
+function google_drive_sync_get_userinfo($handler, $credentials) {
+  static $users_info;
+
+  if (isset($users_info[$credentials['uid']])) {
+    $user_info = $users_info[$credentials['uid']];
+  }
+  else {
+    // Get user info from cache, if it is available, or send a request to google.
+    $cache = cache_get("goggledrive:userinfo:{$credentials['uid']}");
+
+    if (!$cache) {
+      $user_info = $handler->GetUserInfo($credentials);
+      cache_set("goggledrive:userinfo:{$credentials['uid']}", $user_info, time() + $credentials['expires_in']);
+    }
+    else {
+      $user_info = $cache->data;
+    }
+
+    if (is_object($user_info)) {
+      $user_info = get_object_vars($user_info);
+    }
+
+    $users_info[$credentials['uid']] = $user_info;
+  }
+
+  return $user_info;
+}
+
+
+/**
+ * Get the date of the last sync time.
+ *
+ * @param $uid
+ * @return null
+ */
+function google_drive_sync_get_last_sync($uid) {
+  $result = db_select('google_data_sync', 'gds')
+    ->fields('gds', array('last_sync'))
+    ->condition('uid', $uid)
+    ->execute()->fetchAssoc();
+
+  return isset($result['last_sync']) ? $result['last_sync'] : NULL;
+}

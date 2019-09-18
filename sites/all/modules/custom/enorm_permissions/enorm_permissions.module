@@ -13,7 +13,7 @@ function enorm_permissions_node_view_alter(&$build)
         $today = date('d-m-Y');
         $difference = strtotime($today) - strtotime($readable_date);
         $days_changed = round($difference / (60 * 60 * 24));
-        if($days_changed >= 3) {
+        if ($days_changed >= 3) {
             enorm_permissions_delete_old_milestones($nid);
             enorm_crons_milestone_processor($project_id_milestone, $nid);
             enorm_permissions_update_last_changed($nid);
@@ -32,17 +32,29 @@ function enorm_permissions_node_view_alter(&$build)
             $result = enorm_companies_get_teamleader_user_name($value['participant']['id']);
             if ($result['data']['avatar_url'] != NULL) {
                 $participants = $participants . "<div id='participant-container'><img src='" . $result['data']['avatar_url'] . "' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
-            }
-            else {
+            } else {
                 $participants = $participants . "<div id='participant-container'><img src='/sites/all/themes/enorm/assets/img/no-profile-picture.png' class='teamleader-avatar'><br>" . $result['data']['first_name'] . " " . $result['data']['last_name'] . "<br>" . enorm_permissions_role_cleanup($value['role']) . "</div>";
             }
         }
         $build['field_project_participants'][0]['#markup'] = $participants;
 
+    } elseif ($build['#bundle'] === 'content_type_callback_request') {
+        $company_id = $build['field_callback_request_company']['#items'][0]['value'];
+        $project_id = $build['field_callback_request_project'][0]['#markup'];
+        $data = enorm_companies_get_company_info($company_id);
+        $project_data = enorm_companies_get_teamleader_project_info($project_id);
+        $responsible_user = enorm_companies_get_teamleader_user_name($data['data']['responsible_user']['id']);
+        $build['field_callback_request_company'][0]['#markup'] = $data['data']['name'];
+        $build['field_callback_request_project'][0]['#markup'] = $project_data['data']['title'];
+        $build['field_callback_account_manager'][0]['#markup'] = "<img class='teamleader-avatar' src='" . $responsible_user['data']['avatar_url'] . "'><br>" . $responsible_user['data']['first_name'] . " " . $responsible_user['data']['last_name'];
+        if (!empty($data['data']['telephones'][0]['number'])) {
+            $build['field_callback_phone_number'][0]['#markup'] = $data['data']['telephones'][0]['number'];
+        }
     }
 }
 
-function enorm_permissions_status_cleanup($status) {
+function enorm_permissions_status_cleanup($status)
+{
     switch ($status) {
         case 'done':
             return "<span style='color:#009688;'>Done</span>";
@@ -59,7 +71,8 @@ function enorm_permissions_status_cleanup($status) {
     }
 }
 
-function enorm_permissions_role_cleanup($role) {
+function enorm_permissions_role_cleanup($role)
+{
     switch ($role) {
         case 'decision_maker':
             return '<span style="color: #009688;">(Chief)</span>';
@@ -110,10 +123,9 @@ function enorm_permissions_node_access($node, $op, $account)
                 $entity_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
                 $result = enorm_permissions_entity_load($entity_id);
                 $teamleader_id = $result->field_company_teamleader_id['und'][0]['value'];
-                if(!empty($node->field_project_company_id['und'][0]['value'])) {
+                if (!empty($node->field_project_company_id['und'][0]['value'])) {
                     $teamleader_id_node = $node->field_project_company_id['und'][0]['value'];
-                }
-                else {
+                } else {
                     return NODE_ACCESS_DENY;
                 }
                 if ($op == "view") {
@@ -154,31 +166,29 @@ function enorm_permissions_node_access($node, $op, $account)
             } else {
                 return NODE_ACCESS_IGNORE;
             }
-        }
-        elseif($node->type === 'content_type_invoice') {
+        } elseif ($node->type === 'content_type_invoice') {
             $role_keys = array_keys($account->roles);
-            if(in_array('4', $role_keys)) {
+            if (in_array('4', $role_keys)) {
                 $profile2 = profile2_load_by_user($account->uid);
                 $entity_id = $profile2['profile_type_klant']->field_profile_customer_company['und'][0]['target_id'];
                 $result = enorm_permissions_entity_load($entity_id);
                 $profile_company_id = $result->field_company_teamleader_id['und'][0]['value'];
                 $teamleader_id = $node->field_invoice_company_id['und'][0]['value'];
-                if($profile_company_id === $teamleader_id) {
+                if ($profile_company_id === $teamleader_id) {
                     return NODE_ACCESS_ALLOW;
-                }
-                else {
+                } else {
                     return NODE_ACCESS_DENY;
                 }
 
-            }
-            else {
+            } else {
                 return NODE_ACCESS_IGNORE;
             }
         }
     }
 }
 
-function enorm_permissions_entity_load($entity_id) {
+function enorm_permissions_entity_load($entity_id)
+{
     return @entity_load_single('node', $entity_id);
 }
 
@@ -195,7 +205,7 @@ function enorm_permissions_views_pre_render(&$view)
             }
         }
         // Hide exposed filters when view is empty.
-        if(empty($view->result)) {
+        if (empty($view->result)) {
             $view->exposed_widgets = NULL;
         }
     }
@@ -206,13 +216,12 @@ function enorm_permissions_views_pre_render(&$view)
             $node = @node_load($result->nid);
             if (!node_access('view', $node)) {
                 unset($view->result[$key]);
-            }
-            else {
-                $x ++;
+            } else {
+                $x++;
             }
         }
         // Hide exposed filters when view is empty.
-        if(empty($view->result)) {
+        if (empty($view->result)) {
             $view->exposed_widgets = NULL;
         }
         // Update pager, because its rendered before adjusting our results.
@@ -220,8 +229,8 @@ function enorm_permissions_views_pre_render(&$view)
 //        $view->query->pager->update_page_info();
     }
     // Same logic as above but different fields because it renders entities and not tables or fields.
-    if($view->name == 'search_view') {
-        foreach($view->result as $key => $result) {
+    if ($view->name == 'search_view') {
+        foreach ($view->result as $key => $result) {
             $node = node_load($result->entity);
             if (!node_access('view', $node)) {
                 unset($view->result[$key]);
@@ -230,7 +239,8 @@ function enorm_permissions_views_pre_render(&$view)
     }
 }
 
-function enorm_permissions_delete_old_milestones($nid) {
+function enorm_permissions_delete_old_milestones($nid)
+{
     $result = db_select('teamleader_milestones', 'tm')
         ->fields('tm')
         ->condition('teamleader_milestone_nid', $nid, '=')
@@ -246,7 +256,8 @@ function enorm_permissions_delete_old_milestones($nid) {
     }
 }
 
-function enorm_permissions_update_last_changed($nid) {
+function enorm_permissions_update_last_changed($nid)
+{
     $node = node_load($nid);
     $node_wrapper = entity_metadata_wrapper('node', $node);
     $node_wrapper->log->set('updated');

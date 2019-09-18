@@ -260,23 +260,20 @@ function enorm_crons_get_project_list()
 {
     $operation = "projects.list";
     $postfields = "{
-      \"filter\": {
-        \"customer\": {
-          \"type\": \"company\",
-          \"id\": \"0308243b-bc4e-01d8-9362-a5f5d4d9d577\"
-        }
-      },
-      \"page\": {
-        \"size\": 100,
-        \"number\": 1
-      },
-      \"sort\": [
-        {
-          \"field\": \"due_on\",
-          \"order\": \"desc\"
-        }
-      ]
-    }";
+          \"filter\": {
+            \"status\": \"done\"
+          },
+          \"page\": {
+            \"size\": 100,
+            \"number\": 1
+          },
+          \"sort\": [
+            {
+              \"field\": \"due_on\",
+              \"order\": \"desc\"
+            }
+          ]
+        }";
     $result = enorm_teamleader_call($operation, $postfields);
     return $result;
 }

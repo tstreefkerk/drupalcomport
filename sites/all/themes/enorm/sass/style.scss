@@ -3,6 +3,7 @@
 @import "home.scss";
 @import "other.scss";
 @import "node-project.scss";
+@import "node-company.scss";
 
 body {
   background-color: #EFEFEF;
@@ -192,6 +193,9 @@ body {
 
 #sidr-wrapper-0 {
   background-color: $primaryColorDarkGrey;
+  position: absolute;
+  left: 0;
+  min-width: 11vw;
   min-height: 8vh;
   max-width: 11vw;
   text-align: center;
@@ -259,7 +263,15 @@ body {
   font-weight: bold;
 }
 
-.node-type-content-type-company {
+.enorm-spinner {
+  margin-top: 10%;
+}
+
+.enorm-spinner-container {
+  text-align: center;
+}
+
+.node-type-content-type-callback-request {
   .page-header {
     color: $primaryColorDarkGrey;
   }
@@ -277,7 +289,12 @@ body {
     display: none;
   }
 
-  .field-name-field-company-address, .field-name-field-company-email, .field-name-field-company-project, .field-name-field-company-teamleader-link, .field-name-field-company-telephone, .field-name-field-company-remarks, .field-name-field-company-account-manager {
+  article {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .field-name-field-callback-request-company, .field-name-field-callback-phone-number, .field-name-field-callback-request-project, .field-name-field-callback-request-done, .field-name-field-callback-account-manager {
     @include box-shadow;
     background-color: $primaryColorWhite;
     padding: 0 $gutterPadding $gutterPadding $gutterPadding;
@@ -299,19 +316,6 @@ body {
     }
   }
 
-  .field-name-field-company-teamleader-id {
-    display: none;
-  }
-
-  #node-content-type-company-detail {
-    display: flex;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    overflow: scroll;
-    h3 {
-      display: none;
-    }
-  }
 
   #line-break {
     flex-basis: 100%;
@@ -322,8 +326,4 @@ body {
     width: 20%;
   }
 }
-
-
-
-
 

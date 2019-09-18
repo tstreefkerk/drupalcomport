@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function enorm_crons_dashboard_menu()
+{
+    $items['enorm-crons-dashboard'] = array(
+        'title' => t('Enorm Crons Dashboard'),
+        'description' => t('Enorm Crons Dashboard page') ,
+        'access arguments' => array('access crons dashboard'),
+        'page callback' => 'enorm_crons_dashboard_content',
+
+    );
+    return $items;
+}
+
+function enorm_crons_dashboard_content() {
+    return '<p>Hello!</p>';
+}
+
+/**
+ * Implements hook_permission().
+ */
+function enorm_crons_permission() {
+    return array(
+        'access crons dashboard' => array(
+            'title' => t('Access Enorm crons dashboard'),
+        )
+    );
+}

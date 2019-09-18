@@ -1,0 +1,5 @@
+name = EnoRm. Crons Dashboard
+description = This module provides a dashboard for all crons. Here, you can turn them off, on, or force them. Please note that milestones are added via the "Projects" cron as well as projects themselves.
+core = 7.x
+package = EnoRm.
+

@@ -42,8 +42,22 @@
   .project-expiring {
     background-color: $secondaryColorGreen;
     max-width: 25%;
-    p {
+    flex: 1;
+    p, h2 {
       padding-top: 10px;
+      color: $primaryColorWhite;
+    }
+
+    button {
+      @include box-shadow;
+      background-color: transparent;
+      border-radius: 1px;
+      color: $primaryColorWhite;
+      border: 1px solid $primaryColorWhite;
+      margin-top: 10px;
+      font-family: 'Druk';
+      font-size: 23px;
+      padding: 2px 10px 2px 10px;
     }
   }
 
@@ -131,18 +145,6 @@
     p {
       text-align: left;
     }
-  }
-
-  .milestones-contact-button {
-    @include box-shadow;
-    background-color: transparent;
-    border-radius: 1px;
-    color: $secondaryColorGreen;
-    border: 1px solid $secondaryColorGreen;
-    padding: 10px;
-    margin-top: 10px;
-    font-family: 'Druk';
-    font-size: 23px;
   }
 
   #node-content-type-project-detail {

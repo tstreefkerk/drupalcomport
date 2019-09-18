@@ -73,18 +73,28 @@ function enorm_milestones_get_milestones_block()
             }
             $returnable = $returnable . $node->title . ", status: " . $node->field_milestone_status['und'][0]['safe_value'] . ". Due on: " . $node->field_milestone_due['und'][0]['value'] . ".<br>";
         }
+        $data = node_load($nid);
+        $title = $data->title;
+        $company_id = $data->field_project_company_id['und'][0]['value'];
+        $project_id = $data->field_project_teamleader_id['und'][0]['value'];
         $returnable = $returnable . "</div>";
         $total = $closed + $open;
         $percentage = floor($closed / $total * 100);
+        $form_render = drupal_get_form('enorm_milestones_form', $company_id, $project_id, $title);
         if (variable_get('milestones_contact_enable') === 1) {
-            if ($percentage >= 75 && $total > 2) {
-                $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. This is a mere indication, since hours can be tracked to meetings and such as well.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><br><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p><button class='milestones-contact-button' type='button'>Yes, call me!</button></div>";
-            } else {
-                $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. This is a mere indication, since hours can be tracked to meetings and such as well.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
+            if(empty(enorm_milestones_check_callback($project_id))){
+                if ($percentage >= 75 && $total > 2) {
+                    $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. No rights can be dericed from this indication.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p>" . drupal_render($form_render) . "</div>";
+                } else {
+                    $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. No rights can be dericed from this indication.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
+                }
+            }
+            else {
+                $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. No rights can be dericed from this indication.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><div class='project-expiring'><h2>" . t('Thank you!') . "</h2><br><p>" . t('We will be in touch soon.') . "</p<</div>";
             }
         }
         else {
-            $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. This is a mere indication, since hours can be tracked to meetings and such as well.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
+            $returnable = $returnable . "<div id='timetracking-container'><h3> " . $timetracking . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
         }
         return $returnable;
     };
@@ -160,18 +170,58 @@ function enorm_milestones_menu()
     return $items;
 }
 
+/**
+ * Implements hook_form().
+ */
+function enorm_milestones_form($form, &$form_state, $company, $project, $title)
+{
+    $form['company'] = array(
+        '#type' => 'hidden',
+        '#value' => $company,
+    );
+    $form['project'] = array(
+        '#type' => 'hidden',
+        '#value' => $project,
+    );
+    $form['title'] = array(
+        '#type' => 'hidden',
+        '#value' => $title,
+    );
+    $form['submit_button'] = array(
+        '#type' => 'submit',
+        '#value' => t('Yes, call me!'),
+    );
 
+    return $form;
+}
 
+function enorm_milestones_form_validate($form, &$form_state) {
+    return TRUE;
+}
 
+function enorm_milestones_form_submit($form, &$form_state) {
+    $form_state['redirect'] = FALSE;
+    dpm($form_state);
+    global $user;
+    $node = new stdClass();
+    $node->title = $form['title']['#value'];
+    $node->type = "content_type_callback_request";
+    $node->language = 'en';
+    $node->uid = $user->uid;
+    $node->status = 1;
+    $node->promote = 0;
+    $node->field_callback_request_company[LANGUAGE_NONE][0]['value'] = $form['company']['#value'];
+    $node->field_callback_request_project[LANGUAGE_NONE][0]['value'] = $form['project']['#value'];
+    node_object_prepare($node);
+    $node = node_submit($node); // Prepare node for saving
+    node_save($node);
+}
 
-
-
-
-
-
-
-
-
-
-
-
+function enorm_milestones_check_callback($project_id) {
+    $result = db_select('field_data_field_callback_request_project', 'fd')
+        ->fields('fd')
+        ->condition('field_callback_request_project_value', $project_id, '=')
+        ->execute()
+        ->fetchAssoc();
+    return $result;
+}

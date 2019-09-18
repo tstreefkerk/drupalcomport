@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Cloud asset feature.
+ */
+
+include_once 'cloud_asset.features.inc';

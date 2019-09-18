@@ -122,54 +122,47 @@ footer {
   margin-top: 10px; }
 
 .front .row {
-  display: table;
-  margin: 0 auto; }
+  display: table; }
+
+.region-content {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row; }
 
 .front .region-content section:nth-child(1) {
-  min-height: 25vw;
-  max-height: 25vw;
-  max-width: 15vw;
-  min-width: 15vw;
-  display: inline-block;
+  flex: 1;
+  min-width: 30%;
+  max-width: 30%;
   padding: 20px;
-  position: relative;
-  float: left;
-  -webkit-box-shadow: -5px 2px 30px -7px gray;
-  -moz-box-shadow: -5px 2px 30px -7px gray;
-  box-shadow: -5px 2px 30px -7px gray;
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
   margin: 0 2px;
   background-color: #2A2A2A; }
 
 .front .region-content section:nth-child(2) {
-  min-height: 25vw;
-  max-height: 25vw;
-  max-width: 15vw;
-  min-width: 15vw;
-  display: inline-block;
+  flex: 1;
+  min-width: 30%;
+  max-width: 30%;
   padding: 20px;
-  position: relative;
-  float: left;
-  -webkit-box-shadow: -5px 2px 30px -7px gray;
-  -moz-box-shadow: -5px 2px 30px -7px gray;
-  box-shadow: -5px 2px 30px -7px gray;
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
   margin: 0 2px;
   background-color: #3F3F3F;
   left: 12.5%; }
 
 .front .region-content section:nth-child(3) {
-  min-height: 25vw;
-  max-height: 25vw;
-  max-width: 15vw;
-  min-width: 15vw;
-  display: inline-block;
+  flex: 1;
+  min-width: 30%;
+  max-width: 30%;
   padding: 20px;
-  position: relative;
-  float: left;
-  -webkit-box-shadow: -5px 2px 30px -7px gray;
-  -moz-box-shadow: -5px 2px 30px -7px gray;
-  box-shadow: -5px 2px 30px -7px gray;
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
   margin: 0 2px;
   background-color: #EFEFEF;
@@ -188,8 +181,12 @@ footer {
 .block-title {
   padding: 1vw; }
 
+#block-block-1 {
+  overflow: hidden; }
+
 #block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block, #block-views-view-all-invoices-block-1, #block-views-my-files-block-1 {
-  padding: 0; }
+  padding: 0;
+  overflow: hidden; }
   #block-views-recently-read-block .view-recently-read, #block-views-recently-read-block .view-view-all-projects-nodes, #block-views-recently-read-block .view-view-all-companies, #block-views-recently-read-block .view-view-all-invoices, #block-views-recently-read-block .view-my-files, #block-views-view-all-projects-nodes-block-1 .view-recently-read, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices, #block-views-view-all-projects-nodes-block-1 .view-my-files, #block-views-view-all-companies-block-1 .view-recently-read, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes, #block-views-view-all-companies-block-1 .view-view-all-companies, #block-views-view-all-companies-block-1 .view-view-all-invoices, #block-views-view-all-companies-block-1 .view-my-files, #block-views-view-all-invoices-block .view-recently-read, #block-views-view-all-invoices-block .view-view-all-projects-nodes, #block-views-view-all-invoices-block .view-view-all-companies, #block-views-view-all-invoices-block .view-view-all-invoices, #block-views-view-all-invoices-block .view-my-files, #block-views-view-all-invoices-block-1 .view-recently-read, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes, #block-views-view-all-invoices-block-1 .view-view-all-companies, #block-views-view-all-invoices-block-1 .view-view-all-invoices, #block-views-view-all-invoices-block-1 .view-my-files, #block-views-my-files-block-1 .view-recently-read, #block-views-my-files-block-1 .view-view-all-projects-nodes, #block-views-my-files-block-1 .view-view-all-companies, #block-views-my-files-block-1 .view-view-all-invoices, #block-views-my-files-block-1 .view-my-files {
     width: 100%;
     height: auto;
@@ -212,10 +209,9 @@ footer {
       /* Firefox */
       -ms-user-select: none;
       /* Internet Explorer/Edge */
-      user-select: none;
-      /* Non-prefixed version, currently
-                                       supported by Chrome and Opera */ }
+      user-select: none; }
     #block-views-recently-read-block .view-recently-read .view-content, #block-views-recently-read-block .view-view-all-projects-nodes .view-content, #block-views-recently-read-block .view-view-all-companies .view-content, #block-views-recently-read-block .view-view-all-invoices .view-content, #block-views-recently-read-block .view-my-files .view-content, #block-views-view-all-projects-nodes-block-1 .view-recently-read .view-content, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes .view-content, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies .view-content, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices .view-content, #block-views-view-all-projects-nodes-block-1 .view-my-files .view-content, #block-views-view-all-companies-block-1 .view-recently-read .view-content, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes .view-content, #block-views-view-all-companies-block-1 .view-view-all-companies .view-content, #block-views-view-all-companies-block-1 .view-view-all-invoices .view-content, #block-views-view-all-companies-block-1 .view-my-files .view-content, #block-views-view-all-invoices-block .view-recently-read .view-content, #block-views-view-all-invoices-block .view-view-all-projects-nodes .view-content, #block-views-view-all-invoices-block .view-view-all-companies .view-content, #block-views-view-all-invoices-block .view-view-all-invoices .view-content, #block-views-view-all-invoices-block .view-my-files .view-content, #block-views-view-all-invoices-block-1 .view-recently-read .view-content, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes .view-content, #block-views-view-all-invoices-block-1 .view-view-all-companies .view-content, #block-views-view-all-invoices-block-1 .view-view-all-invoices .view-content, #block-views-view-all-invoices-block-1 .view-my-files .view-content, #block-views-my-files-block-1 .view-recently-read .view-content, #block-views-my-files-block-1 .view-view-all-projects-nodes .view-content, #block-views-my-files-block-1 .view-view-all-companies .view-content, #block-views-my-files-block-1 .view-view-all-invoices .view-content, #block-views-my-files-block-1 .view-my-files .view-content {
+      overflow: hidden;
       position: relative;
       z-index: 1;
       background-color: rgba(113, 113, 113, 0.5);
@@ -247,7 +243,9 @@ footer {
     max-height: 40vh;
     overflow: scroll; }
   #block-views-recently-read-block .view-recently-read .view-header {
-    font-size: 20px; } }
+    font-size: 20px; }
+  .node-type-content-type-project .row {
+    margin-left: 0; } }
 
 #block-views-my-files-block-1 .view-content, #block-views-view-all-companies-block-1 .view-content {
   display: none; }
@@ -293,9 +291,23 @@ footer {
 
 .node-type-content-type-project .project-expiring {
   background-color: #009688;
-  max-width: 25%; }
-  .node-type-content-type-project .project-expiring p {
-    padding-top: 10px; }
+  max-width: 25%;
+  flex: 1; }
+  .node-type-content-type-project .project-expiring p, .node-type-content-type-project .project-expiring h2 {
+    padding-top: 10px;
+    color: #FFFFFF; }
+  .node-type-content-type-project .project-expiring button {
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+    background-color: transparent;
+    border-radius: 1px;
+    color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    margin-top: 10px;
+    font-family: 'Druk';
+    font-size: 23px;
+    padding: 2px 10px 2px 10px; }
 
 .node-type-content-type-project #absolute-done {
   font-size: 13px;
@@ -364,19 +376,6 @@ footer {
   .node-type-content-type-project .project-expiring p {
     text-align: left; }
 
-.node-type-content-type-project .milestones-contact-button {
-  -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
-  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
-  background-color: transparent;
-  border-radius: 1px;
-  color: #009688;
-  border: 1px solid #009688;
-  padding: 10px;
-  margin-top: 10px;
-  font-family: 'Druk';
-  font-size: 23px; }
-
 .node-type-content-type-project #node-content-type-project-detail {
   display: flex;
   flex-wrap: wrap;
@@ -401,6 +400,56 @@ footer {
 .node-type-content-type-project .teamleader-avatar {
   border-radius: 50%;
   margin-bottom: 10px; }
+
+.node-type-content-type-company .page-header {
+  color: #2A2A2A; }
+
+.node-type-content-type-company .row {
+  top: 10vh;
+  display: flex; }
+
+.node-type-content-type-company .page-header {
+  font-size: 45px; }
+
+.node-type-content-type-company .nav-tabs {
+  display: none; }
+
+.node-type-content-type-company .field-name-field-company-address, .node-type-content-type-company .field-name-field-company-email, .node-type-content-type-company .field-name-field-company-project, .node-type-content-type-company .field-name-field-company-teamleader-link, .node-type-content-type-company .field-name-field-company-telephone, .node-type-content-type-company .field-name-field-company-remarks, .node-type-content-type-company .field-name-field-company-account-manager {
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  background-color: #FFFFFF;
+  padding: 0 20px 20px 20px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 30px;
+  margin-right: 10px; }
+  .node-type-content-type-company .field-name-field-company-address h3, .node-type-content-type-company .field-name-field-company-address .field-label, .node-type-content-type-company .field-name-field-company-email h3, .node-type-content-type-company .field-name-field-company-email .field-label, .node-type-content-type-company .field-name-field-company-project h3, .node-type-content-type-company .field-name-field-company-project .field-label, .node-type-content-type-company .field-name-field-company-teamleader-link h3, .node-type-content-type-company .field-name-field-company-teamleader-link .field-label, .node-type-content-type-company .field-name-field-company-telephone h3, .node-type-content-type-company .field-name-field-company-telephone .field-label, .node-type-content-type-company .field-name-field-company-remarks h3, .node-type-content-type-company .field-name-field-company-remarks .field-label, .node-type-content-type-company .field-name-field-company-account-manager h3, .node-type-content-type-company .field-name-field-company-account-manager .field-label {
+    padding-bottom: 2px;
+    padding-top: 10px;
+    font-size: 25px; }
+  .node-type-content-type-company .field-name-field-company-address .field-items, .node-type-content-type-company .field-name-field-company-email .field-items, .node-type-content-type-company .field-name-field-company-project .field-items, .node-type-content-type-company .field-name-field-company-teamleader-link .field-items, .node-type-content-type-company .field-name-field-company-telephone .field-items, .node-type-content-type-company .field-name-field-company-remarks .field-items, .node-type-content-type-company .field-name-field-company-account-manager .field-items {
+    text-align: center;
+    margin-top: 15px; }
+
+.node-type-content-type-company .field-name-field-company-teamleader-id {
+  display: none; }
+
+.node-type-content-type-company #node-content-type-company-detail {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  overflow: scroll; }
+  .node-type-content-type-company #node-content-type-company-detail h3 {
+    display: none; }
+
+.node-type-content-type-company #line-break {
+  flex-basis: 100%; }
+
+.node-type-content-type-company .teamleader-avatar {
+  border-radius: 50%;
+  width: 20%; }
 
 body {
   background-color: #EFEFEF;
@@ -527,6 +576,9 @@ body {
 
 #sidr-wrapper-0 {
   background-color: #2A2A2A;
+  position: absolute;
+  left: 0;
+  min-width: 11vw;
   min-height: 8vh;
   max-width: 11vw;
   text-align: center; }
@@ -577,20 +629,30 @@ body {
 .page-node .field-label {
   font-weight: bold; }
 
-.node-type-content-type-company .page-header {
+.enorm-spinner {
+  margin-top: 10%; }
+
+.enorm-spinner-container {
+  text-align: center; }
+
+.node-type-content-type-callback-request .page-header {
   color: #2A2A2A; }
 
-.node-type-content-type-company .row {
+.node-type-content-type-callback-request .row {
   top: 10vh;
   display: flex; }
 
-.node-type-content-type-company .page-header {
+.node-type-content-type-callback-request .page-header {
   font-size: 45px; }
 
-.node-type-content-type-company .nav-tabs {
+.node-type-content-type-callback-request .nav-tabs {
   display: none; }
 
-.node-type-content-type-company .field-name-field-company-address, .node-type-content-type-company .field-name-field-company-email, .node-type-content-type-company .field-name-field-company-project, .node-type-content-type-company .field-name-field-company-teamleader-link, .node-type-content-type-company .field-name-field-company-telephone, .node-type-content-type-company .field-name-field-company-remarks, .node-type-content-type-company .field-name-field-company-account-manager {
+.node-type-content-type-callback-request article {
+  display: flex;
+  flex-wrap: wrap; }
+
+.node-type-content-type-callback-request .field-name-field-callback-request-company, .node-type-content-type-callback-request .field-name-field-callback-phone-number, .node-type-content-type-callback-request .field-name-field-callback-request-project, .node-type-content-type-callback-request .field-name-field-callback-request-done, .node-type-content-type-callback-request .field-name-field-callback-account-manager {
   -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
@@ -601,28 +663,17 @@ body {
   text-overflow: ellipsis;
   margin-bottom: 30px;
   margin-right: 10px; }
-  .node-type-content-type-company .field-name-field-company-address h3, .node-type-content-type-company .field-name-field-company-address .field-label, .node-type-content-type-company .field-name-field-company-email h3, .node-type-content-type-company .field-name-field-company-email .field-label, .node-type-content-type-company .field-name-field-company-project h3, .node-type-content-type-company .field-name-field-company-project .field-label, .node-type-content-type-company .field-name-field-company-teamleader-link h3, .node-type-content-type-company .field-name-field-company-teamleader-link .field-label, .node-type-content-type-company .field-name-field-company-telephone h3, .node-type-content-type-company .field-name-field-company-telephone .field-label, .node-type-content-type-company .field-name-field-company-remarks h3, .node-type-content-type-company .field-name-field-company-remarks .field-label, .node-type-content-type-company .field-name-field-company-account-manager h3, .node-type-content-type-company .field-name-field-company-account-manager .field-label {
+  .node-type-content-type-callback-request .field-name-field-callback-request-company h3, .node-type-content-type-callback-request .field-name-field-callback-request-company .field-label, .node-type-content-type-callback-request .field-name-field-callback-phone-number h3, .node-type-content-type-callback-request .field-name-field-callback-phone-number .field-label, .node-type-content-type-callback-request .field-name-field-callback-request-project h3, .node-type-content-type-callback-request .field-name-field-callback-request-project .field-label, .node-type-content-type-callback-request .field-name-field-callback-request-done h3, .node-type-content-type-callback-request .field-name-field-callback-request-done .field-label, .node-type-content-type-callback-request .field-name-field-callback-account-manager h3, .node-type-content-type-callback-request .field-name-field-callback-account-manager .field-label {
     padding-bottom: 2px;
     padding-top: 10px;
     font-size: 25px; }
-  .node-type-content-type-company .field-name-field-company-address .field-items, .node-type-content-type-company .field-name-field-company-email .field-items, .node-type-content-type-company .field-name-field-company-project .field-items, .node-type-content-type-company .field-name-field-company-teamleader-link .field-items, .node-type-content-type-company .field-name-field-company-telephone .field-items, .node-type-content-type-company .field-name-field-company-remarks .field-items, .node-type-content-type-company .field-name-field-company-account-manager .field-items {
+  .node-type-content-type-callback-request .field-name-field-callback-request-company .field-items, .node-type-content-type-callback-request .field-name-field-callback-phone-number .field-items, .node-type-content-type-callback-request .field-name-field-callback-request-project .field-items, .node-type-content-type-callback-request .field-name-field-callback-request-done .field-items, .node-type-content-type-callback-request .field-name-field-callback-account-manager .field-items {
     text-align: center;
     margin-top: 15px; }
 
-.node-type-content-type-company .field-name-field-company-teamleader-id {
-  display: none; }
-
-.node-type-content-type-company #node-content-type-company-detail {
-  display: flex;
-  flex-wrap: wrap;
-  flex-grow: 1;
-  overflow: scroll; }
-  .node-type-content-type-company #node-content-type-company-detail h3 {
-    display: none; }
-
-.node-type-content-type-company #line-break {
+.node-type-content-type-callback-request #line-break {
   flex-basis: 100%; }
 
-.node-type-content-type-company .teamleader-avatar {
+.node-type-content-type-callback-request .teamleader-avatar {
   border-radius: 50%;
   width: 20%; }

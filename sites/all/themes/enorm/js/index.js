@@ -8,9 +8,11 @@
             $(".field-name-field-project-end-date").after("<div id='line-break'></div>");
             $(".field-name-field-project-participants").after("<div id='line-break'></div>");
             $(".field-name-field-project-description").after("<div id='line-break'></div>");
-            $(".views-field-title").click(function (e) {
-                $(".view").fadeOut();
-                $(".page-header").after("<img src='/sites/all/themes/enorm/assets/img/logo-enormkopie.gif'>");
+            $(".field-name-field-callback-request-done").after("<div id='line-break'></div>");
+            $(".project-expiring").prependTo("#node-content-type-project-detail");
+            $(".views-field-title a").click(function (e) {
+                $(".col-sm-12").fadeOut();
+                $(".row").addClass('enorm-spinner-container').html("<img src='/sites/all/themes/enorm/assets/img/logo-enormkopie.gif' class='enorm-spinner'><br><p>Loading...</p>");
             });
             $(".view-header").once('enorm').click(function () {
                 if ($(this).next(".view-content").hasClass("vanishIn")) {

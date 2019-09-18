@@ -6,26 +6,33 @@
 
 .front .row {
   display: table;
-  margin: 0 auto;
 }
 
 @mixin frontpage-block {
-  min-height: 25vw;
-  max-height: 25vw;
-  max-width: 15vw;
-  min-width: 15vw;
-  display: inline-block;
+  flex: 1;
+  min-width: 30%;
+  max-width: 30%;
+  //min-height: 25vw;
+  //max-height: 25vw;
+  //max-width: 15vw;
+  //min-width: 15vw;
+  //display: inline-block;
   //margin: $gutterMargin;
   padding: $gutterPadding;
-  position: relative;
-  float: left;
+  //position: relative;
+  //float: left;
   //background-image: url('../assets/img/card-background.png');
   //background-size: cover;
-  -webkit-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
-  -moz-box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
-  box-shadow: -5px 2px 30px -7px rgba(128,128,128,1);
+  @include box-shadow;
   text-align: center;
   margin: 0 2px;
+}
+
+.region-content {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .front .region-content section:nth-child(1) {
@@ -62,8 +69,13 @@
   padding: 1vw;
 }
 
+#block-block-1 {
+  overflow: hidden;
+}
+
 #block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block, #block-views-view-all-invoices-block-1, #block-views-my-files-block-1 {
   padding: 0;
+  overflow: hidden;
 
   .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices, .view-my-files {
     width: 100%;
@@ -84,15 +96,10 @@
       -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* Internet Explorer/Edge */
       user-select: none;
-      /* Non-prefixed version, currently
-                                       supported by Chrome and Opera */
-
-      //&:hover {
-      //  cursor: pointer;
-      //}
     }
 
     .view-content {
+      overflow: hidden;
       position: relative;
       z-index: 1;
       background-color: rgba(113, 113, 113, 0.5);
@@ -146,6 +153,10 @@
 
   #block-views-recently-read-block .view-recently-read .view-header {
     font-size: $font-size-normal;
+  }
+
+  .node-type-content-type-project .row {
+    margin-left: 0;
   }
 }
 

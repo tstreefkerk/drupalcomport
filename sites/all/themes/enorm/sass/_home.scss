@@ -10,8 +10,8 @@
 
 @mixin frontpage-block {
   flex: 1;
-  min-width: 30%;
-  max-width: 30%;
+  //min-width: 30%;
+  //max-width: 30%;
   //min-height: 25vw;
   //max-height: 25vw;
   //max-width: 15vw;
@@ -43,13 +43,20 @@
 .front .region-content section:nth-child(2) {
   @include frontpage-block;
   background-color: $block-background-color-two;
-  left: 12.5%;
 }
 
 .front .region-content section:nth-child(3) {
   @include frontpage-block;
   background-color: $block-background-color-three;
-  left: 25%;
+}
+
+.front .region-content section:nth-child(4) {
+  @include frontpage-block;
+  background-color: $block-background-color-three;
+
+  .view-content {
+    display: none;
+  }
 }
 
 #block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1 {
@@ -73,11 +80,11 @@
   overflow: hidden;
 }
 
-#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block, #block-views-view-all-invoices-block-1, #block-views-my-files-block-1 {
+#block-views-recently-read-block, #block-views-view-all-projects-nodes-block-1, #block-views-view-all-companies-block-1, #block-views-view-all-invoices-block, #block-views-view-all-invoices-block-1, #block-views-my-files-block-1, #block-views-view-callback-requests-block-1 {
   padding: 0;
   overflow: hidden;
 
-  .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices, .view-my-files {
+  .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices, .view-my-files, .view-view-callback-requests {
     width: 100%;
     height: auto;
     margin-top: 10%;

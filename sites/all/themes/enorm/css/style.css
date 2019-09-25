@@ -230,6 +230,9 @@ footer {
     #block-views-recently-read-block .view-recently-read span, #block-views-recently-read-block .view-view-all-projects-nodes span, #block-views-recently-read-block .view-view-all-companies span, #block-views-recently-read-block .view-view-all-invoices span, #block-views-recently-read-block .view-my-files span, #block-views-recently-read-block .view-view-callback-requests span, #block-views-view-all-projects-nodes-block-1 .view-recently-read span, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes span, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies span, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices span, #block-views-view-all-projects-nodes-block-1 .view-my-files span, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests span, #block-views-view-all-companies-block-1 .view-recently-read span, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes span, #block-views-view-all-companies-block-1 .view-view-all-companies span, #block-views-view-all-companies-block-1 .view-view-all-invoices span, #block-views-view-all-companies-block-1 .view-my-files span, #block-views-view-all-companies-block-1 .view-view-callback-requests span, #block-views-view-all-invoices-block .view-recently-read span, #block-views-view-all-invoices-block .view-view-all-projects-nodes span, #block-views-view-all-invoices-block .view-view-all-companies span, #block-views-view-all-invoices-block .view-view-all-invoices span, #block-views-view-all-invoices-block .view-my-files span, #block-views-view-all-invoices-block .view-view-callback-requests span, #block-views-view-all-invoices-block-1 .view-recently-read span, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes span, #block-views-view-all-invoices-block-1 .view-view-all-companies span, #block-views-view-all-invoices-block-1 .view-view-all-invoices span, #block-views-view-all-invoices-block-1 .view-my-files span, #block-views-view-all-invoices-block-1 .view-view-callback-requests span, #block-views-my-files-block-1 .view-recently-read span, #block-views-my-files-block-1 .view-view-all-projects-nodes span, #block-views-my-files-block-1 .view-view-all-companies span, #block-views-my-files-block-1 .view-view-all-invoices span, #block-views-my-files-block-1 .view-my-files span, #block-views-my-files-block-1 .view-view-callback-requests span, #block-views-view-callback-requests-block-1 .view-recently-read span, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes span, #block-views-view-callback-requests-block-1 .view-view-all-companies span, #block-views-view-callback-requests-block-1 .view-view-all-invoices span, #block-views-view-callback-requests-block-1 .view-my-files span, #block-views-view-callback-requests-block-1 .view-view-callback-requests span {
       font-size: 17px; }
 
+.front #view-view-callback-requests .view-content {
+  display: none; }
+
 .front #block-views-view-all-invoices-block-1 .views-field {
   font-size: 30px; }
 
@@ -444,7 +447,7 @@ footer {
   display: flex;
   flex-wrap: wrap;
   flex-grow: 1;
-  overflow: scroll; }
+  overflow: visible; }
   .node-type-content-type-company #node-content-type-company-detail h3 {
     display: none; }
 

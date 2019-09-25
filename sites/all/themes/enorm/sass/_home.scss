@@ -133,6 +133,12 @@
 }
 
 .front {
+  #view-view-callback-requests {
+    .view-content {
+      display: none;
+    }
+  }
+
   #block-views-view-all-invoices-block-1 {
     .views-field {
       font-size: $font-size-big;

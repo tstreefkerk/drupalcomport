@@ -14,15 +14,7 @@ function enorm_crons_cronapi($op, $job = NULL)
         'description' => 'Look for new invoices in Teamleader once every night, and add them to ComPort. While possible, its highly discouraged to force this cron due to major performance drops.',
         'rule' => '30 3 * * *',
     );
-    $items['enorm_crons_new_milestones_cron'] = array(
-        'description' => 'Check milestones for projects and update them if necessary. Forcing this cron will not cause performance drops, its impact is limited.',
-        'rule' => '30 4 * * *',
-    );
     return $items;
-}
-
-function enorm_crons_new_milestones_cron() {
-//    $result = enorm_crons_
 }
 
 function enorm_crons_new_invoices_cron()
@@ -157,7 +149,6 @@ function enorm_crons_update_company_tag($company_id)
       ]
     }";
     $result = enorm_teamleader_call_send($operation, $postfields);
-    dpm("updated");
 }
 
 function enorm_crons_get_company_list_by_date()
@@ -193,7 +184,6 @@ function enorm_crons_new_projects_cron()
             //nog niet opgeslagen
             dpm("nog niet opgeslagen");
             enorm_crons_save_new_project($value['id'], $value['title'], $value['customer']['id']);
-
         }
     }
 
@@ -245,7 +235,7 @@ function enorm_crons_save_new_milestone($node_title, $milestone_id, $due_on, $mi
     $node->field_milestone_status[LANGUAGE_NONE][0]['value'] = $milestone_status;
     $node->field_milestone_project_id[LANGUAGE_NONE][0]['value'] = $project_id;
     $node->field_milestone_project_type[LANGUAGE_NONE][0]['value'] = $project_type;
-    //not from drupal! This is the responsible user as defined in Teamleader.
+    //CAUTION: This is no reference to a Drupal user, but the responsible user as defined in Teamleader.
     $node->field_milestone_user_id[LANGUAGE_NONE][0]['value'] = $user_id;
     $node->field_milestone_billable_amount[LANGUAGE_NONE][0]['value'] = $billable_amount;
     node_object_prepare($node);
@@ -260,9 +250,6 @@ function enorm_crons_get_project_list()
 {
     $operation = "projects.list";
     $postfields = "{
-          \"filter\": {
-            \"status\": \"done\"
-          },
           \"page\": {
             \"size\": 100,
             \"number\": 1

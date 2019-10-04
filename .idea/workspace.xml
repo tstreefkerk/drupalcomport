@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5a4e5cd1-010a-4653-aef5-c898bae8dd9b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sites/all/modules/custom/enorm_milestones/enorm_milestones.module" afterPath="$PROJECT_DIR$/sites/all/modules/custom/enorm_milestones/enorm_milestones.module" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sites/all/themes/enorm/css/style.css" afterPath="$PROJECT_DIR$/sites/all/themes/enorm/css/style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sites/all/themes/enorm/js/index.js" afterPath="$PROJECT_DIR$/sites/all/themes/enorm/js/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sites/all/themes/enorm/sass/style.scss" afterPath="$PROJECT_DIR$/sites/all/themes/enorm/sass/style.scss" />
-    </list>
+    <list default="true" id="5a4e5cd1-010a-4653-aef5-c898bae8dd9b" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -526,12 +520,12 @@
       <workItem from="1569919276495" duration="5478000" />
       <workItem from="1570000624685" duration="356000" />
       <workItem from="1570020413747" duration="5238000" />
-      <workItem from="1570174371593" duration="212000" />
+      <workItem from="1570174371593" duration="298000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="360302000" />
+    <option name="totallyTimeSpent" value="360388000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="-257" width="1920" height="1018" extended-state="0" />

@@ -4,6 +4,7 @@
 @import "other.scss";
 @import "node-project.scss";
 @import "node-company.scss";
+@import "node-file.scss";
 
 body {
   background-color: #EFEFEF;
@@ -265,6 +266,7 @@ body {
 
 .enorm-spinner {
   margin-top: 10%;
+  max-width: 20%;
 }
 
 .enorm-spinner-container {
@@ -316,7 +318,6 @@ body {
     }
   }
 
-
   #line-break {
     flex-basis: 100%;
   }
@@ -332,3 +333,109 @@ body {
     display: none;
   }
 }
+
+.btn-primary {
+  background-color: $secondaryColorGreen;
+}
+
+.btn-info {
+  background-color: $secondaryColorGreen;
+  border-color: $secondaryColorGreen;
+}
+
+.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group > .btn, .input-group-btn:first-child > .dropdown-toggle, .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child > .btn-group:not(:last-child) > .btn {
+  color: $primaryColorWhite;
+}
+
+#user-profile-form {
+  margin-bottom: 10vh;
+
+  .row {
+    top: 0;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .form-item-pass-pass1, .form-item-pass-pass2 {
+    width: 100%;
+    padding: 0;
+  }
+}
+
+.password-help {
+  display: none;
+}
+
+.views-add-content {
+  color: $secondaryColorBlueGrey;
+  text-decoration: underline;
+  margin-bottom: 100px;
+}
+
+.view-header > p {
+  margin-bottom: 20px !important;
+}
+
+.page-admin-people {
+  .main-container > .row {
+    width: 50%;
+    margin: 0 auto;
+    left: 2vw;
+  }
+
+  .form-control{
+    border-radius: 0;
+  }
+
+  #user-register-form {
+    margin-bottom: 10vh;
+    background-color: $primaryColorWhite;
+    padding: 20px;
+    @include box-shadow();
+
+    input {
+      color: #000;
+    }
+
+    label {
+      font-weight: bold;
+    }
+    .row {
+      top: 0;
+      margin-left: 0;
+    }
+
+    .form-item {
+      padding: 0;
+    }
+
+    input:focus, .form-control:focus {
+      border-color: #aeaeae;
+      border-bottom: 3px solid $secondaryColorGreen;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #aeaeae;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #aeaeae;
+    }
+
+    .form-type-password {
+      width: 97%;
+    }
+
+    .help-block {
+      display: none !important;
+    }
+
+    #edit-submit {
+      width: 100%;
+      background-color: $secondaryColorGreen;
+      border-radius: 0;
+    }
+
+    .form-item-status {
+      display: none;
+    }
+  }
+}
+
+
+
+

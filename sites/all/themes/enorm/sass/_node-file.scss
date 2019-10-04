@@ -1,0 +1,53 @@
+.page-customer-files {
+  #cboxWrapper {
+    text-align: center;
+    background-color: $primaryColorGrey;
+
+    article {
+      text-align: center;
+    }
+
+    #cboxContent {
+      background-color: $primaryColorGrey;
+
+      .field-name-field--drive-link-hyperlink {
+        margin-top: 20px;
+        text-align: center;
+        border: 2px solid $secondaryColorGreen;
+        width: 20%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 10px;
+
+        a {
+          color: $secondaryColorGreen;
+        }
+      }
+
+      .field-name-field-drive-link-type {
+        text-align: center;
+        display: inline-block;
+      }
+
+      .field-name-field-drive-link-project {
+        display: none;
+      }
+
+      .field-name-field-drive-link-customer {
+        display: none;
+      }
+
+        .field-name-field-drive-link-visibility {
+        display: none;
+      }
+
+      h2 {
+        font-family: Druk;
+
+        a {
+          color: $secondaryColorGreen;
+        }
+      }
+    }
+  }
+}

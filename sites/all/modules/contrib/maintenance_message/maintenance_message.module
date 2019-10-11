@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @file
+ * Displays a message on the login page.
+ */
+
+/**
+ * Documentation for maintenance mode login message.
+ *
+ * This code first checks if we're in maintenance mode.
+ * If we're in maintenance mode, it checks whether a message
+ * has been set by the administrator and if not returns an empty string.
+ * It then checks if the string is empty (returns default message)
+ * or not (returns message set by user).
+ *
+ * Implements hook_form_FORM_ID_alter().
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function maintenance_message_form_user_login_alter(&$form, &$form_state, $form_id) {
+  if (variable_get('maintenance_mode', 0)) {
+    $message = check_plain(variable_get('maintenance_mode_login_message', ''));
+    if ($message !== "") {
+      drupal_set_message($message, 'warning');
+    }
+    else {
+      drupal_set_message(t('@site is currently under maintenance. We should be back shortly. Thank you for your patience.', array('@site' => variable_get('site_name', 'Drupal'))), 'warning');
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+
+/**
+ * Sets a new field on maintenance page.
+ *
+ * This code adds a field to the maintenance mode form.
+ * This way, we can make the user not use HTML because
+ * that does not work with drupal_set_message.
+ * It also makes it possible to show a different message
+ * to administrators than to authenticated users.
+ * Changes suggested by /u/Arkener.
+ */
+function maintenance_message_form_system_site_maintenance_mode_alter(&$form, &$form_state, $form_id) {
+  $login_message = variable_get('maintenance_mode_login_message');
+  $form['maintenance_mode_login_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Login Screen message'),
+    '#description' => t('This message is set on the login page. You <b>can not</b> use HTML in this field!'),
+    '#default_value' => $login_message,
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function maintenance_message_help($path, $arg) {
+  if ($path == "admin/help#maintenance_message") {
+    return '<p>' . t('You can configure a message and put your site into Maintenance Mode at the <a href="@link">Maintenance Mode page.</a>', array('@link' => url('admin/config/development/maintenance'))) . '</p>';
+  }
+}

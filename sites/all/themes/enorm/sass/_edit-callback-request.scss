@@ -1,0 +1,184 @@
+.page-node-edit.node-type-content-type-callback-request, .page-node-delete.node-type-content-type-callback-request {
+  .breadcrumb {
+    display: none;
+  }
+
+  .main-container > .row {
+    width: 50%;
+    margin: 0 auto;
+    left: 2vw;
+  }
+
+  .form-control {
+    border-radius: 0;
+  }
+
+  #content-type-callback-request-node-form {
+    margin-bottom: 10vh;
+    background-color: $primaryColorWhite;
+    padding: 20px;
+    @include box-shadow();
+
+    input {
+      color: #000;
+    }
+
+    label {
+      font-weight: bold;
+    }
+    .row {
+      top: 0;
+      margin-left: 0;
+    }
+
+    .form-item {
+      padding: 0;
+    }
+
+    input:focus, .form-control:focus {
+      border-color: #aeaeae;
+      border-bottom: 3px solid $secondaryColorGreen;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #aeaeae;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #aeaeae;
+    }
+
+    .form-type-password {
+      width: 97%;
+    }
+
+    .help-block {
+      display: none !important;
+    }
+
+    #edit-submit, #edit-delete {
+      width: 100%;
+      background-color: $primaryColorWhite;
+      border: 2px solid $secondaryColorGreen;
+      color: $secondaryColorGreen;
+      border-radius: 0;
+      display: inline-block;
+      vertical-align: middle;
+      -webkit-transform: perspective(1px) translateZ(0);
+      transform: perspective(1px) translateZ(0);
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+      position: relative;
+      -webkit-transition-property: color;
+      transition-property: color;
+      -webkit-transition-duration: 0.5s;
+      transition-duration: 0.5s;
+
+      &:before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: $secondaryColorGreen;
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0);
+        -webkit-transform-origin: 50% 0;
+        transform-origin: 50% 0;
+        -webkit-transition-property: transform;
+        transition-property: transform;
+        -webkit-transition-duration: 0.5s;
+        transition-duration: 0.5s;
+        -webkit-transition-timing-function: ease-out;
+        transition-timing-function: ease-out;
+      }
+
+      &:hover, &:focus, &:active {
+        color: white;
+      }
+
+      &:hover:before, &:focus:before, &:active:before {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+        -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+        transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+      }
+    }
+
+    #edit-delete{
+      margin-top: 10px;
+      border-color: $primaryColorRed;
+      color: $primaryColorRed;
+
+      &:before{
+        background: $primaryColorRed;
+      }
+    }
+
+    .form-item-status {
+      display: none;
+    }
+
+    #edit-preview {
+      display: none;
+    }
+  }
+}
+
+.page-node-delete.node-type-content-type-callback-request {
+
+  #node-delete-confirm {
+    margin-bottom: 10vh;
+    background-color: $primaryColorWhite;
+    padding: 20px;
+    @include box-shadow();
+  }
+
+
+  #edit-submit{
+    width: 100%;
+    background-color: $primaryColorWhite;
+    border: 2px solid $primaryColorRed;
+    border-radius: 0;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    margin-top: 10px;
+    border-color: $primaryColorRed;
+    color: $primaryColorRed;
+
+    &:before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: $primaryColorRed;
+      -webkit-transform: scaleY(0);
+      transform: scaleY(0);
+      -webkit-transform-origin: 50% 0;
+      transform-origin: 50% 0;
+      -webkit-transition-property: transform;
+      transition-property: transform;
+      -webkit-transition-duration: 0.5s;
+      transition-duration: 0.5s;
+      -webkit-transition-timing-function: ease-out;
+      transition-timing-function: ease-out;
+    }
+
+    &:hover, &:focus, &:active {
+      color: white;
+    }
+
+    &:hover:before, &:focus:before, &:active:before {
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+      -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+      transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+    }
+  }
+}

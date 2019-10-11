@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Adds a message when install was succesfull.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function maintenance_message_install() {
+  $t = get_t();
+  drupal_set_message($t("You can put your site into maintenance mode and set a message under !link",
+      array('!link' => l($t('Configuration > Development > Maintenance Mode'), 'admin/config/development/maintenance')))
+  );
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function maintenance_message_uninstall() {
+  variable_del('maintenance_mode_login_message');
+}

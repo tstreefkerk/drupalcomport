@@ -1,4 +1,4 @@
-name = 'enorm_theme'
+name = 'EnoRm.'
 description = 'Enorm subtheme based on Bootstrap.'
 core = 7.x
 base theme = bootstrap
@@ -32,6 +32,7 @@ regions[page_bottom]    = 'Page bottom'
 
 stylesheets[all][] = css/style.css
 stylesheets[all][] = css/magic.min.css
+stylesheets[all][] = css/hover.min.css
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Javascript

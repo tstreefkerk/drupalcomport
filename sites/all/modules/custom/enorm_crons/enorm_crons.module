@@ -107,6 +107,7 @@ function enorm_crons_new_companies_cron()
 function enorm_crons_check_new_companies()
 {
     $last_updated = enorm_crons_get_company_list_by_date();
+    dpm($last_updated);
     foreach ($last_updated['data'] as $value) {
         // Check whether company has an 'added' tag already
         if (empty($value['tags'])) {

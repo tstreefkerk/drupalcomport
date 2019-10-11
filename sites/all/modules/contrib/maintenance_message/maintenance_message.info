@@ -1,0 +1,11 @@
+name = Maintenance Mode Login Message
+description = Set a Maintenance Mode message on the login page.
+configure = admin/config/development/maintenance
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2016-02-18
+version = "7.x-1.0"
+core = "7.x"
+project = "maintenance_message"
+datestamp = "1455788340"
+

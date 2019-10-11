@@ -101,6 +101,7 @@ function enorm_permissions_form_user_register_form_alter(&$form, &$form_state, $
         $form['account']['roles'][7]['#access'] = FALSE;
         $form['account']['roles'][8]['#access'] = FALSE;
         $form['account']['roles'][9]['#access'] = FALSE;
+        $form['account']['roles'][10]['#access'] = FALSE;
     }
 }
 

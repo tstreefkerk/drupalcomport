@@ -147,12 +147,10 @@
 
   .more-link {
     position: absolute;
-    bottom: -40px;
-    left: 0;
-    padding: $gutterPadding;
+    bottom: -30px;
 
     a{
-      color: $primaryColorRed !important;
+      color: $secondaryColorGreen !important;
     }
   }
 }

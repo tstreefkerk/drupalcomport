@@ -20,7 +20,7 @@ function enorm_teamleader_call($operation, $postfields)
 
     // Set params for curl
     // @TODO URL is debug server, change when migrating to production
-    curl_setopt($ch, CURLOPT_URL, 'https://private-anon-2b86fb5b17-teamleadercrm.apiary-proxy.com/' . $operation);
+    curl_setopt($ch, CURLOPT_URL, 'https://api.teamleader.eu/' . $operation);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, FALSE);
     // Postfields is a JSON object. Check API docs for syntax.

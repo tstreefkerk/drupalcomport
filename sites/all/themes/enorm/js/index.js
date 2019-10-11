@@ -14,6 +14,10 @@
                 $(".col-sm-12").fadeOut();
                 $(".row").addClass('enorm-spinner-container').html("<img src='/sites/all/themes/enorm/assets/img/enorm-loader-transparent.gif' class='enorm-spinner'><br><p>Loading...</p>");
             });
+            $(".page-all-companies-nodes .views-field-title a").click(function (e) {
+                $(".col-sm-12").fadeOut();
+                $(".row").addClass('enorm-spinner-container').html("<img src='/sites/all/themes/enorm/assets/img/enorm-loader-transparent.gif' class='enorm-spinner'><br><p>Loading...</p>");
+            });
             $(".view-header").once('enorm').click(function () {
                 if ($(this).next(".view-content").hasClass("vanishIn")) {
                     $(this).next(".view-content").removeClass("vanishIn").addClass("vanishOut");

@@ -5,6 +5,9 @@
 @import "node-project.scss";
 @import "node-company.scss";
 @import "node-file.scss";
+@import "add-user.scss";
+@import "add-drive-link.scss";
+@import "edit-callback-request.scss";
 
 body {
   background-color: #EFEFEF;
@@ -41,6 +44,10 @@ body {
 }
 
 .not-logged-in {
+
+  input {
+    color: $primaryColorWhite !important;
+  }
 
   #auth_box #bottom_part {
     padding: 15px;
@@ -274,6 +281,13 @@ body {
 }
 
 .node-type-content-type-callback-request {
+  .callback-edit {
+    color: $secondaryColorBlueGrey;
+    text-decoration: underline;
+    padding-bottom: 50px;
+    width: 100%;
+  }
+
   .page-header {
     color: $primaryColorDarkGrey;
   }
@@ -294,27 +308,27 @@ body {
   article {
     display: flex;
     flex-wrap: wrap;
-  }
 
-  .field-name-field-callback-request-company, .field-name-field-callback-phone-number, .field-name-field-callback-request-project, .field-name-field-callback-request-done, .field-name-field-callback-account-manager {
-    @include box-shadow;
-    background-color: $primaryColorWhite;
-    padding: 0 $gutterPadding $gutterPadding $gutterPadding;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 30px;
-    margin-right: 10px;
+    .field-name-field-callback-request-company, .field-name-field-callback-phone-number, .field-name-field-callback-request-project, .field-name-field-callback-request-done, .field-name-field-callback-account-manager {
+      @include box-shadow;
+      background-color: $primaryColorWhite;
+      padding: 0 $gutterPadding $gutterPadding $gutterPadding;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 30px;
+      margin-right: 10px;
 
-    h3, .field-label {
-      padding-bottom: 2px;
-      padding-top: 10px;
-      font-size: 25px;
-    }
+      h3, .field-label {
+        padding-bottom: 2px;
+        padding-top: 10px;
+        font-size: 25px;
+      }
 
-    .field-items {
-      text-align: center;
-      margin-top: 15px;
+      .field-items {
+        text-align: center;
+        margin-top: 15px;
+      }
     }
   }
 
@@ -376,66 +390,18 @@ body {
   margin-bottom: 20px !important;
 }
 
-.page-admin-people {
-  .main-container > .row {
-    width: 50%;
-    margin: 0 auto;
-    left: 2vw;
-  }
-
-  .form-control{
-    border-radius: 0;
-  }
-
-  #user-register-form {
-    margin-bottom: 10vh;
-    background-color: $primaryColorWhite;
-    padding: 20px;
-    @include box-shadow();
-
-    input {
-      color: #000;
-    }
-
-    label {
-      font-weight: bold;
-    }
-    .row {
-      top: 0;
-      margin-left: 0;
-    }
-
-    .form-item {
-      padding: 0;
-    }
-
-    input:focus, .form-control:focus {
-      border-color: #aeaeae;
-      border-bottom: 3px solid $secondaryColorGreen;
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #aeaeae;
-      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #aeaeae;
-    }
-
-    .form-type-password {
-      width: 97%;
-    }
-
-    .help-block {
-      display: none !important;
-    }
-
-    #edit-submit {
-      width: 100%;
-      background-color: $secondaryColorGreen;
-      border-radius: 0;
-    }
-
-    .form-item-status {
-      display: none;
-    }
-  }
+input {
+  color: $primaryColorBlack !important;
 }
 
+.page-user-password {
+  .form-item-name {
+    width: 100%;
+  }
 
-
-
+  #edit-submit {
+    width: 100%;
+    border-radius: 0;
+    margin-top: 20px;
+  }
+}

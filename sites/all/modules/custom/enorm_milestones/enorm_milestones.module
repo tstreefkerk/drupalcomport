@@ -84,17 +84,17 @@ function enorm_milestones_get_milestones_block()
         if (variable_get('milestones_contact_enable') === 1) {
             if(empty(enorm_milestones_check_callback($project_id))){
                 if ($percentage >= 75 && $total > 2) {
-                    $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p>" . drupal_render($form_render) . "</div>";
+                    $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed.") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><div class='project-expiring'><p>" . variable_get('milestones_contact_message') . "</p>" . drupal_render($form_render) . "</div>";
                 } else {
-                    $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
+                    $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed.") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
                 }
             }
             else {
-                $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><div class='project-expiring'><h2>" . t('Thank you!') . "</h2><br><p>" . t('We will be in touch soon.') . "</p<</div>";
+                $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div>'<div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed.") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div><div class='project-expiring'><h2>" . t('Thank you!') . "</h2><br><p>" . t('We will be in touch soon.') . "</p<</div>";
             }
         }
         else {
-            $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed. Getting there!") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
+            $returnable = $returnable . "<div id='timetracking-container'><h3> " . floor($timetracking) . "</h3>" . t("hours tracked to milestones. No rights can be derived from this indication.") . "</div><div id='absolute-done'><h3>" . $closed . "/" . $total . "</h3>". t("milestones closed.") . "</div><div class='percentage-done-hidden'>" . $percentage . "%</div>";
         }
         return $returnable;
     };

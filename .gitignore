@@ -11,3 +11,13 @@ other/*
 .idea/*
 .idea
 .editorconfig
+
+# Ignore htaccess
+.htaccess
+
+# Some exceptions
+!sites/default/files/bootstrap/*
+!sites/default/composer
+!sites/default/ctools
+!sites/default/fontyourface/*
+!sites/default/languages/*

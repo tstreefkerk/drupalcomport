@@ -1,23 +1,27 @@
 # Ignore configuration files that may contain sensitive information.
 sites/*/settings*.php
+sites/*/default.settings*.php
 
 # Ignore paths that contain user-generated content.
-sites/*/files
 sites/*/private
-sites/default/*
 other/*
 
 # PHPStorm stuff
 .idea/*
 .idea
 .editorconfig
+.DS_Store
 
 # Ignore htaccess
 .htaccess
 
 # Some exceptions
-!/sites/default/files/bootstrap/*
-!/sites/default/composer
-!/sites/default/ctools
-!/sites/default/fontyourface/*
-!/sites/default/languages/*
+!sites/default/files/bootstrap/*
+!sites/default/composer
+!sites/default/ctools
+!sites/default/fontyourface/*
+!sites/default/languages/*
+
+# Composer stuff
+composer.json
+composer.lock

@@ -16,8 +16,8 @@ other/*
 .htaccess
 
 # Some exceptions
-!sites/default/files/bootstrap/*
-!sites/default/composer
-!sites/default/ctools
-!sites/default/fontyourface/*
-!sites/default/languages/*
+!/sites/default/files/bootstrap/*
+!/sites/default/composer
+!/sites/default/ctools
+!/sites/default/fontyourface/*
+!/sites/default/languages/*

@@ -12,9 +12,6 @@ other/*
 .editorconfig
 .DS_Store
 
-# Ignore htaccess
-.htaccess
-
 # Some exceptions
 !sites/default/files/bootstrap/*
 !sites/default/composer

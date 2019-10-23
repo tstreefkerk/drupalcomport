@@ -37,7 +37,7 @@ function enorm_crons_new_invoices_cron()
             }
         }
     }
-    watchdog('EnoRm', t('New Invoice Cron Executed:' . $newly_saved . 'items, ' . $already_saved . 'items already saved and not saving.'), array(), WATCHDOG_INFO, NULL);
+    watchdog('EnoRm', t('New Invoice Cron Executed:' . $newly_saved . ' items already saved, ' . $already_saved . 'items already saved and not saving.'), array(), WATCHDOG_INFO, NULL);
 }
 
 function enorm_crons_save_new_invoice($invoice_id, $node_title, $company_teamleader_id, $invoice_total, $invoice_date, $company_name)
@@ -191,7 +191,7 @@ function enorm_crons_new_projects_cron()
             enorm_crons_save_new_project($value['id'], $value['title'], $value['customer']['id']);
         }
     }
-    watchdog('EnoRm', t('New Project Cron Executed:' . $new_saved . 'items, ' . $already_saved . 'items already saved and not saving.'), array(), WATCHDOG_INFO, NULL);
+    watchdog('EnoRm', t('New Project Cron Executed:' . $new_saved . ' items new items saved, ' . $already_saved . 'items already saved and not saving.'), array(), WATCHDOG_INFO, NULL);
 }
 
 function enorm_crons_save_new_project($teamleader_id, $node_title, $company_teamleader_id)

@@ -201,7 +201,6 @@ function enorm_milestones_form_validate($form, &$form_state) {
 
 function enorm_milestones_form_submit($form, &$form_state) {
     $form_state['redirect'] = FALSE;
-    dpm($form_state);
     global $user;
     $node = new stdClass();
     $node->title = $form['title']['#value'];

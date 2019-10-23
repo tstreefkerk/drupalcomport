@@ -5,7 +5,7 @@
  */
 function enorm_timetracking_node_view_alter(&$build)
 {
-//    dpm($build);
+    //whoops empty
 }
 
 function enorm_timetracking_cleanup($data)
@@ -13,7 +13,6 @@ function enorm_timetracking_cleanup($data)
     $cleanup = '';
     foreach ($data['data'] as $value) {
 //        $cleanup = $cleanup . $value;
-//        dpm($value);
         if (!empty($value)) {
             $duration = $value['duration'] / 60;
             $cleanup = $cleanup . $value['description'] . ', duration (min): ' . $duration;

@@ -1,0 +1,125 @@
+<?php
+
+namespace Enorm;
+use Google_Client;
+use Google_Service_Drive;
+use Google_Service_Drive_DriveFile;
+use Google_Http_MediaFileUpload;
+
+/**
+ * Implements hook_form_alter().
+ */
+/**
+ * Implements hook_node_presave().
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function enorm_drive_form_alter(&$form, &$form_state, $form_id) {
+  $form['actions']['submit']['#submit'][0] = 'MODULE_my_custom_submit_handler';
+  dpm($form);
+}
+
+function custom_function_enorm_drive() {
+
+}
+
+
+function GetFolders($client, $drive){
+    $parameters = [
+      // Get only the folders
+      'q' => "mimeType = 'application/vnd.google-apps.folder'",
+      'fields' => 'files(id, name, modifiedTime, iconLink, webViewLink, webContentLink, mimeType)',
+    ];
+    $result = $drive->files->listFiles($parameters);
+    return $folders = $result->files;
+}
+
+function Test(){
+    $test = $this->Connect();
+    return $test;
+}
+
+function Connect(){
+    $client = new Google_Client();
+    // Get your credentials from the console
+  try {
+    $client->setAuthConfig('../config/credentials.json');
+  } catch (Google_Exception $e) {
+  }
+  $client->setRedirectUri('http://localhost:8000/api');
+    $client->setScopes(array('https://www.googleapis.com/auth/drive'));
+
+    //TODO I think the undefined session functions are Laravel functions. They'd have to be reworked.
+    if (isset($_GET['code']) || (session()->has('access_token'))) {
+      if (isset($_GET['code'])) {
+        $client->authenticate($_GET['code']);
+        session(['access_token' => $client->getAccessToken()]);
+      } else {
+        $client->setAccessToken(session('access_token'));
+      }
+      $drive = new Google_Service_Drive($client);
+      $folders = $this->GetFolders($client, $drive);
+      return view('uploadfile', ['folders' => $folders]);
+    } else {
+      $authUrl = $client->createAuthURL();
+      header('Location: ' . $authUrl);
+      exit();
+    }
+}
+
+function UploadFile($request){
+    $request->validate([
+      'fileToUpload' => 'required|file',
+      'folder' => 'required',
+    ]);
+    $fileName = request()->fileToUpload->GetClientOriginalName();
+    // Make sure u cant upload the same file twice in a row, so send it back to the upload file page
+    if($fileName == session('lastFile')){
+      return redirect()->route('api');
+    };
+    $fileType = request()->fileToUpload->getClientOriginalExtension();
+    $link = $request->fileToUpload->storeAs('files',$fileName);
+    $client = new Google_Client();
+    $client->setScopes(array('https://www.googleapis.com/auth/drive'));
+    if (session()->has('access_token')) {
+
+      $client->setAccessToken(session('access_token'));
+      $drive = new Google_Service_Drive($client);
+
+      //Insert a file
+      $file = new Google_Service_Drive_DriveFile();
+      //$file->setDescription('A test document');
+      $file->setName(request()->fileToUpload->GetClientOriginalName());
+      // Set parrents is the variable of the folder the file is placed in
+      $file->setParents([request()->folder]);
+      // FIX: Fix it so the callback works later as when the user is logged in
+      $mimeType = "";
+      if($fileType == "docx") $mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      else if($fileType == "doc") $mimeType = "application/msword";
+      else if($fileType == "gif") $mimeType = "image/gif";
+      else if($fileType == "js") $mimeType = "text/javascript";
+      else if($fileType == "json") $mimeType = "application/json";
+      else if($fileType == "sql") $mimeType = "application/json";
+      else if($fileType == "txt") $mimeType = "text/css";
+      else if($fileType == "xls") $mimeType = "application/vnd.ms-excel";
+      else if($fileType == "xlsx") $mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      else if($fileType == "zip") $mimeType = "application/zip";
+      else if($fileType == "ppt") $mimeType = "application/vnd.ms-powerpoint";
+      else if($fileType == "pptx") $mimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      // Create the file and get the URL
+      $createdFile = $drive->files->create($file, array(
+        'data' => Storage::get($link),
+        "mimeType" => $mimeType,
+        'fields' => 'id, name, webViewLink, mimeType',
+
+      ));
+      Storage::delete($link);
+      session(['lastFile' => $fileName]);
+      return view('uploaded', ['link' => $createdFile->getWebViewLink()]);
+    } else {
+      // Connect first
+      $this->Connect();
+    }
+}

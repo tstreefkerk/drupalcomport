@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Google API module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function google_api_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+    $t = get_t();
+    $library = libraries_detect('google-api-php-client');
+    $error_type = isset($library['error']) ? drupal_ucfirst($library['error']) : '';
+    $error_message = isset($library['error message']) ? $library['error message'] : '';
+    $requirements['google_api_library'] = array('title' => $t('Google API Library'));
+
+    if (empty($library['installed'])) {
+      $requirements['google_api_library'] += array(
+        'value' => $t('@e: Minimum version @min, maximum version @max', array('@e' => $error_type, '@min' => GOOGLE_API_MIN_VERSION, '@max' => GOOGLE_API_MAX_VERSION)),
+        'severity' => REQUIREMENT_ERROR,
+	'description' => $t('!error Use the drush command !drush_cmd to install the library automatically or manually download version 1 of the !gapi_library, extract the archive and place the %gapi_dir directory in the %path directory on your server.',
+          array(
+            '!drush_cmd' => '<code>drush google-api-get</code>',
+            '!error' => $error_message,
+            '!gapi_library' => l($t('Google API Library'), $library['download url']),
+            '%gapi_dir' => 'google-api-php-client',
+            '%path' => 'sites/all/libraries'
+          )
+        )
+      );
+    }
+    elseif (version_compare($library['version'], GOOGLE_API_MAX_VERSION, '>=') || version_compare($library['version'], GOOGLE_API_MIN_VERSION, '<')) {
+      $requirements['google_api_library'] += array(
+        'value' => $t('Only version 1 is supported. Your version is !version.', array('!version' => $library['version'])),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('You need to download version 1 of the !gapi_library and replace the old version located in the %path directory on your server.',
+          array(
+            '!gapi_library' => l($t('Google API Library'), $library['download url']),
+            '%path' => $library['library path']
+          )
+        ),
+      );
+    }
+    else {
+      $requirements['google_api_library'] += array(
+        'severity' => REQUIREMENT_OK,
+        'value' => $library['version'],
+      );
+    }
+  }
+
+  return $requirements;
+}

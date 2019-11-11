@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ *   Google API Library implementation
+ *
+ */
+
+/**
+ * The minimum required version of the Google API Client Library.
+ */
+define('GOOGLE_API_MIN_VERSION', '1.0.0');
+
+/**
+ * The maximum required version of the Google API Client Library.
+ */
+define('GOOGLE_API_MAX_VERSION', '2.0.0');
+
+/**
+ * Implements hook_libraries_info().
+ */
+function google_api_libraries_info() {
+  return array(
+    'google-api-php-client' => array(
+      'name' => 'Google API Client Library for PHP',
+      'vendor url' => 'https://developers.google.com/api-client-library/php/',
+      'download url' => 'https://github.com/google/google-api-php-client/releases',
+      'version arguments' => array(
+        'file' => 'src/Google/Client.php',
+        'pattern' => '/LIBVER = "([0-9a-zA-Z\.-]+)"/',
+        'lines' => 50,
+      ),
+      'path' => 'src',
+      'files' => array(
+        'php' => array(
+          'Google/Client.php',
+        ),
+      ),
+      'versions' => array(
+        GOOGLE_API_MIN_VERSION => array(
+        ),
+      ),
+    ),
+  );
+}

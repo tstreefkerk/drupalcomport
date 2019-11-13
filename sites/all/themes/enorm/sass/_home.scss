@@ -25,7 +25,9 @@
   //background-size: cover;
   @include box-shadow;
   text-align: center;
-  margin: 0 2px;
+  margin: 0 20px 20px 0;
+  min-width: 33%;
+
 }
 
 .region-content {
@@ -52,7 +54,7 @@
 
 .front .region-content section:nth-child(4) {
   @include frontpage-block;
-  background-color: $block-background-color-three;
+  background-color: $block-background-color-four;
 
   .view-content {
     display: none;
@@ -74,6 +76,7 @@
 
 .block-title {
   padding: 1vw;
+  font-family: Druk;
 }
 
 #block-block-1 {
@@ -87,15 +90,13 @@
   .view-recently-read, .view-view-all-projects-nodes, .view-view-all-companies, .view-view-all-invoices, .view-my-files, .view-view-callback-requests {
     width: 100%;
     height: auto;
-    margin-top: 10%;
-
+    margin-bottom: 10%;
     .view-header {
       padding: 1vw;
       position: relative;
       width: 100%;
       z-index: 99;
       font-size: $font-size-block;
-      background-color: $block-highlight-color;
       color: $primaryColorWhite;
       -webkit-touch-callout: none; /* iOS Safari */
       -webkit-user-select: none; /* Safari */
@@ -109,7 +110,6 @@
       overflow: hidden;
       position: relative;
       z-index: 1;
-      background-color: rgba(113, 113, 113, 0.5);
       padding-top: 1vh;
       padding-bottom: 1vh;
     }
@@ -147,10 +147,11 @@
 
   .more-link {
     position: absolute;
-    bottom: -30px;
+    bottom: 20px;
+    right: 20px;
 
     a{
-      color: $secondaryColorGreen !important;
+      color: $primaryColorWhite !important;
     }
   }
 }

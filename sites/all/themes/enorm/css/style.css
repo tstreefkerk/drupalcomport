@@ -137,8 +137,9 @@ footer {
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
-  margin: 0 2px;
-  background-color: #2A2A2A; }
+  margin: 0 20px 20px 0;
+  min-width: 33%;
+  background-color: #009688; }
 
 .front .region-content section:nth-child(2) {
   flex: 1;
@@ -147,8 +148,9 @@ footer {
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
-  margin: 0 2px;
-  background-color: #3F3F3F; }
+  margin: 0 20px 20px 0;
+  min-width: 33%;
+  background-color: #02dbc7; }
 
 .front .region-content section:nth-child(3) {
   flex: 1;
@@ -157,8 +159,9 @@ footer {
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
-  margin: 0 2px;
-  background-color: #EFEFEF; }
+  margin: 0 20px 20px 0;
+  min-width: 33%;
+  background-color: #03544d; }
 
 .front .region-content section:nth-child(4) {
   flex: 1;
@@ -167,8 +170,9 @@ footer {
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
   text-align: center;
-  margin: 0 2px;
-  background-color: #EFEFEF; }
+  margin: 0 20px 20px 0;
+  min-width: 33%;
+  background-color: #01332f; }
   .front .region-content section:nth-child(4) .view-content {
     display: none; }
 
@@ -179,11 +183,12 @@ footer {
   color: #FFFFFF; }
 
 .front .views-field {
-  font-size: 17px;
+  font-size: 30px;
   color: #FFFFFF; }
 
 .block-title {
-  padding: 1vw; }
+  padding: 1vw;
+  font-family: Druk; }
 
 #block-block-1 {
   overflow: hidden; }
@@ -194,14 +199,13 @@ footer {
   #block-views-recently-read-block .view-recently-read, #block-views-recently-read-block .view-view-all-projects-nodes, #block-views-recently-read-block .view-view-all-companies, #block-views-recently-read-block .view-view-all-invoices, #block-views-recently-read-block .view-my-files, #block-views-recently-read-block .view-view-callback-requests, #block-views-view-all-projects-nodes-block-1 .view-recently-read, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices, #block-views-view-all-projects-nodes-block-1 .view-my-files, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests, #block-views-view-all-companies-block-1 .view-recently-read, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes, #block-views-view-all-companies-block-1 .view-view-all-companies, #block-views-view-all-companies-block-1 .view-view-all-invoices, #block-views-view-all-companies-block-1 .view-my-files, #block-views-view-all-companies-block-1 .view-view-callback-requests, #block-views-view-all-invoices-block .view-recently-read, #block-views-view-all-invoices-block .view-view-all-projects-nodes, #block-views-view-all-invoices-block .view-view-all-companies, #block-views-view-all-invoices-block .view-view-all-invoices, #block-views-view-all-invoices-block .view-my-files, #block-views-view-all-invoices-block .view-view-callback-requests, #block-views-view-all-invoices-block-1 .view-recently-read, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes, #block-views-view-all-invoices-block-1 .view-view-all-companies, #block-views-view-all-invoices-block-1 .view-view-all-invoices, #block-views-view-all-invoices-block-1 .view-my-files, #block-views-view-all-invoices-block-1 .view-view-callback-requests, #block-views-my-files-block-1 .view-recently-read, #block-views-my-files-block-1 .view-view-all-projects-nodes, #block-views-my-files-block-1 .view-view-all-companies, #block-views-my-files-block-1 .view-view-all-invoices, #block-views-my-files-block-1 .view-my-files, #block-views-my-files-block-1 .view-view-callback-requests, #block-views-view-callback-requests-block-1 .view-recently-read, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes, #block-views-view-callback-requests-block-1 .view-view-all-companies, #block-views-view-callback-requests-block-1 .view-view-all-invoices, #block-views-view-callback-requests-block-1 .view-my-files, #block-views-view-callback-requests-block-1 .view-view-callback-requests {
     width: 100%;
     height: auto;
-    margin-top: 10%; }
+    margin-bottom: 10%; }
     #block-views-recently-read-block .view-recently-read .view-header, #block-views-recently-read-block .view-view-all-projects-nodes .view-header, #block-views-recently-read-block .view-view-all-companies .view-header, #block-views-recently-read-block .view-view-all-invoices .view-header, #block-views-recently-read-block .view-my-files .view-header, #block-views-recently-read-block .view-view-callback-requests .view-header, #block-views-view-all-projects-nodes-block-1 .view-recently-read .view-header, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes .view-header, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies .view-header, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices .view-header, #block-views-view-all-projects-nodes-block-1 .view-my-files .view-header, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests .view-header, #block-views-view-all-companies-block-1 .view-recently-read .view-header, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes .view-header, #block-views-view-all-companies-block-1 .view-view-all-companies .view-header, #block-views-view-all-companies-block-1 .view-view-all-invoices .view-header, #block-views-view-all-companies-block-1 .view-my-files .view-header, #block-views-view-all-companies-block-1 .view-view-callback-requests .view-header, #block-views-view-all-invoices-block .view-recently-read .view-header, #block-views-view-all-invoices-block .view-view-all-projects-nodes .view-header, #block-views-view-all-invoices-block .view-view-all-companies .view-header, #block-views-view-all-invoices-block .view-view-all-invoices .view-header, #block-views-view-all-invoices-block .view-my-files .view-header, #block-views-view-all-invoices-block .view-view-callback-requests .view-header, #block-views-view-all-invoices-block-1 .view-recently-read .view-header, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes .view-header, #block-views-view-all-invoices-block-1 .view-view-all-companies .view-header, #block-views-view-all-invoices-block-1 .view-view-all-invoices .view-header, #block-views-view-all-invoices-block-1 .view-my-files .view-header, #block-views-view-all-invoices-block-1 .view-view-callback-requests .view-header, #block-views-my-files-block-1 .view-recently-read .view-header, #block-views-my-files-block-1 .view-view-all-projects-nodes .view-header, #block-views-my-files-block-1 .view-view-all-companies .view-header, #block-views-my-files-block-1 .view-view-all-invoices .view-header, #block-views-my-files-block-1 .view-my-files .view-header, #block-views-my-files-block-1 .view-view-callback-requests .view-header, #block-views-view-callback-requests-block-1 .view-recently-read .view-header, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes .view-header, #block-views-view-callback-requests-block-1 .view-view-all-companies .view-header, #block-views-view-callback-requests-block-1 .view-view-all-invoices .view-header, #block-views-view-callback-requests-block-1 .view-my-files .view-header, #block-views-view-callback-requests-block-1 .view-view-callback-requests .view-header {
       padding: 1vw;
       position: relative;
       width: 100%;
       z-index: 99;
-      font-size: 17px;
-      background-color: rgba(113, 113, 113, 0.5);
+      font-size: 30px;
       color: #FFFFFF;
       -webkit-touch-callout: none;
       /* iOS Safari */
@@ -218,7 +222,6 @@ footer {
       overflow: hidden;
       position: relative;
       z-index: 1;
-      background-color: rgba(113, 113, 113, 0.5);
       padding-top: 1vh;
       padding-bottom: 1vh; }
     #block-views-recently-read-block .view-recently-read p, #block-views-recently-read-block .view-recently-read a, #block-views-recently-read-block .view-view-all-projects-nodes p, #block-views-recently-read-block .view-view-all-projects-nodes a, #block-views-recently-read-block .view-view-all-companies p, #block-views-recently-read-block .view-view-all-companies a, #block-views-recently-read-block .view-view-all-invoices p, #block-views-recently-read-block .view-view-all-invoices a, #block-views-recently-read-block .view-my-files p, #block-views-recently-read-block .view-my-files a, #block-views-recently-read-block .view-view-callback-requests p, #block-views-recently-read-block .view-view-callback-requests a, #block-views-view-all-projects-nodes-block-1 .view-recently-read p, #block-views-view-all-projects-nodes-block-1 .view-recently-read a, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes p, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes a, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies p, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies a, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices p, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices a, #block-views-view-all-projects-nodes-block-1 .view-my-files p, #block-views-view-all-projects-nodes-block-1 .view-my-files a, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests p, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests a, #block-views-view-all-companies-block-1 .view-recently-read p, #block-views-view-all-companies-block-1 .view-recently-read a, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes p, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes a, #block-views-view-all-companies-block-1 .view-view-all-companies p, #block-views-view-all-companies-block-1 .view-view-all-companies a, #block-views-view-all-companies-block-1 .view-view-all-invoices p, #block-views-view-all-companies-block-1 .view-view-all-invoices a, #block-views-view-all-companies-block-1 .view-my-files p, #block-views-view-all-companies-block-1 .view-my-files a, #block-views-view-all-companies-block-1 .view-view-callback-requests p, #block-views-view-all-companies-block-1 .view-view-callback-requests a, #block-views-view-all-invoices-block .view-recently-read p, #block-views-view-all-invoices-block .view-recently-read a, #block-views-view-all-invoices-block .view-view-all-projects-nodes p, #block-views-view-all-invoices-block .view-view-all-projects-nodes a, #block-views-view-all-invoices-block .view-view-all-companies p, #block-views-view-all-invoices-block .view-view-all-companies a, #block-views-view-all-invoices-block .view-view-all-invoices p, #block-views-view-all-invoices-block .view-view-all-invoices a, #block-views-view-all-invoices-block .view-my-files p, #block-views-view-all-invoices-block .view-my-files a, #block-views-view-all-invoices-block .view-view-callback-requests p, #block-views-view-all-invoices-block .view-view-callback-requests a, #block-views-view-all-invoices-block-1 .view-recently-read p, #block-views-view-all-invoices-block-1 .view-recently-read a, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes p, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes a, #block-views-view-all-invoices-block-1 .view-view-all-companies p, #block-views-view-all-invoices-block-1 .view-view-all-companies a, #block-views-view-all-invoices-block-1 .view-view-all-invoices p, #block-views-view-all-invoices-block-1 .view-view-all-invoices a, #block-views-view-all-invoices-block-1 .view-my-files p, #block-views-view-all-invoices-block-1 .view-my-files a, #block-views-view-all-invoices-block-1 .view-view-callback-requests p, #block-views-view-all-invoices-block-1 .view-view-callback-requests a, #block-views-my-files-block-1 .view-recently-read p, #block-views-my-files-block-1 .view-recently-read a, #block-views-my-files-block-1 .view-view-all-projects-nodes p, #block-views-my-files-block-1 .view-view-all-projects-nodes a, #block-views-my-files-block-1 .view-view-all-companies p, #block-views-my-files-block-1 .view-view-all-companies a, #block-views-my-files-block-1 .view-view-all-invoices p, #block-views-my-files-block-1 .view-view-all-invoices a, #block-views-my-files-block-1 .view-my-files p, #block-views-my-files-block-1 .view-my-files a, #block-views-my-files-block-1 .view-view-callback-requests p, #block-views-my-files-block-1 .view-view-callback-requests a, #block-views-view-callback-requests-block-1 .view-recently-read p, #block-views-view-callback-requests-block-1 .view-recently-read a, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes p, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes a, #block-views-view-callback-requests-block-1 .view-view-all-companies p, #block-views-view-callback-requests-block-1 .view-view-all-companies a, #block-views-view-callback-requests-block-1 .view-view-all-invoices p, #block-views-view-callback-requests-block-1 .view-view-all-invoices a, #block-views-view-callback-requests-block-1 .view-my-files p, #block-views-view-callback-requests-block-1 .view-my-files a, #block-views-view-callback-requests-block-1 .view-view-callback-requests p, #block-views-view-callback-requests-block-1 .view-view-callback-requests a {
@@ -228,7 +231,7 @@ footer {
       #block-views-recently-read-block .view-recently-read a:hover, #block-views-recently-read-block .view-view-all-projects-nodes a:hover, #block-views-recently-read-block .view-view-all-companies a:hover, #block-views-recently-read-block .view-view-all-invoices a:hover, #block-views-recently-read-block .view-my-files a:hover, #block-views-recently-read-block .view-view-callback-requests a:hover, #block-views-view-all-projects-nodes-block-1 .view-recently-read a:hover, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes a:hover, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies a:hover, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices a:hover, #block-views-view-all-projects-nodes-block-1 .view-my-files a:hover, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests a:hover, #block-views-view-all-companies-block-1 .view-recently-read a:hover, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes a:hover, #block-views-view-all-companies-block-1 .view-view-all-companies a:hover, #block-views-view-all-companies-block-1 .view-view-all-invoices a:hover, #block-views-view-all-companies-block-1 .view-my-files a:hover, #block-views-view-all-companies-block-1 .view-view-callback-requests a:hover, #block-views-view-all-invoices-block .view-recently-read a:hover, #block-views-view-all-invoices-block .view-view-all-projects-nodes a:hover, #block-views-view-all-invoices-block .view-view-all-companies a:hover, #block-views-view-all-invoices-block .view-view-all-invoices a:hover, #block-views-view-all-invoices-block .view-my-files a:hover, #block-views-view-all-invoices-block .view-view-callback-requests a:hover, #block-views-view-all-invoices-block-1 .view-recently-read a:hover, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes a:hover, #block-views-view-all-invoices-block-1 .view-view-all-companies a:hover, #block-views-view-all-invoices-block-1 .view-view-all-invoices a:hover, #block-views-view-all-invoices-block-1 .view-my-files a:hover, #block-views-view-all-invoices-block-1 .view-view-callback-requests a:hover, #block-views-my-files-block-1 .view-recently-read a:hover, #block-views-my-files-block-1 .view-view-all-projects-nodes a:hover, #block-views-my-files-block-1 .view-view-all-companies a:hover, #block-views-my-files-block-1 .view-view-all-invoices a:hover, #block-views-my-files-block-1 .view-my-files a:hover, #block-views-my-files-block-1 .view-view-callback-requests a:hover, #block-views-view-callback-requests-block-1 .view-recently-read a:hover, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes a:hover, #block-views-view-callback-requests-block-1 .view-view-all-companies a:hover, #block-views-view-callback-requests-block-1 .view-view-all-invoices a:hover, #block-views-view-callback-requests-block-1 .view-my-files a:hover, #block-views-view-callback-requests-block-1 .view-view-callback-requests a:hover {
         color: #CC0C00; }
     #block-views-recently-read-block .view-recently-read span, #block-views-recently-read-block .view-view-all-projects-nodes span, #block-views-recently-read-block .view-view-all-companies span, #block-views-recently-read-block .view-view-all-invoices span, #block-views-recently-read-block .view-my-files span, #block-views-recently-read-block .view-view-callback-requests span, #block-views-view-all-projects-nodes-block-1 .view-recently-read span, #block-views-view-all-projects-nodes-block-1 .view-view-all-projects-nodes span, #block-views-view-all-projects-nodes-block-1 .view-view-all-companies span, #block-views-view-all-projects-nodes-block-1 .view-view-all-invoices span, #block-views-view-all-projects-nodes-block-1 .view-my-files span, #block-views-view-all-projects-nodes-block-1 .view-view-callback-requests span, #block-views-view-all-companies-block-1 .view-recently-read span, #block-views-view-all-companies-block-1 .view-view-all-projects-nodes span, #block-views-view-all-companies-block-1 .view-view-all-companies span, #block-views-view-all-companies-block-1 .view-view-all-invoices span, #block-views-view-all-companies-block-1 .view-my-files span, #block-views-view-all-companies-block-1 .view-view-callback-requests span, #block-views-view-all-invoices-block .view-recently-read span, #block-views-view-all-invoices-block .view-view-all-projects-nodes span, #block-views-view-all-invoices-block .view-view-all-companies span, #block-views-view-all-invoices-block .view-view-all-invoices span, #block-views-view-all-invoices-block .view-my-files span, #block-views-view-all-invoices-block .view-view-callback-requests span, #block-views-view-all-invoices-block-1 .view-recently-read span, #block-views-view-all-invoices-block-1 .view-view-all-projects-nodes span, #block-views-view-all-invoices-block-1 .view-view-all-companies span, #block-views-view-all-invoices-block-1 .view-view-all-invoices span, #block-views-view-all-invoices-block-1 .view-my-files span, #block-views-view-all-invoices-block-1 .view-view-callback-requests span, #block-views-my-files-block-1 .view-recently-read span, #block-views-my-files-block-1 .view-view-all-projects-nodes span, #block-views-my-files-block-1 .view-view-all-companies span, #block-views-my-files-block-1 .view-view-all-invoices span, #block-views-my-files-block-1 .view-my-files span, #block-views-my-files-block-1 .view-view-callback-requests span, #block-views-view-callback-requests-block-1 .view-recently-read span, #block-views-view-callback-requests-block-1 .view-view-all-projects-nodes span, #block-views-view-callback-requests-block-1 .view-view-all-companies span, #block-views-view-callback-requests-block-1 .view-view-all-invoices span, #block-views-view-callback-requests-block-1 .view-my-files span, #block-views-view-callback-requests-block-1 .view-view-callback-requests span {
-      font-size: 17px; }
+      font-size: 30px; }
 
 .front #view-view-callback-requests .view-content {
   display: none; }
@@ -238,9 +241,10 @@ footer {
 
 .front .more-link {
   position: absolute;
-  bottom: -30px; }
+  bottom: 20px;
+  right: 20px; }
   .front .more-link a {
-    color: #009688 !important; }
+    color: #FFFFFF !important; }
 
 @media screen and (max-width: 880px) {
   .front .region-content section:nth-child(1), .front .region-content section:nth-child(2), .front .region-content section:nth-child(3) {
@@ -602,8 +606,7 @@ footer {
   .page-node-add-drive-link #drive-link-node-form .help-block {
     display: none !important; }
   .page-node-add-drive-link #drive-link-node-form #edit-field-drive-link-file .help-block {
-    display: block !important;
-  }
+    display: block !important; }
   .page-node-add-drive-link #drive-link-node-form #edit-submit {
     width: 100%;
     background-color: #FFFFFF;

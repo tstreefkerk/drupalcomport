@@ -15,9 +15,10 @@ $secondaryColorIndigo: #3F51B5;
 
 
 // Block colors
-$block-background-color-one: $primaryColorDarkGrey;
-$block-background-color-two: $primaryColorLightGrey;
-$block-background-color-three: $primaryColorGrey;
+$block-background-color-one: #009688;
+$block-background-color-two: #02dbc7;
+$block-background-color-three: #03544d;
+$block-background-color-four: #01332f;
 
 
 
@@ -26,7 +27,7 @@ $block-highlight-color:  rgba(113, 113, 113, 0.5);
 // Font settings
 $font-standard: Roboto;
 $font-size-small: 15px;
-$font-size-block: 17px;
+$font-size-block: 30px;
 $font-size-normal: 20px;
 $font-size-medium: 25px;
 $font-size-big: 30px;

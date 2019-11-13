@@ -1,125 +1,143 @@
 <?php
-
-namespace Enorm;
-use Google_Client;
-use Google_Service_Drive;
-use Google_Service_Drive_DriveFile;
-use Google_Http_MediaFileUpload;
-
 /**
- * Implements hook_form_alter().
+ * Implements hook_menu().
  */
-/**
- * Implements hook_node_presave().
- */
+function enorm_drive_menu() {
+  $items = [];
+  $items['google/drive/connect'] = [
+    'title' => 'Connect to Google Drive',
+    'page callback' => 'enorm_drive_connect',
+    'access callback' => TRUE,
+  ];
+  $items['google/drive/upload'] = [
+    'title' => 'Upload file to Google Drive',
+    'page callback' => 'enorm_drive_node_add_drive_link',
+    'access callback' => TRUE,
+  ];
+  return $items;
+}
 
 /**
  * Implements hook_form_alter().
  */
 function enorm_drive_form_alter(&$form, &$form_state, $form_id) {
-  $form['actions']['submit']['#submit'][0] = 'MODULE_my_custom_submit_handler';
-  dpm($form);
-}
-
-function custom_function_enorm_drive() {
-
-}
-
-
-function GetFolders($client, $drive){
-    $parameters = [
-      // Get only the folders
-      'q' => "mimeType = 'application/vnd.google-apps.folder'",
-      'fields' => 'files(id, name, modifiedTime, iconLink, webViewLink, webContentLink, mimeType)',
-    ];
-    $result = $drive->files->listFiles($parameters);
-    return $folders = $result->files;
-}
-
-function Test(){
-    $test = $this->Connect();
-    return $test;
-}
-
-function Connect(){
-    $client = new Google_Client();
-    // Get your credentials from the console
-  try {
-    $client->setAuthConfig('../config/credentials.json');
-  } catch (Google_Exception $e) {
-  }
-  $client->setRedirectUri('http://localhost:8000/api');
-    $client->setScopes(array('https://www.googleapis.com/auth/drive'));
-
-    //TODO I think the undefined session functions are Laravel functions. They'd have to be reworked.
-    if (isset($_GET['code']) || (session()->has('access_token'))) {
-      if (isset($_GET['code'])) {
-        $client->authenticate($_GET['code']);
-        session(['access_token' => $client->getAccessToken()]);
-      } else {
-        $client->setAccessToken(session('access_token'));
-      }
-      $drive = new Google_Service_Drive($client);
-      $folders = $this->GetFolders($client, $drive);
-      return view('uploadfile', ['folders' => $folders]);
-    } else {
-      $authUrl = $client->createAuthURL();
-      header('Location: ' . $authUrl);
-      exit();
+  $client = new Google_Client;
+  if (!empty($_SESSION['access_token'])) {
+    $client->setAccessToken($_SESSION['access_token']);
+    $client->setAuthConfig('credentials.json');
+    $drive = new Google_Service_Drive($client);
+    $folders = enorm_drive_get_folders($client, $drive);
+    $options = array();
+    foreach($folders as $value) {
+      $options[$value->id] = $value->name;
     }
+    $form['field_drive_link_folder']['und']['#options'] = $options;
+  }
 }
 
-function UploadFile($request){
-    $request->validate([
-      'fileToUpload' => 'required|file',
-      'folder' => 'required',
-    ]);
-    $fileName = request()->fileToUpload->GetClientOriginalName();
-    // Make sure u cant upload the same file twice in a row, so send it back to the upload file page
-    if($fileName == session('lastFile')){
-      return redirect()->route('api');
-    };
-    $fileType = request()->fileToUpload->getClientOriginalExtension();
-    $link = $request->fileToUpload->storeAs('files',$fileName);
-    $client = new Google_Client();
-    $client->setScopes(array('https://www.googleapis.com/auth/drive'));
-    if (session()->has('access_token')) {
+/*
+ * Render node add form after authenticating
+ */
+function enorm_drive_node_add_drive_link() {
+  module_load_include('inc', 'node', 'node.pages');
+  $form = node_add('drive_link');
+  print drupal_render($form);
+}
 
-      $client->setAccessToken(session('access_token'));
+/**
+ * Implements hook_node_submit().
+ */
+function enorm_drive_node_submit($node, $form, &$form_state) {
+  if ($node->type === 'drive_link' && $form_state['values']['field_drive_link_file']['und'][0]['fid'] != 0 && $form_state['values']['field_drive_link_file']['und'][0]['fid'] != FALSE) {
+
+    $folder = $node->field_drive_link_folder['und'][0]['value'];
+    $fileName = $form_state['values']['title'];
+    $drupal_file = file_load($form_state['field']['field_drive_link_file']['und']['items'][0]['fid']);
+    $result = file_get_contents($drupal_file->uri);
+
+    $mimeType = $drupal_file->filemime;
+    $client = new Google_Client();
+    $client->setScopes(['https://www.googleapis.com/auth/drive']);
+    if (!empty($_SESSION['access_token'])) {
+
+      $client->setAccessToken($_SESSION['access_token']);
       $drive = new Google_Service_Drive($client);
 
       //Insert a file
       $file = new Google_Service_Drive_DriveFile();
       //$file->setDescription('A test document');
-      $file->setName(request()->fileToUpload->GetClientOriginalName());
-      // Set parrents is the variable of the folder the file is placed in
-      $file->setParents([request()->folder]);
-      // FIX: Fix it so the callback works later as when the user is logged in
-      $mimeType = "";
-      if($fileType == "docx") $mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-      else if($fileType == "doc") $mimeType = "application/msword";
-      else if($fileType == "gif") $mimeType = "image/gif";
-      else if($fileType == "js") $mimeType = "text/javascript";
-      else if($fileType == "json") $mimeType = "application/json";
-      else if($fileType == "sql") $mimeType = "application/json";
-      else if($fileType == "txt") $mimeType = "text/css";
-      else if($fileType == "xls") $mimeType = "application/vnd.ms-excel";
-      else if($fileType == "xlsx") $mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      else if($fileType == "zip") $mimeType = "application/zip";
-      else if($fileType == "ppt") $mimeType = "application/vnd.ms-powerpoint";
-      else if($fileType == "pptx") $mimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      $file->setName($fileName);
+      // Set parents is the variable of the folder the file is placed in
+
+      $file->setParents(array($folder));
       // Create the file and get the URL
-      $createdFile = $drive->files->create($file, array(
-        'data' => Storage::get($link),
+      $createdFile = $drive->files->create($file, [
+        'data' => $result,
         "mimeType" => $mimeType,
         'fields' => 'id, name, webViewLink, mimeType',
-
-      ));
-      Storage::delete($link);
-      session(['lastFile' => $fileName]);
-      return view('uploaded', ['link' => $createdFile->getWebViewLink()]);
-    } else {
+      ]);
+      file_delete($drupal_file);
+      $shareLink = $createdFile->getWebViewLink();
+      $form_state['values']['field__drive_link_hyperlink']['und'][0]['url'] = $shareLink;
+      $node->field__drive_link_hyperlink['und'][0]['url'] = $shareLink;
+      $form['field__drive_link_hyperlink']['und'][0]['#value']['url'] = $shareLink;
+    }
+    else {
       // Connect first
       $this->Connect();
     }
+  }
+}
+
+function enorm_drive_connect() {
+
+  $client = new Google_Client();
+
+  $client->setAuthConfig('credentials.json');
+
+  // This redirect URI points to the page with the same function. Don't change please.
+  $client->setRedirectUri('http://localhost/google/drive/connect');
+  $client->setScopes(['https://www.googleapis.com/auth/drive']);
+
+  // If the GET is the code (code=AWDAWDAWDWA) or the session variable already holds an acces_token.
+  // The code=adwadawDawd is returned by the google api after logging in.
+  if (isset($_GET['code']) || (isset($_SESSION['access_token']))) {
+    // TODO Als het gaat om een get=awdwdawd code dan is de redirect pagina aangeroepen en moeten we de client inloggen.
+    if (isset($_GET['code'])) {
+
+      // Log the client on. Library code. -> authenticate would also be possible, but is deprecated.
+
+      $client->fetchAccessTokenWithAuthCode($_GET['code']);
+
+      // Save access token in SESSION.
+      // TODO Rework this to Drupal variables. Much safer.
+      $_SESSION['access_token'] = $client->getAccessToken();
+
+    }
+    else {
+      // TODO Als het niet gaat om een code dan gaat het dus om de session varibel en dan zetten de $client zijn accestoken naar de sessie variable.
+      $client->setAccessToken($_SESSION['access_token']);
+    }
+    // Create Drive object which we can use to get data from.
+    $drive = new Google_Service_Drive($client);
+
+    // Redirect to node add form.
+    drupal_goto('node/add/drive-link');
+  }
+  else {
+    // Show Drive login page when not connected.
+    $authUrl = $client->createAuthURL();
+    header('Location: ' . $authUrl);
+    return FALSE;
+  }
+}
+
+function enorm_drive_get_folders($client, $drive) {
+  $parameters = [
+    // Get only the folders
+    'q' => "mimeType = 'application/vnd.google-apps.folder'",
+    'fields' => 'files(id, name, modifiedTime, iconLink, webViewLink, webContentLink, mimeType)',
+  ];
+  $result = $drive->files->listFiles($parameters);
+  return $folders = $result->files;
 }

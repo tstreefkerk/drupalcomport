@@ -601,6 +601,9 @@ footer {
     width: 97%; }
   .page-node-add-drive-link #drive-link-node-form .help-block {
     display: none !important; }
+  .page-node-add-drive-link #drive-link-node-form #edit-field-drive-link-file .help-block {
+    display: block !important;
+  }
   .page-node-add-drive-link #drive-link-node-form #edit-submit {
     width: 100%;
     background-color: #FFFFFF;

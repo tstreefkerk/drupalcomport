@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * Implements hook_requirements().
+ */
+function google_php_client_library_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // Check if the expected library path exists
+    if (module_exists('libraries')) {
+      $path = libraries_get_path('google-api-php-client');
+    }
+    else {
+      $path = drupal_get_path('module', 'google_php_client_library') . '/google-api-php-client';
+    }
+
+    if (is_dir($path)) {
+      $requirements['google_php_client_library'] = array(
+        'title' => $t('Google PHP Client Library'),
+        'value' => $t('Google PHP Client Library is available.'),
+        'description' => '',
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+    else {
+      $requirements['google_php_client_library'] = array(
+        'title' => $t('Google PHP Client Library'),
+        'description' => $t('Google PHP Client Library is required.'),
+        'value' => $t("Google PHP Client Library doesn't seem to be available."),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('
+            See the <a href="@help_url">project page</a> for install instructions.
+            <br/>
+            Either:
+            <ul><li>
+            Use the drush command <code>drush google-php-lib-get</code>
+            or
+            </li><li>
+            Download the required libraries from
+            <a href="@library_url">the Google project</a>
+            and place it in <code>@install_path</code>
+            </li></ul>',
+            array(
+              '@library_url' => 'https://github.com/google/google-api-php-client',
+              '@help_url' => url('https://drupal.org/project/google_php_client_library'),
+              '@install_path' => 'sites/all/libraries/google-api-php-client',
+            )
+        ),
+      );
+    }
+  }
+
+  return $requirements;
+}

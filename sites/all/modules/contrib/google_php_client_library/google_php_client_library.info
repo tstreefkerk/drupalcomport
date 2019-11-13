@@ -1,0 +1,11 @@
+name = Google PHP Client Library
+description = Implementation of Google Client Library for PHP
+dependencies[] = libraries
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2016-12-18
+version = "7.x-1.0-rc1"
+core = "7.x"
+project = "google_php_client_library"
+datestamp = "1482098586"
+

@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Google Client Library implementation.
+ *
+ */
+
+/**
+ * Implements hook_libraries_info().
+ */
+function google_php_client_library_libraries_info() {
+  $config_dir = conf_path();
+  $lib_path = 'sites/all/libraries/google-api-php-client';
+  if (file_exists(DRUPAL_ROOT . '/' . $config_dir . '/libraries')) {
+    $lib_path = $config_dir . '/libraries/google-api-php-client';
+  }
+  $file_path = 'google/apiclient/src/Google/Client.php';;
+  $include_path = 'autoload.php';
+  $line_number = 42;
+  if (!file_exists(DRUPAL_ROOT . '/' . $lib_path . '/vendor')) { // Composer install;
+    $file_path = 'src/Google/Client.php';
+    $include_path = 'vendor/autoload.php';
+    $line_number = 40;
+  }
+  $libraries['google-api-php-client'] = array(
+    'name' => 'Google PHP Client Library',
+    'vendor url' => 'https://github.com/google/google-api-php-client',
+    'download url' => 'https://github.com/google/google-api-php-client/releases',
+    'version arguments' => array(
+      'file' => $file_path,
+      'pattern' => '/LIBVER = "([0-9\.a-z\-]+)/',
+      'lines' => $line_number,
+    ),
+    'files' => array(
+      'php' => array(
+        $include_path,
+      ),
+    ),
+  );
+  return $libraries;
+}

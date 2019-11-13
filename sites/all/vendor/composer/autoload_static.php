@@ -13,9 +13,14 @@ class ComposerStaticInitComposerManager
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '9c67151ae59aff4788964ce8eb2a0f43' => __DIR__ . '/..' . '/clue/stream-filter/src/functions_include.php',
         '8cff32064859f4559445b89279f3199c' => __DIR__ . '/..' . '/php-http/message/src/filters.php',
+        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'phpseclib\\' => 10,
+        ),
         'S' => 
         array (
             'Symfony\\Component\\OptionsResolver\\' => 34,
@@ -25,12 +30,17 @@ class ComposerStaticInitComposerManager
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
+            'Psr\\Cache\\' => 10,
         ),
         'N' => 
         array (
             'Nascom\\TeamleaderApiClient\\' => 27,
             'Nascom\\OAuth2\\Client\\' => 21,
             'Namshi\\Cuzzle\\' => 14,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
         ),
         'L' => 
         array (
@@ -50,6 +60,11 @@ class ComposerStaticInitComposerManager
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+            'Google\\Auth\\' => 12,
+        ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
         ),
         'C' => 
         array (
@@ -58,6 +73,10 @@ class ComposerStaticInitComposerManager
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpseclib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
         'Symfony\\Component\\OptionsResolver\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
@@ -74,6 +93,10 @@ class ComposerStaticInitComposerManager
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
+        'Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
         'Nascom\\TeamleaderApiClient\\' => 
         array (
             0 => __DIR__ . '/..' . '/nascom/teamleader-api-client/src',
@@ -85,6 +108,10 @@ class ComposerStaticInitComposerManager
         'Namshi\\Cuzzle\\' => 
         array (
             0 => __DIR__ . '/..' . '/namshi/cuzzle/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'League\\OAuth2\\Client\\' => 
         array (
@@ -127,10 +154,37 @@ class ComposerStaticInitComposerManager
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'Google\\Auth\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/auth/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'Clue\\StreamFilter\\' => 
         array (
             0 => __DIR__ . '/..' . '/clue/stream-filter/src',
         ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'G' => 
+        array (
+            'Google_Service_' => 
+            array (
+                0 => __DIR__ . '/..' . '/google/apiclient-services/src',
+            ),
+            'Google_' => 
+            array (
+                0 => __DIR__ . '/..' . '/google/apiclient/src',
+            ),
+        ),
+    );
+
+    public static $classMap = array (
+        'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
+        'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -138,6 +192,8 @@ class ComposerStaticInitComposerManager
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitComposerManager::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitComposerManager::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitComposerManager::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitComposerManager::$classMap;
 
         }, null, ClassLoader::class);
     }
